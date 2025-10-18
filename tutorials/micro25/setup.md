@@ -107,6 +107,8 @@ docker run hello-world
    ```bash
    docker --version
    ```
+If you have an Apple Silicon Mac, you will also need to install [Rosetta 2](https://support.apple.com/en-us/102527).
+Your Mac likely already has Rosetta, but if not, the system should automatically prompt you to install it.
 
 #### Installing Docker on Windows
 
