@@ -4,8 +4,10 @@ set -e
 
 cd "$(dirname "$0")"/../..
 
-rm -rf **/__pycache__/
-rm -rf **/build/
+./docker/chown.sh > /dev/null 2>&1 || true
+
+find . -type d -name "__pycache__" -exec rm -rf {} +
+find . -type d -name "build" -exec rm -rf {} +
 
 rm -rf QKV.py
 rm -rf targets/
