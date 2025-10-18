@@ -9,7 +9,7 @@ The ACT ecosystem consists of:
 - **TAIDL (Tensor Accelerator ISA Definition Language)**: A Python-based DSL for specifying tensor accelerator ISAs. TAIDL leverages tensor IRs like XLA-HLO to compactly and precisely model execution semantics of tensor accelerator ISAs.
 - **TAIDL-TO (Test Oracle) Generator**: Automatically generates scalable functional simulators just from TAIDL specifications, enabling correctness testing of the software stack. TAIDL-TOs are orders of magnitude faster than existing simulators.
 - **ACT Backend Generator**: Automatically generates sound and complete compiler backends just from TAIDL specification. ACT backends match or outperform state-of-the-art expert-written libraries, while maintaining low compile times (<1 sec).
-- **XLA Integration**: Enables end-to-end compilation from popular ML frameworks like JAX, TensorFlow, and PyTorch
+- **XLA Integration**: Enables end-to-end compilation from popular ML frameworks like JAX and PyTorch.
 
 ## Repositories
 
@@ -25,12 +25,12 @@ The ACT Ecosystem is composed of multiple repositories:
 
 ## Interested in using ACT?
 
-If you are interested in using ACT for your accelerator, please email [Devansh Jain](mailto:devansh9@illinois.edu) or [Prof. Charith Mendis](mailto:charithm@illinois.edu).
+If you are interested in using ACT for your accelerator, please email [Devansh Jain](mailto:devansh9@illinois.edu) or [Prof. Charith Mendis](mailto:charithm@illinois.edu).  
 We would be happy to help you get started!
 
 ## Interested in contributing to ACT?
 
-If you are interested in contributing to the ACT Ecosystem (e.g., adding new language features, adding new tool generators, improving existing generators, etc.), please feel free to open an issue or a pull request in the relevant repository.
+If you are interested in contributing to the ACT Ecosystem (e.g., adding new language features, adding new tool generators, improving existing generators, etc.), open an issue or a pull request in the relevant repository.
 
 | Contribution Area          | Repository Link                                                                |
 | -------------------------- | ------------------------------------------------------------------------------ |
@@ -40,7 +40,7 @@ If you are interested in contributing to the ACT Ecosystem (e.g., adding new lan
 | Compiler Backend Generator | [act-compiler/act-backend](https://github.com/act-compiler/act-backend)        |
 | Documentation & Bug Fixes  | Corresponding repository                                                       |
 
-**Unable to decide?** Open an issue in the top-level repository: [act-compiler/act](https://github.com/act-compiler/act) and we can help route it to the appropriate place.
+**Unable to decide?** Open an issue in [act-compiler/act](https://github.com/act-compiler/act) and we can help route it to the appropriate place.
 
 # Citing ACT
 
