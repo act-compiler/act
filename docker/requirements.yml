@@ -1,0 +1,19 @@
+name: act
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - wget=1.21.4
+  - scipy=1.13.1
+  - matplotlib=3.8.4
+  - pandas=2.2.1
+  - pylint=3.2.2
+  - autopep8=2.0.4
+  - numpy=1.26.4
+  - requests=2.32.2
+  - flake8=7.0.0
+  - pip
+  - pip:
+      - jax==0.4.33
+      - antlr4-python3-runtime==4.9.2
+      - nanobind==2.8.0

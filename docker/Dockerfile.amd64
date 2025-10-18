@@ -1,0 +1,64 @@
+FROM ubuntu:jammy
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install base dependencies
+RUN apt-get update && \
+  apt-get install -y sudo && \
+  apt-get install -y wget git curl apt-transport-https && \
+  apt-get install -y bash-completion tree vim && \
+  apt-get install -y build-essential make cmake ninja-build && \
+  apt-get install -y clang-14 gcc g++ gcc-multilib g++-multilib && \
+  apt-get install -y zlib1g-dev libabsl-dev lsb-release && \
+  apt-get install -y graphviz && \
+  apt-get clean -y && \
+  rm -rf /var/lib/apt/lists/*
+
+# Install Miniconda
+ENV MINICONDA_DIR=/opt/miniconda
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /opt/miniconda.sh && \
+  chmod +x /opt/miniconda.sh && \
+  /opt/miniconda.sh -b -p $MINICONDA_DIR && \
+  rm -rf /opt/miniconda.sh && \
+  $MINICONDA_DIR/bin/conda tos accept && \
+  $MINICONDA_DIR/bin/conda init bash && \
+  $MINICONDA_DIR/bin/conda config --set auto_activate_base false
+
+# Create conda env using requirements.yml
+COPY requirements.yml /requirements.yml
+RUN . $MINICONDA_DIR/etc/profile.d/conda.sh && \
+  conda env create --file /requirements.yml && \
+  conda clean -y --all && \
+  echo "conda list --name act >/dev/null 2>&1 && conda activate act" >> ~/.bashrc
+
+# Install Rust (rustup)
+ENV RUSTUP_HOME=/opt/rustup
+ENV CARGO_HOME=/opt/cargo
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path && \
+  /opt/cargo/bin/rustup default stable && \
+  chmod -R a+rx /opt/cargo /opt/rustup && \
+  echo 'export PATH="/opt/cargo/bin:$PATH"' >> ~/.bashrc
+
+# Install OR-Tools
+ENV ORTOOLS_DIR=/opt/ortools
+RUN wget -q https://github.com/google/or-tools/releases/download/v9.12/or-tools_amd64_ubuntu-22.04_cpp_v9.12.4544.tar.gz -O /tmp/ortools.tar.gz && \
+  mkdir -p $ORTOOLS_DIR && \
+  tar -xzf /tmp/ortools.tar.gz -C $ORTOOLS_DIR --strip-components=1 && \
+  rm -rf /tmp/ortools.tar.gz && \
+  echo "export LD_LIBRARY_PATH=$ORTOOLS_DIR/lib:$LD_LIBRARY_PATH" >> ~/.bashrc && \
+  echo "export ORTOOLS_DIR=$ORTOOLS_DIR" >> ~/.bashrc
+
+# Install nlohmann/json (for C++ backend)
+ENV NLOHMANN_JSON_DIR=/opt/nlohmann_json
+RUN wget -q https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz -O /tmp/json.tar.xz && \
+  mkdir -p $NLOHMANN_JSON_DIR && \
+  tar -xf /tmp/json.tar.xz -C $NLOHMANN_JSON_DIR --strip-components=1 && \
+  rm -rf /tmp/json.tar.xz && \
+  echo "export NLOHMANN_JSON_DIR=$NLOHMANN_JSON_DIR" >> ~/.bashrc
+
+RUN echo "umask 0002" >> ~/.bashrc
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
