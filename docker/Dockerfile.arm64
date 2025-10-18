@@ -8,7 +8,7 @@ RUN apt-get update && \
   apt-get install -y wget git curl apt-transport-https && \
   apt-get install -y bash-completion tree vim && \
   apt-get install -y build-essential make cmake ninja-build && \
-  apt-get install -y clang-14 gcc g++ gcc-multilib g++-multilib && \
+  apt-get install -y clang-14 gcc g++ && \
   apt-get install -y zlib1g-dev libabsl-dev lsb-release && \
   apt-get install -y graphviz && \
   apt-get clean -y && \
