@@ -33,14 +33,14 @@ Date: Oct 19, 2025 (Sunday)
 Time: 1:00 PM - 5:00 PM (UTC+9)  
 Venue: Berkeley Suite, 36th Floor, Lotte Hotel Seoul  
 Location: 30 Eulji-ro, Jung District, Seoul, South Korea  
-Prerequisites: Please bring your own laptop with a working installation of Docker and follow the [tutorial setup instructions](./setup.md) before the tutorial.
+Prerequisites: Please bring your own laptop with a working installation of Docker and follow the [tutorial setup instructions](./setup.md).
 
 **Contents and Timeline (tentative)**
 
 | Time           | Topic                                                                         | Presenter                   | Slide or Code                                       |
 | -------------- | ----------------------------------------------------------------------------- | --------------------------- | --------------------------------------------------- |
-| 1:00 - 1:10 PM | Tutorial Logistics                                                            | Devansh Jain (UIUC)         | [Guide: Setup Instructions](./setup.md)             |
-| 1:10 - 1:20 PM | Welcome and Introduction                                                      | Prof. Charith Mendis (UIUC) |                                                     |
+| 1:00 - 1:15 PM | Tutorial Logistics                                                            | Devansh Jain (UIUC)         | [Guide: Setup Instructions](./setup.md)             |
+| 1:15 - 1:20 PM | Welcome and Introduction                                                      | Prof. Charith Mendis (UIUC) |                                                     |
 | 1:20 - 1:40 PM | Talk: Overview of ACT Ecosystem                                               | Prof. Charith Mendis (UIUC) | Slides will be uploaded after the tutorials         |
 | 1:40 - 1:50 PM | Demonstration 1: Quick walkthrough of ACT Ecosystem                           | Devansh Jain (UIUC)         | [Demo: ACT-walkthrough](./demos/act-walkthrough.md) |
 | 1:50 - 2:20 PM | Hands-on Exercise 1: Specifying a new Accelerator ISA                         | Devansh Jain (UIUC)         | [Guide: Hands-on (1)](./exercise1/README.md)        |
@@ -57,3 +57,4 @@ Prerequisites: Please bring your own laptop with a working installation of Docke
 - **Prof. Charith Mendis** is an Assistant Professor in the Siebel School of Computing and Data Science at the University of Illinois at Urbana-Champaign. His broad research interests are at the intersection of compilers, program optimization and machine learning. He received his Ph.D. and Master’s from the Massachusetts Institute of Technology and his B.Sc. from the University of Moratuwa. He is the recipient of a DARPA Young Faculty Award, an NSF CAREER Award, the William A. Martin outstanding master’s thesis award at MIT and the university gold medal for his B.Sc. He has won numerous paper awards including a Distinguished Paper Award at POPL, a Best Student Paper Award at the IEEE BigData conference, an honorable mention for the Best Artifact Award at SIGMOD, a Best Paper Award at ML for Systems workshop at ISCA and an IEEE Top Picks Honorable Mention.
 - **Devansh Jain** is a Ph.D. student in the Siebel School of Computing and Data Science at the University of Illinois Urbana-Champaign (UIUC), advised by Prof. Charith Mendis. His research interests lie in the field of programming languages, compilers & computer architecture, primarily domain-specific languages and architectures. His primary research objective is to develop a unified compiler infrastructure for architectures designed for accelerating tensor computations. He has authored/co-authored multiple papers at top-tier PL & systems venues, including POPL, OOPSLA, MICRO, with a Distinguished Paper Award at POPL’25.
 - **Akash Pardeshi** is a M.S. student in the Department of Electrical and Computer Engineering at the University of Illinois Urbana-Champaign (UIUC), advised by Prof. Charith Mendis. His broad research interests are in compilers and computer architecture. His research focuses on techniques such as equality saturation and e-graph applications to ML compilers.
+- **Marco Frigo** is an undergraduate in the Department of Electrical and Computer Engineering at the University of Illinois Urbana-Champaign (UIUC). His broad research interests are in compilers and computer architecture. His research focuses on developing software infrastructure for emerging tensor accelerators.
