@@ -80,7 +80,7 @@ The backend performs:
 
 ### Stage 4: Framework Integration (Demonstration 2)
 
-The same backend can be wired into an XLA flow so that JAX programs are lowered into QKV assembly through the existing compilation stack.
+The same backend can be wired into the XLA compiler so that JAX programs are lowered into QKV assembly through the existing ML compilation stack.
 
 ### Stage 5: Iteration and Tweaking (Exercise 4)
 
