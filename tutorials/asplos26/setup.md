@@ -40,6 +40,15 @@ Pull the pre-built Docker image(s) containing all tutorial dependencies based on
 ./docker.sh --setup
 ```
 
+**For in-person attendees**, the tutorial organizers will also provide a USB drive with Docker images pre-downloaded. You can load the Docker image from the USB drive using:
+
+```bash
+cp /path/to/usb/act-tutorials-asplos26-<arch>.tar /path/to/local/act-tutorials-asplos26-<arch>.tar
+docker load -i /path/to/local/act-tutorials-asplos26-<arch>.tar
+```
+
+There would be two images in the USB drive, one for `amd64` and one for `arm64`. Please load the one corresponding to your system architecture.
+
 ## Helper Guide: Install Docker
 
 **Check if Docker is installed:**
@@ -107,8 +116,8 @@ docker run hello-world
    ```bash
    docker --version
    ```
-If you have an Apple Silicon Mac, you will also need to install [Rosetta 2](https://support.apple.com/en-us/102527).
-Your Mac likely already has Rosetta, but if not, the system should automatically prompt you to install it.
+   If you have an Apple Silicon Mac, you will also need to install [Rosetta 2](https://support.apple.com/en-us/102527).
+   Your Mac likely already has Rosetta, but if not, the system should automatically prompt you to install it.
 
 #### Installing Docker on Windows
 
