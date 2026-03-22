@@ -39,9 +39,9 @@ ACT automates the entire compiler development process for AI accelerators:
 
 You define:
 
-- Data models (`d0`, `d1`, `d2`) and their capacities
-- Instruction attributes (`alpha` for compute, `beta` for addressing)
-- Instruction semantics using XLA-HLO operators
+- Data models and their capacities
+- Instruction mnemonics and attributes (equivalent to a function signature)
+- Instruction semantics using XLA-HLO operators (equivalent to a function body)
 
 You run:
 
@@ -88,26 +88,8 @@ You modify the ISA specification (for example, add a new instruction or change a
 
 ---
 
-## TAIDL (Tensor Accelerator ISA Definition Language)
+## Next Step: Exercise 1
 
-**TAIDL** is a Python-based DSL for formally specifying AI accelerator ISAs. Unlike traditional ISA specification languages that focus on scalar operations, TAIDL models coarse-grained tensor operations using XLA-HLO semantics.
+In Exercise 1, you will specify the ISA for a simple QKV attention accelerator using TAIDL.
 
-In today's tutorial, we will be writing a new AI accelerator ISA from scratch and observing how the rest of the tooling is automatically generated.
-
-### Accelerator ISAs specified in TAIDL
-
-Currently, ACT supports several popular academic and commercial accelerator designs. We are working on supporting more accelerator designs and are open to collaborations with accelerator architects.
-
-| Accelerator         | Class           | Feature                                 | ISA Specification               |
-| ------------------- | --------------- | --------------------------------------- | ------------------------------- |
-| Intel AMX           | Commercial      | Tile-based register files               | Intel Instrinsics Guide         |
-| NVIDIA Tensor Cores | Commercial      | Warp-level data fragments               | PTX Documentation               |
-| AWS Trainium        | Commercial      | Banked/Partitioned scratchpads          | AWS NKI Documentation           |
-| Google TPUv1        | Commercial      | Systolic array + Weights FIFO Buffer    | ISCA'17 White paper             |
-| Gemmini             | Academic design | Systolic array                          | GitHub Documentation            |
-| FEATHER             | Academic design | Reconfigurable and flexible data layout | Collaboration with Architects\* |
-| EVA                 | Academic design | CGRA-based design + Evolvable ISA       | Collaboration with Architects\* |
-
-\* = Collaborative effort at ACE, one of the seven centers in JUMP 2.0, a Semiconductor Research Corporation (SRC) program
-
-Let me show you a quick demonstration of how the infrastructure works for one of the popular accelerator designs, Gemmini.
+Proceed to the [Exercise 1 README](../exercise1/README.md) to get started!

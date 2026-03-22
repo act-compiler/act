@@ -38,20 +38,20 @@ Prerequisites: Please bring your own laptop with a working installation of Docke
 
 **Contents and Timeline (tentative)**
 
-| Time           | Topic                                                                         | Presenter            |
-| -------------- | ----------------------------------------------------------------------------- | -------------------- |
-| 1:30 - 1:35 PM | Welcome and Introduction                                                      | Prof. Charith Mendis |
+| Time           | Topic                                                                         | Presenter            | Slide or Code                                       |
+| -------------- | ----------------------------------------------------------------------------- | -------------------- | --------------------------------------------------- |
+| 1:30 - 1:35 PM | Welcome and Introduction                                                      | Prof. Charith Mendis | [Guide: Setup Instructions](./setup.md)             |
 | 1:35 - 1:45 PM | Tutorial Logistics                                                            | Devansh Jain         |
-| 1:50 - 2:10 PM | Talk: Overview of ACT Ecosystem                                               | Prof. Charith Mendis |
-| 2:10 - 2:20 PM | Demonstration 1: Quick walkthrough of ACT Ecosystem                           | Devansh Jain         |
-| 2:20 - 2:50 PM | Hands-on Exercise 1: Specifying a new Accelerator ISA                         | Devansh Jain         |
-| 2:50 - 3:10 PM | Talk: Expressivity and Extensibility of TAIDL                                 | Marco Frigo          |
-| 3:10 - 3:30 PM | Hands-on Exercise 2: Writing custom Accelerator Kernels                       | Devansh Jain         |
+| 1:50 - 2:10 PM | Talk: Overview of ACT Ecosystem                                               | Prof. Charith Mendis | Slide will be uploaded after the tutorials         |
+| 2:10 - 2:20 PM | Demonstration 1: Quick walkthrough of ACT Ecosystem                           | Devansh Jain         | [Demo: ACT-walkthrough](./demos/act-walkthrough.md) |
+| 2:20 - 2:50 PM | Hands-on Exercise 1: Specifying a new Accelerator ISA                         | Devansh Jain         | [Guide: Hands-on (1)](./exercise1/README.md)        |
+| 2:50 - 3:10 PM | Talk: Expressivity and Extensibility of TAIDL                                 | Marco Frigo          | Slide will be uploaded after the tutorials         |
+| 3:10 - 3:30 PM | Hands-on Exercise 2: Writing custom Accelerator Kernels                       | Devansh Jain         | [Guide: Hands-on (2)](./exercise2/README.md)        |
 | 3:30 - 4:00 PM | Coffee Break                                                                  |                      |
-| 4:00 - 4:30 PM | Talk: Automatically Generating Compiler Backends just from ISA Specifications | Akash Pardeshi       |
-| 4:30 - 5:00 PM | Hands-on Exercise 3: Generating a Compiler Backend for a new Accelerator ISA  | Devansh Jain         |
-| 5:00 - 5:10 PM | Demonstration 2: Integrating the new Accelerator Backend with XLA Compiler    | Devansh Jain         |
-| 5:10 - 5:40 PM | Hands-on Exercise 4: Tweaking the ISA and Open Discussion                     | Devansh Jain         |
+| 4:00 - 4:30 PM | Talk: Automatically Generating Compiler Backends just from ISA Specifications | Akash Pardeshi       | Slide will be uploaded after the tutorials         |
+| 4:30 - 5:00 PM | Hands-on Exercise 3: Generating a Compiler Backend for a new Accelerator ISA  | Devansh Jain         | [Guide: Hands-on (3)](./exercise3/README.md)        |
+| 5:00 - 5:10 PM | Demonstration 2: Integrating the new Accelerator Backend with XLA Compiler    | Devansh Jain         | [Demo: JAX-XLA-ACT](./demos/jax-integration.md)     |
+| 5:10 - 5:40 PM | Hands-on Exercise 4: Tweaking the ISA and Open Discussion                     | Devansh Jain         | [Guide: Hands-on (4)](./exercise4/README.md)        |
 | 5:40 - 6:00 PM | Q&A and Closing Remarks                                                       | Prof. Charith Mendis |
 
 ---

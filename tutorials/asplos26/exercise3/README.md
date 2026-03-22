@@ -208,7 +208,7 @@ solver.AddConstraint(MAKE_EQUALITY(h0[i].first, lhs_offsets[i]));
 solver.AddConstraint(MAKE_EQUALITY(h0[i].second, MAKE_SUM(lhs_offsets[i], lhs_size[i])));
 ```
 
-Generic pipeline snippet in `targets/QKV/backend/cpp/malloc/src/act_malloc.cc`:
+Generic backend snippet in `targets/QKV/backend/cpp/malloc/src/act_malloc.cc`:
 
 ```cpp
 constraint::pii_node_constraints(scheduled);
@@ -217,7 +217,7 @@ constraint::initial_constraints(known_offsets);
 constraint::overlap_constraints(scheduled, tensor_map, new_vars);
 ```
 
-Interpretation: the generated backend turns ISA-specific maps/constraints into a concrete constraint system, solves addressing attributes, and emits final assembly.
+Interpretation: the generated compiler backend consists of ISA-generic backbone which invoke ISA-specific functions generated from your TAIDL specification.
 
 ---
 
