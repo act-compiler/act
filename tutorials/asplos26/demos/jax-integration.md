@@ -27,7 +27,7 @@ The complete compilation pipeline connects high-level ML frameworks to custom ac
 
 ---
 
-## What XLA Is Doing for JAX
+## Compiling JAX Programs Using XLA
 
 When you annotate JAX code with `jax.jit`, JAX traces Python tensor operations and hands them to XLA for compilation.
 
@@ -37,7 +37,7 @@ At a high level:
 2. XLA applies graph-level optimizations (for example, simplification and layout decisions).
 3. XLA lowers optimized computation into tiled kernels.
 4. The accelerator-specific backend is invoked on these tiled kernels.
-5. Emitted accelerator assembly is stitched into the surrounding generated program and executed.
+5. Emitted accelerator assembly code is stitched into the surrounding generated program and executed.
 
 In this tutorial, Step 4 is handled by the ACT-generated QKV backend.
 
