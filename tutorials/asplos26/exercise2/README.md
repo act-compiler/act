@@ -278,7 +278,7 @@ def softmax(kernel, api):
 
 **Walkthrough:**
 
-1. **Hardware Constraint**: Softmax only operates on data in d2, but data loads into d1. Therefore, we use perform a "dummy" GEMM using an identity matrix to move data from d1 to d2.
+1. **Hardware Constraint**: Softmax only operates on data in d2, but data loads into d1. Therefore, we perform a "dummy" GEMM using an identity matrix to move data from d1 to d2.
 
 2. **Constant Tensors**:
 
@@ -438,7 +438,7 @@ api.load_cm(n=64, addr_in=8192, addr_out=64)
 api.gemm(addr_1=0, addr_2=64, addr_out=0)
 ```
 
-**Key Difference:** `load_cm` instead of `load_rm` for K. Recall from Session 1 that `load_cm` includes a transpose operation.
+**Key Difference:** `load_cm` instead of `load_rm` for K. Recall from Exercise 1 that `load_cm` includes a transpose operation.
 
 **Current State After Stage 1:**
 

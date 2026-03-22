@@ -1,6 +1,6 @@
 # Hands-on Exercise 4: Tweaking the ISA and Open Discussion
 
-We implemented the ISA specification for the QKV accelerator in Exercise 1, and then manually programmed an attention kernel in Exercise 2. In Exercise 3, we will automatically generate a complete compiler backend from your ISA specification, and compile the same attention HLO to assembly.
+We implemented the ISA specification for the QKV accelerator in Exercise 1, and then manually programmed an attention kernel in Exercise 2. In Exercise 3, we automatically generated a complete compiler backend from your ISA specification, and compiled the same attention HLO to assembly.
 
 In this exercise, we will modify the ISA to explore how architectural changes propagate through the full ACT flow.
 
@@ -75,7 +75,7 @@ This captures buffer-aware execution choices directly in the ISA.
 
 ---
 
-## Step 5: Add another Move Instructions from d2 to d3
+## Step 5: Add Move Instructions from d2 to d3
 
 Define:
 
