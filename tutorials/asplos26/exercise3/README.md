@@ -150,7 +150,74 @@ Final backend binary located at /workspace/backends/QKV
 
 Let's examine the auto-generated compiler code to see how your ISA specification becomes compilation algorithms.
 
-...
+### 3.1 Generated Backend Structure (QKV)
+
+After running `python QKV.py`, ACT specializes the generic backend and generates ISA-specific code under `targets/QKV/backend/`:
+
+- `src/isel/rewrites/`: Rust rewrites generated from TAIDL instruction semantics (`g_θ`)
+- `cpp/malloc/include/instructions.h`: ISA-specific instruction classes with `get_h(i)` and `get_e()`
+- `cpp/malloc/include/constraint.h`: CSP entry points (CSP1-CSP4)
+- `cpp/malloc/src/constraint.cc`: concrete OR-Tools constraints
+- `cpp/malloc/src/act_malloc.cc`: backend pipeline orchestration (schedule -> CSP -> emit)
+
+This is the ACT backend generator's two-phase pipeline in code: equality saturation for instruction selection, then constraint programming for memory allocation.
+
+### 3.2 Concrete ISA-to-Backend Examples
+
+Below are two concrete examples showing how your segments of TAIDL specification are translated into the generated compiler code.
+
+**Example A: `load_rm` address mapping**
+
+ISA snippet in `QKV.py`:
+
+```python
+instr = qkv.add_instruction("load_rm", ["n"], ["addr_in", "addr_out"])
+instr.set_inputs([["d0", ["@a.addr_in"], ["@c.n * 128"]]])
+instr.set_outputs([["d1", ["@a.addr_out"], ["@c.n"]]])
+```
+
+Generated backend snippet in `targets/QKV/backend/cpp/malloc/include/instructions.h`:
+
+```cpp
+class LoadRm : public Instruction {
+  int64 n;
+  IntVar *addr_in;
+  IntVar *addr_out;
+
+  std::vector<std::pair<IntExpr *, IntExpr *>> get_h0() {
+    return {{addr_out, MAKE_SUM(addr_out, n)}};
+  }
+  std::vector<std::pair<IntExpr *, IntExpr *>> get_h1() {
+    return {{addr_in, MAKE_SUM(addr_in, n * 128)}};
+  }
+};
+```
+
+Interpretation: TAIDL address expressions become symbolic address ranges (`get_h(i)`) used later by the allocator.
+
+**Example B: How those maps become solver constraints**
+
+Generic backend snippet in `targets/QKV/backend/cpp/malloc/src/constraint.cc`:
+
+```cpp
+Constraints constraints = instr->get_e();
+for (auto *constraint : constraints) solver.AddConstraint(constraint);
+
+auto h0 = instr->get_h(0);
+solver.AddConstraint(MAKE_EQUALITY(h0[i].first, lhs_offsets[i]));
+solver.AddConstraint(MAKE_EQUALITY(h0[i].second, MAKE_SUM(lhs_offsets[i], lhs_size[i])));
+```
+
+Generic pipeline snippet in `targets/QKV/backend/cpp/malloc/src/act_malloc.cc`:
+
+```cpp
+constraint::pii_node_constraints(scheduled);
+constraint::def_use_constraints(scheduled);
+constraint::initial_constraints(known_offsets);
+constraint::overlap_constraints(scheduled, tensor_map, new_vars);
+```
+
+Interpretation: the generated backend turns ISA-specific maps/constraints into a concrete constraint system, solves addressing attributes, and emits final assembly.
 
 ---
 
@@ -415,17 +482,14 @@ If compilation fails or produces incorrect results:
 ### What You've Learned
 
 1. **Automatic Compiler Generation**: From ISA specification to working compiler
-
    - No manual compiler engineering required
    - Derived directly from TAIDL specification
 
 2. **High-Level Programming**: Write in HLO instead of assembly
-
    - Describe **what** to compute, not **how**
    - Compiler handles all low-level details
 
 3. **Correctness by Construction**: Generated compiler is provably correct
-
    - Respects ISA semantics
    - Validated against FPGA data
 
@@ -459,3 +523,15 @@ The generated backend is:
 ## Conclusion
 
 The compiler you generated represents months of traditional compiler engineering work, now automatically derived from your ISA specification. In Demonstration 2, you'll see how this connects to real ML frameworks like JAX!
+
+---
+
+## Key Takeaways to Keep in Mind
+
+- **Single-source retargeting**: ISA spec is the source of truth for oracle and backend generation.
+- **Compiler backend generation**: No manual backend implementation for each new AI accelerator.
+- **Same kernel, different abstraction levels**: You will see the same program represented as:
+  1. hand-written accelerator-specific assembly code
+  2. hand-written target-agnostic XLA-HLO IR
+  3. compiling the same HLO into the same assembly using the generated backend
+- **Fast iteration loop**: modify ISA -> regenerate -> revalidate without rebuilding a backend from scratch.

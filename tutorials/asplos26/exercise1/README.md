@@ -2,7 +2,7 @@
 
 <img align="right" width="300" height="200" src="../figures/qkv-isa.png">
 
-In this hands-on exercise, we will guide you through the process of specifying a new accelerator ISA using TAIDL (Tensor Accelerator ISA Definition Language)'s Python-based API. The API directly mirrors the formal ISA constructs introduced in the ACT paper: memory hierarchy (data models), instruction sets with operational semantics, and other essential components of the ISA. You will learn how to describe a domain-specific AI accelerator from scratch, using the **QKV accelerator** as our running example.
+In this hands-on exercise, we will guide you through the process of specifying a new accelerator ISA using TAIDL (Tensor Accelerator ISA Definition Language)'s Python-based API. The API directly mirrors the formal ISA constructs used by the ACT backend generator: memory hierarchy (data models), instruction sets with operational semantics, and other essential components of the ISA. You will learn how to describe a domain-specific AI accelerator from scratch, using the **QKV accelerator** as our running example.
 
 ## Overview: The QKV Accelerator
 
@@ -96,7 +96,7 @@ qkv.add_data_model("d2", [64], [64], "bf16")
 
 ### Key Observation
 
-As we move from scalar to tensor accelerators, the fundamental trend is:
+As we move from scalar processors to modern AI accelerators, the fundamental trend is:
 
 - **Higher dimensionality**: 0D (scalar) → 1D (vector) → 2D+ (tile/scratchpad)
 - **Coarser granularity**: Single values → Fixed-width SIMD lanes → Fixed-shape Tiles → Variable-size Tensor blocks
@@ -137,7 +137,7 @@ You can now edit this file in your preferred editor on your host machine.
 
 ## Step 2: Defining the Data Model
 
-The **data model** specifies the on-chip memory hierarchy: the number of buffers, their capacity, dimensionality, and element types. This directly corresponds to the formal construct $D^H [d_i]$ in the ACT paper.
+The **data model** specifies the on-chip memory hierarchy: the number of buffers, their capacity, dimensionality, and element types.
 
 ### Create the Accelerator Object
 
@@ -186,10 +186,10 @@ In addition to these on-chip buffers, there's an implicit **off-chip memory** (`
 ### Understanding Instruction Components
 
 **Attributes (Constraints):**
-Unlike classical ISAs where operands are just register numbers, AI accelerator instructions have both:
+Unlike classical ISAs where operands are often just register numbers, AI accelerator instructions expose two attribute classes:
 
-- **Addressing attributes**: Buffer addresses (analogous to register indices)
-- **Computational attributes**: Configuration parameters (e.g., `n` = number of rows to process)
+- **Addressing attributes** (`β`): Buffer addresses (analogous to register indices)
+- **Computational attributes** (`α`): Configuration parameters (e.g., `n` = number of rows to process)
 
 **Read/Write Locations:**
 Specify which data models are accessed, at what addresses, and how many addressable units:

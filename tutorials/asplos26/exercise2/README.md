@@ -1,6 +1,6 @@
 # Hands-on Exercise 2: Writing Accelerator Kernels
 
-In this hands-on exercise, you will learn to write accelerator kernels using the QKV ISA and programming APIs generated in Exercise 1. We provide three complete example kernels demonstrating different programming patterns. **Your task is to implement the final QKV attention kernel**, bringing together all the concepts.
+In this hands-on exercise, you will learn to write accelerator kernels using the QKV ISA and the generated ISA-specific kernel programming API from Exercise 1. We provide three complete example kernels demonstrating different programming patterns. **Your task is to implement the final QKV attention kernel**, bringing together all the concepts.
 
 You will test your implementation against **real data from an FPGA implementation** of the QKV accelerator (designed using Allo, an accelerator design language). This validates that your hand-written kernel produces hardware-correct results.
 
@@ -14,7 +14,7 @@ An **accelerator kernel** is a program written using the accelerator's ISA instr
 
 ### Kernel Structure
 
-Kernels in TAIDL-TO API use Python decorators to specify memory addresses and instruction sequences:
+Kernels in the TAIDL-TO API use Python decorators to specify memory addresses and instruction sequences:
 
 ```python
 @kernel(hbm=<size>,
@@ -36,7 +36,7 @@ def kernel_name():
    - `constant`: Constant tensors (e.g., weights, identity matrices) with HBM addresses, shapes, dtypes and constant values.
    - `output`: Output tensors with HBM addresses, shapes, and dtypes
 
-2. **Instruction Sequence**: Calls to generated API functions
+2. **Instruction Sequence**: Calls to generated API functions (ISA instruction)
 
    - Each API function corresponds to an ISA instruction from Exercise 1
    - Arguments match the instruction attributes defined in Exercise 1
