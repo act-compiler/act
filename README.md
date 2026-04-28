@@ -14,7 +14,7 @@ The ACT ecosystem consists of:
 ## Installation
 
 ```bash
-pip install git+https://github.com/act-compiler/act.git@v1.0
+pip install git+https://github.com/act-compiler/act.git@v1.1
 ```
 
 This installs the `act` package along with all components (TAIDL, TAIDL-TO, ACT Backend).
@@ -31,6 +31,13 @@ acc = Accelerator("MyAccel")
 generate_oracle(acc)    # Generate functional simulator
 generate_backend(acc)   # Generate compiler backend
 ```
+
+## Version Compatibility
+
+| ACT                                                           | TAIDL                                                           | TAIDL-TO                                                             | ACT-Backend                                                           | Docker Image                                                                  |
+| ------------------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [v1.1](https://github.com/act-compiler/act/releases/tag/v1.1) | [v2.3](https://github.com/act-compiler/taidl/releases/tag/v2.3) | [v2.2](https://github.com/act-compiler/act-oracle/releases/tag/v2.2) | [v1.1](https://github.com/act-compiler/act-backend/releases/tag/v1.1) | [devanshdvj/act:v1.1](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.1) |
+| [v1.0](https://github.com/act-compiler/act/releases/tag/v1.0) | [v2.2](https://github.com/act-compiler/taidl/releases/tag/v2.2) | [v2.1](https://github.com/act-compiler/act-oracle/releases/tag/v2.1) | [v1.0](https://github.com/act-compiler/act-backend/releases/tag/v1.0) | [devanshdvj/act:v1.0](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.0) |
 
 ## Repositories
 
