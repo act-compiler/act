@@ -11,17 +11,35 @@ The ACT ecosystem consists of:
 - **ACT Backend Generator**: Automatically generates sound and complete compiler backends just from TAIDL specification. ACT backends match or outperform state-of-the-art expert-written libraries, while maintaining low compile times (<1 sec).
 - **XLA Integration**: Enables end-to-end compilation from popular ML frameworks like JAX and PyTorch.
 
+## Installation
+
+```bash
+pip install git+https://github.com/act-compiler/act.git@v1.0
+```
+
+This installs the `act` package along with all components (TAIDL, TAIDL-TO, ACT Backend).
+
+### Usage
+
+```python
+from act.taidl import Accelerator
+from act.generators import generate_oracle, generate_backend
+
+acc = Accelerator("MyAccel")
+# ... define ISA spec ...
+
+generate_oracle(acc)    # Generate functional simulator
+generate_backend(acc)   # Generate compiler backend
+```
+
 ## Repositories
 
-The ACT Ecosystem is composed of multiple repositories:
+The ACT Ecosystem is composed of independently installable packages:
 
-- [act-compiler/act](https://github.com/act-compiler/act): Top-level repository for the ACT Ecosystem, containing submodules for relevant tools.
-- [act-compiler/taidl](https://github.com/act-compiler/taidl): Repository for TAIDL, the Tensor Accelerator ISA Definition Language.  
-  Mounted as a submodule at `./taidl/`.
-- [act-compiler/act-oracle](https://github.com/act-compiler/act-oracle): Repository for TAIDL-TO, the Test Oracle generator.  
-  Mounted as a submodule at `./generators/oracle/`.
-- [act-compiler/act-backend](https://github.com/act-compiler/act-backend): Repository for ACT Backend, the Compiler Backend generator.  
-  Mounted as a submodule at `./generators/backend/`.
+- [act-compiler/act](https://github.com/act-compiler/act): Top-level repository with Docker, tutorials, and the unified `act` Python package.
+- [act-compiler/taidl](https://github.com/act-compiler/taidl): TAIDL, the Tensor Accelerator ISA Definition Language.
+- [act-compiler/act-oracle](https://github.com/act-compiler/act-oracle): TAIDL-TO, the Test Oracle generator.
+- [act-compiler/act-backend](https://github.com/act-compiler/act-backend): ACT-Backend, the Compiler Backend generator.
 
 ## Interested in using ACT?
 

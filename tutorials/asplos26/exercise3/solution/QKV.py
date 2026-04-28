@@ -1,8 +1,7 @@
 """QKV Accelerator ISA Definition"""
 
-from taidl import Accelerator
-from taidl_to import generate_oracle
-from act_backend import generate_backend
+from act.taidl import Accelerator
+from act.generators import generate_oracle, generate_backend
 
 qkv = Accelerator("QKV")
 
