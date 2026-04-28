@@ -86,7 +86,7 @@ Add the backend import and generation call:
 
 ```python
 # At the top of QKV.py, add the import
-from act_backend import generate_backend
+from act.generators import generate_backend
 
 # At the end of QKV.py, add this line after generate_oracle(qkv)
 generate_backend(qkv)  # ← Add this line

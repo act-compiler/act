@@ -124,7 +124,7 @@ Your `QKV.py` file should begin with:
 ```python
 """QKV Accelerator ISA Definition"""
 
-from taidl import Accelerator
+from act.taidl import Accelerator
 
 qkv = Accelerator("QKV")
 ```
@@ -433,7 +433,7 @@ Add the oracle import and generation call to your `QKV.py` file:
 
 ```python
 # At the top of QKV.py, add the import
-from taidl_to import generate_oracle
+from act.generators import generate_oracle
 
 # At the end of QKV.py, add the generation call
 generate_oracle(qkv)
@@ -452,8 +452,8 @@ Here's the full `QKV.py` file with all components:
 ```python
 """QKV Accelerator ISA Definition"""
 
-from taidl import Accelerator
-from taidl_to import generate_oracle
+from act.taidl import Accelerator
+from act.generators import generate_oracle
 
 qkv = Accelerator("QKV")
 
