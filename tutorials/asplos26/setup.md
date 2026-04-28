@@ -15,19 +15,11 @@ If not, please refer to the [**Helper Guide**](#helper-guide-install-docker) bel
 
 ### Step 1: Clone the Repository
 
-Clone the ACT top-level repository with all submodules:
+Clone the ACT repository:
 
 ```bash
-git clone --recursive https://github.com/act-compiler/act.git
+git clone https://github.com/act-compiler/act.git
 cd act/tutorials/asplos26  # Navigate to the tutorial directory
-```
-
-**Already cloned without `--recursive`?** Run this inside the cloned repository to fetch submodules:
-
-```bash
-cd act
-git submodule update --init --recursive
-cd tutorials/asplos26  # Navigate to the tutorial directory
 ```
 
 Note that all tutorial materials are contained within the `tutorials/asplos26/` directory and all commands should be run from there.
@@ -153,15 +145,6 @@ sudo systemctl start docker
 ```bash
 sudo usermod -aG docker $USER
 newgrp docker  # Or log out and log back in
-```
-
-### Issue: Submodules not fetched
-
-**Solution**: Initialize submodules manually:
-
-```bash
-cd act
-git submodule update --init --recursive
 ```
 
 ---

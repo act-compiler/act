@@ -28,7 +28,7 @@ In Exercise 2, you experienced the challenges of manual kernel programming:
 
 ### What ACT Generates
 
-When you call `qkv.generate_backend()`, ACT automatically creates a complete compiler implementation:
+When you call `generate_backend(qkv)`, ACT automatically creates a complete compiler implementation:
 
 ```
 targets/QKV/backend/
@@ -82,16 +82,14 @@ Open your ISA specification from Exercise 1 and add backend generation.
 
 **File**: `QKV.py` (from Exercise 1)
 
-Add one line at the end:
+Add the backend import and generation call:
 
 ```python
-# At the end of QKV.py
+# At the top of QKV.py, add the import
+from act_backend import generate_backend
 
-# Generate programming APIs and test oracle (from Exercise 1)
-qkv.generate_oracle()
-
-# Generate compiler backend (Exercise 3)
-qkv.generate_backend()  # ← Add this line
+# At the end of QKV.py, add this line after generate_oracle(qkv)
+generate_backend(qkv)  # ← Add this line
 ```
 
 ### Running the Generator
