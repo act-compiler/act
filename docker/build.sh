@@ -9,10 +9,10 @@ ARCH=$(uname -m)
 
 if [ "$ARCH" = "x86_64" ]; then
     DOCKERFILE="Dockerfile.amd64"
-    IMAGE_NAME="devanshdvj/act:latest-amd64"
+    IMAGE_NAME="devanshdvj/act:v1.0-amd64"
 elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
     DOCKERFILE="Dockerfile.arm64"
-    IMAGE_NAME="devanshdvj/act:latest-arm64"
+    IMAGE_NAME="devanshdvj/act:v1.0-arm64"
 else
     echo "Error: Unsupported architecture: $ARCH"
     exit 1
@@ -129,7 +129,7 @@ fi
 # Build
 echo
 echo "Building ${IMAGE_NAME}..."
-docker build -f "${DOCKERFILE}" -t "${IMAGE_NAME}" .
+docker build -f "${DOCKERFILE}" -t "${IMAGE_NAME}" ..
 
 # Prune dangling images
 echo "Pruning dangling images..."
