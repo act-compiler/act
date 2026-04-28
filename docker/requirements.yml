@@ -17,3 +17,6 @@ dependencies:
       - jax==0.4.33
       - antlr4-python3-runtime==4.9.2
       - nanobind==2.8.0
+      - taidl @ git+https://github.com/act-compiler/taidl.git@v2.2
+      - taidl-to @ git+https://github.com/act-compiler/act-oracle.git@v2.1
+      - act-backend @ git+https://github.com/act-compiler/act-backend.git@v1.0
