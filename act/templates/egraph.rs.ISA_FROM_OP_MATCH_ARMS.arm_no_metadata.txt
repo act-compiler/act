@@ -1,0 +1,4 @@
+            op if op == "{{kebab_name}}" && <[Id; {{arity}}] as LanguageChildren>::can_be_length(children.len()) => {
+                let children = <[Id; {{arity}}] as LanguageChildren>::from_vec(children);
+                Ok(TensorOp::{{variant_name}}(children))
+            }

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "act-artifact"
+version = "1.2"
+description = "ACT: Automatically Generating Compiler Backends from Tensor Accelerator ISA Descriptions"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "antlr4-python3-runtime==4.9.2",
+]
+
+[tool.setuptools.packages.find]
+include = ["act*"]

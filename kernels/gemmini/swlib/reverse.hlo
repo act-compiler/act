@@ -1,0 +1,6 @@
+HloModule reverse, entry_computation_layout={(s8[16,16])->s8[16,16]}
+
+ENTRY main {
+  A = s8[16,16] parameter(0)
+  ROOT result = s8[16,16] reverse(A), dimensions={0}
+}

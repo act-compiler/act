@@ -1,0 +1,45 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,1],s8[16,16])->s8[16,16]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  constant_4 = s8[] constant(-11)
+  broadcast_4 = s8[16,16] broadcast(constant_4), dimensions={}
+  input_8 = s8[16,1] parameter(0)
+  broadcast_8 = s8[16,16] broadcast(input_8), dimensions={0,1}
+  negate_13 = s8[16,16] negate(broadcast_8)
+  minimum_12 = s8[16,16] minimum(broadcast_4, negate_13)
+  input_15 = s8[16,16] parameter(1)
+  clamp_lo_16 = s8[] constant(-18)
+  clamp_lo_bc_16 = s8[16,16] broadcast(clamp_lo_16), dimensions={}
+  clamp_hi_16 = s8[] constant(27)
+  clamp_hi_bc_16 = s8[16,16] broadcast(clamp_hi_16), dimensions={}
+  clamp_16 = s8[16,16] clamp(clamp_lo_bc_16, input_15, clamp_hi_bc_16)
+  add_10 = s8[16,16] add(minimum_12, clamp_16)
+  reverse_0 = s8[16,16] reverse(add_10), dimensions={0,1}
+  clamp_lo_5 = s8[] constant(-18)
+  clamp_lo_bc_5 = s8[16,16] broadcast(clamp_lo_5), dimensions={}
+  clamp_hi_5 = s8[] constant(5)
+  clamp_hi_bc_5 = s8[16,16] broadcast(clamp_hi_5), dimensions={}
+  clamp_5 = s8[16,16] clamp(clamp_lo_bc_5, add_10, clamp_hi_bc_5)
+  subtract_1 = s8[16,16] subtract(clamp_5, clamp_5)
+  subtract_2 = s8[16,16] subtract(clamp_5, subtract_1)
+  add_3 = s8[16,16] add(subtract_2, clamp_5)
+  reverse_6 = s8[16,16] reverse(subtract_2), dimensions={0,1}
+  negate_7 = s8[16,16] negate(clamp_5)
+  dot_11 = s8[16,16] dot(clamp_16, clamp_16), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  clamp_lo_14 = s8[] constant(-2)
+  clamp_lo_bc_14 = s8[16,16] broadcast(clamp_lo_14), dimensions={}
+  clamp_hi_14 = s8[] constant(26)
+  clamp_hi_bc_14 = s8[16,16] broadcast(clamp_hi_14), dimensions={}
+  clamp_14 = s8[16,16] clamp(clamp_lo_bc_14, negate_7, clamp_hi_bc_14)
+  concat_0 = s8[16,16] add(reverse_0, add_3)
+  concat_1 = s8[16,16] add(concat_0, reverse_6)
+  concat_2 = s8[16,16] add(concat_1, dot_11)
+  ROOT concat_3 = s8[16,16] add(concat_2, clamp_14)
+}

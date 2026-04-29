@@ -1,0 +1,35 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,1],s8[16,16])->s8[16,16]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  input_4 = s8[16,1] parameter(0)
+  broadcast_4 = s8[16,16] broadcast(input_4), dimensions={0,1}
+  constant_7 = s8[] constant(17)
+  broadcast_7 = s8[16,16] broadcast(constant_7), dimensions={}
+  constant_11 = s8[] constant(14)
+  broadcast_11 = s8[16,16] broadcast(constant_11), dimensions={}
+  input_13 = s8[16,16] parameter(1)
+  constant_15 = s8[] constant(-20)
+  broadcast_15 = s8[16,16] broadcast(constant_15), dimensions={}
+  subtract_16 = s8[16,16] subtract(broadcast_11, broadcast_15)
+  maximum_14 = s8[16,16] maximum(broadcast_7, subtract_16)
+  reverse_12 = s8[16,16] reverse(maximum_14), dimensions={0,1}
+  constant_17 = s8[] constant(8)
+  broadcast_17 = s8[16,16] broadcast(constant_17), dimensions={}
+  subtract_18 = s8[16,16] subtract(input_13, broadcast_17)
+  subtract_8 = s8[16,16] subtract(subtract_18, reverse_12)
+  dot_6 = s8[16,16] dot(broadcast_4, subtract_8), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  subtract_0 = s8[16,16] subtract(dot_6, dot_6)
+  reverse_2 = s8[16,16] reverse(dot_6), dimensions={0,1}
+  add_3 = s8[16,16] add(dot_6, subtract_0)
+  negate_5 = s8[16,16] negate(reverse_2)
+  dot_9 = s8[16,16] dot(broadcast_4, subtract_18), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  add_10 = s8[16,16] add(dot_9, negate_5)
+  ROOT concat_0 = s8[16,16] add(add_3, add_10)
+}

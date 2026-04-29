@@ -1,0 +1,11 @@
+HloModule A_plus_B_plus_C_plus_D, entry_computation_layout={(s8[16,16], s8[16,16], s8[16,16], s8[16,16])->s8[16,16]}
+
+ENTRY main {
+  A = s8[16,16] parameter(0)
+  B = s8[16,16] parameter(1)
+  C = s8[16,16] parameter(2)
+  D = s8[16,16] parameter(3)
+  A_B = s8[16,16] add(A, B)
+  A_B_C = s8[16,16] add(A_B, C)
+  ROOT A_B_C_D = s8[16,16] add(A_B_C, D)
+}

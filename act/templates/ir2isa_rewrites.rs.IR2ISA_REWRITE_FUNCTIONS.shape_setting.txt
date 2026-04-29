@@ -1,0 +1,3 @@
+
+    egraph.set_analysis_data(*rhs_eclasses.last().unwrap(),
+        TensorInfo { shape: {{shape_vec}}, dtype: {{dtype}}, is_const: false, });

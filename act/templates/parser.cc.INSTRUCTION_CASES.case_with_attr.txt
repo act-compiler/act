@@ -1,0 +1,14 @@
+  else if (op_name == "{{op_name}}") {
+    int64 {{attr_name}} = 0;
+    if (!attr_str.empty()) {
+      try {
+        {{attr_name}} = std::stoll(attr_str);
+      } catch (...) {
+        return panic("failed to parse {{attr_name}} attribute as integer");
+      }
+    } else {
+      return panic("missing {{attr_name}} attribute");
+    }
+
+    return new {{ClassName}}(lhs_tensor, rhs_tensors, {{attr_name}});
+  }

@@ -1,0 +1,3 @@
+    if lhs_metadata[{{index}}].shape != {{shape_vec}} || lhs_metadata[{{index}}].dtype != {{dtype}} {
+        return false;
+    }

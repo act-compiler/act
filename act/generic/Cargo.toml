@@ -1,0 +1,17 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[[bin]]
+name = "backend"
+path = "src/pipeline.rs"
+
+[dependencies]
+egg = "0.10.0"
+itertools = "0.14.0"
+libc = "0.2.0"
+pyo3 = { version = "0.26.0", features = ["auto-initialize"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

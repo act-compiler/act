@@ -1,0 +1,2 @@
+    case {{index}}:
+      return get_h{{index}}();

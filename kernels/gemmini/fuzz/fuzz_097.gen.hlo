@@ -1,0 +1,107 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,16],s8[16,1],s8[16,1],s8[16,1],s8[16,1],s8[16,1],s8[16,1])->s8[16,16]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  input_0 = s8[16,16] parameter(0)
+  constant_3 = s8[] constant(31)
+  broadcast_3 = s8[16,16] broadcast(constant_3), dimensions={}
+  negate_5 = s8[16,16] negate(input_0)
+  constant_10 = s8[] constant(32)
+  broadcast_10 = s8[16,16] broadcast(constant_10), dimensions={}
+  negate_11 = s8[16,16] negate(broadcast_10)
+  subtract_15 = s8[16,16] subtract(broadcast_10, broadcast_10)
+  add_17 = s8[16,16] add(negate_5, negate_5)
+  negate_27 = s8[16,16] negate(add_17)
+  constant_29 = s8[] constant(4)
+  broadcast_29 = s8[16,16] broadcast(constant_29), dimensions={}
+  negate_31 = s8[16,16] negate(broadcast_3)
+  input_35 = s8[16,1] parameter(1)
+  broadcast_35 = s8[16,16] broadcast(input_35), dimensions={0,1}
+  negate_36 = s8[16,16] negate(broadcast_35)
+  subtract_37 = s8[16,16] subtract(negate_27, negate_11)
+  constant_42 = s8[] constant(24)
+  broadcast_42 = s8[16,16] broadcast(constant_42), dimensions={}
+  negate_43 = s8[16,16] negate(broadcast_42)
+  subtract_26 = s8[16,16] subtract(negate_36, negate_43)
+  negate_12 = s8[16,16] negate(subtract_26)
+  negate_14 = s8[16,16] negate(subtract_26)
+  add_21 = s8[16,16] add(add_17, negate_12)
+  input_48 = s8[16,1] parameter(2)
+  broadcast_48 = s8[16,16] broadcast(input_48), dimensions={0,1}
+  input_52 = s8[16,1] parameter(3)
+  broadcast_52 = s8[16,16] broadcast(input_52), dimensions={0,1}
+  constant_53 = s8[] constant(21)
+  broadcast_53 = s8[16,16] broadcast(constant_53), dimensions={}
+  subtract_54 = s8[16,16] subtract(broadcast_52, broadcast_53)
+  negate_55 = s8[16,16] negate(broadcast_29)
+  negate_6 = s8[16,16] negate(negate_55)
+  negate_19 = s8[16,16] negate(negate_55)
+  input_56 = s8[16,1] parameter(4)
+  broadcast_56 = s8[16,16] broadcast(input_56), dimensions={0,1}
+  add_57 = s8[16,16] add(broadcast_3, broadcast_56)
+  subtract_50 = s8[16,16] subtract(broadcast_48, add_57)
+  negate_44 = s8[16,16] negate(subtract_50)
+  add_49 = s8[16,16] add(subtract_50, negate_55)
+  constant_59 = s8[] constant(-19)
+  broadcast_59 = s8[16,16] broadcast(constant_59), dimensions={}
+  constant_60 = s8[] constant(-21)
+  broadcast_60 = s8[16,16] broadcast(constant_60), dimensions={}
+  subtract_38 = s8[16,16] subtract(negate_14, broadcast_60)
+  add_61 = s8[16,16] add(broadcast_59, broadcast_60)
+  negate_24 = s8[16,16] negate(add_61)
+  add_32 = s8[16,16] add(negate_44, add_61)
+  add_28 = s8[16,16] add(add_32, negate_55)
+  subtract_30 = s8[16,16] subtract(add_32, subtract_54)
+  subtract_33 = s8[16,16] subtract(add_32, add_28)
+  input_62 = s8[16,1] parameter(5)
+  broadcast_62 = s8[16,16] broadcast(input_62), dimensions={0,1}
+  input_63 = s8[16,1] parameter(6)
+  broadcast_63 = s8[16,16] broadcast(input_63), dimensions={0,1}
+  subtract_64 = s8[16,16] subtract(broadcast_62, broadcast_63)
+  negate_39 = s8[16,16] negate(subtract_64)
+  add_23 = s8[16,16] add(subtract_30, negate_39)
+  add_18 = s8[16,16] add(add_23, negate_19)
+  add_13 = s8[16,16] add(add_18, negate_14)
+  subtract_7 = s8[16,16] subtract(negate_11, add_13)
+  negate_2 = s8[16,16] negate(subtract_7)
+  subtract_4 = s8[16,16] subtract(subtract_7, negate_5)
+  negate_1 = s8[16,16] negate(subtract_4)
+  add_8 = s8[16,16] add(add_13, subtract_7)
+  add_9 = s8[16,16] add(add_13, subtract_4)
+  add_16 = s8[16,16] add(add_9, negate_12)
+  subtract_20 = s8[16,16] subtract(add_9, add_9)
+  add_34 = s8[16,16] add(negate_39, subtract_30)
+  subtract_22 = s8[16,16] subtract(add_34, negate_12)
+  subtract_40 = s8[16,16] subtract(add_16, negate_24)
+  subtract_41 = s8[16,16] subtract(negate_14, add_18)
+  negate_45 = s8[16,16] negate(subtract_64)
+  subtract_25 = s8[16,16] subtract(negate_5, negate_45)
+  add_46 = s8[16,16] add(add_23, subtract_41)
+  subtract_47 = s8[16,16] subtract(subtract_40, negate_55)
+  negate_51 = s8[16,16] negate(add_34)
+  negate_58 = s8[16,16] negate(add_46)
+  subtract_65 = s8[16,16] subtract(broadcast_63, subtract_25)
+  subtract_66 = s8[16,16] subtract(negate_24, negate_51)
+  concat_0 = s8[16,16] add(subtract_15, negate_31)
+  concat_1 = s8[16,16] add(concat_0, subtract_37)
+  concat_2 = s8[16,16] add(concat_1, add_21)
+  concat_3 = s8[16,16] add(concat_2, negate_6)
+  concat_4 = s8[16,16] add(concat_3, add_49)
+  concat_5 = s8[16,16] add(concat_4, subtract_38)
+  concat_6 = s8[16,16] add(concat_5, subtract_33)
+  concat_7 = s8[16,16] add(concat_6, negate_2)
+  concat_8 = s8[16,16] add(concat_7, negate_1)
+  concat_9 = s8[16,16] add(concat_8, add_8)
+  concat_10 = s8[16,16] add(concat_9, subtract_20)
+  concat_11 = s8[16,16] add(concat_10, subtract_22)
+  concat_12 = s8[16,16] add(concat_11, subtract_47)
+  concat_13 = s8[16,16] add(concat_12, negate_58)
+  concat_14 = s8[16,16] add(concat_13, subtract_65)
+  ROOT concat_15 = s8[16,16] add(concat_14, subtract_66)
+}

@@ -1,0 +1,10 @@
+HloModule k10_ABCA, entry_computation_layout={(s8[16,16], s8[16,16], s8[16,16])->s8[16,16]}
+
+ENTRY main {
+  A = s8[16,16] parameter(0)
+  B = s8[16,16] parameter(1)
+  C = s8[16,16] parameter(2)
+  AB = s8[16,16] dot(A, B), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  ABC = s8[16,16] dot(AB, C), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  ROOT ABCA = s8[16,16] dot(ABC, A), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+}

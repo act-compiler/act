@@ -1,0 +1,94 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,1],s8[16,1],s8[16,1],s8[16,1],s8[16,16],s8[16,1])->s8[16,16]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  constant_3 = s8[] constant(-32)
+  broadcast_3 = s8[16,16] broadcast(constant_3), dimensions={}
+  constant_14 = s8[] constant(17)
+  broadcast_14 = s8[16,16] broadcast(constant_14), dimensions={}
+  input_18 = s8[16,1] parameter(0)
+  broadcast_18 = s8[16,16] broadcast(input_18), dimensions={0,1}
+  constant_20 = s8[] constant(15)
+  broadcast_20 = s8[16,16] broadcast(constant_20), dimensions={}
+  constant_22 = s8[] constant(1)
+  broadcast_22 = s8[16,16] broadcast(constant_22), dimensions={}
+  constant_25 = s8[] constant(-27)
+  broadcast_25 = s8[16,16] broadcast(constant_25), dimensions={}
+  constant_26 = s8[] constant(-21)
+  broadcast_26 = s8[16,16] broadcast(constant_26), dimensions={}
+  input_30 = s8[16,1] parameter(1)
+  broadcast_30 = s8[16,16] broadcast(input_30), dimensions={0,1}
+  reverse_32 = s8[16,16] reverse(broadcast_22), dimensions={0,1}
+  input_34 = s8[16,1] parameter(2)
+  broadcast_34 = s8[16,16] broadcast(input_34), dimensions={0,1}
+  reverse_35 = s8[16,16] reverse(broadcast_34), dimensions={0,1}
+  minimum_17 = s8[16,16] minimum(broadcast_3, reverse_35)
+  constant_36 = s8[] constant(-11)
+  broadcast_36 = s8[16,16] broadcast(constant_36), dimensions={}
+  input_38 = s8[16,1] parameter(3)
+  broadcast_38 = s8[16,16] broadcast(input_38), dimensions={0,1}
+  minimum_39 = s8[16,16] minimum(broadcast_26, broadcast_38)
+  negate_40 = s8[16,16] negate(broadcast_14)
+  reverse_33 = s8[16,16] reverse(negate_40), dimensions={0,1}
+  subtract_31 = s8[16,16] subtract(reverse_33, broadcast_30)
+  subtract_21 = s8[16,16] subtract(subtract_31, reverse_35)
+  input_41 = s8[16,16] parameter(4)
+  input_42 = s8[16,1] parameter(5)
+  broadcast_42 = s8[16,16] broadcast(input_42), dimensions={0,1}
+  subtract_43 = s8[16,16] subtract(input_41, broadcast_42)
+  minimum_37 = s8[16,16] minimum(broadcast_20, subtract_43)
+  minimum_27 = s8[16,16] minimum(broadcast_25, minimum_37)
+  subtract_19 = s8[16,16] subtract(minimum_27, broadcast_18)
+  negate_8 = s8[16,16] negate(subtract_19)
+  add_16 = s8[16,16] add(minimum_39, subtract_19)
+  constant_44 = s8[] constant(-9)
+  broadcast_44 = s8[16,16] broadcast(constant_44), dimensions={}
+  subtract_45 = s8[16,16] subtract(broadcast_36, broadcast_44)
+  clamp_lo_11 = s8[] constant(-20)
+  clamp_lo_bc_11 = s8[16,16] broadcast(clamp_lo_11), dimensions={}
+  clamp_hi_11 = s8[] constant(22)
+  clamp_hi_bc_11 = s8[16,16] broadcast(clamp_hi_11), dimensions={}
+  clamp_11 = s8[16,16] clamp(clamp_lo_bc_11, subtract_45, clamp_hi_bc_11)
+  clamp_lo_29 = s8[] constant(-6)
+  clamp_lo_bc_29 = s8[16,16] broadcast(clamp_lo_29), dimensions={}
+  clamp_hi_29 = s8[] constant(22)
+  clamp_hi_bc_29 = s8[16,16] broadcast(clamp_hi_29), dimensions={}
+  clamp_29 = s8[16,16] clamp(clamp_lo_bc_29, subtract_45, clamp_hi_bc_29)
+  clamp_lo_6 = s8[] constant(-26)
+  clamp_lo_bc_6 = s8[16,16] broadcast(clamp_lo_6), dimensions={}
+  clamp_hi_6 = s8[] constant(22)
+  clamp_hi_bc_6 = s8[16,16] broadcast(clamp_hi_6), dimensions={}
+  clamp_6 = s8[16,16] clamp(clamp_lo_bc_6, clamp_29, clamp_hi_bc_6)
+  add_15 = s8[16,16] add(clamp_29, minimum_37)
+  maximum_23 = s8[16,16] maximum(clamp_29, broadcast_22)
+  subtract_12 = s8[16,16] subtract(maximum_23, subtract_21)
+  subtract_10 = s8[16,16] subtract(add_16, subtract_12)
+  clamp_lo_7 = s8[] constant(-20)
+  clamp_lo_bc_7 = s8[16,16] broadcast(clamp_lo_7), dimensions={}
+  clamp_hi_7 = s8[] constant(28)
+  clamp_hi_bc_7 = s8[16,16] broadcast(clamp_hi_7), dimensions={}
+  clamp_7 = s8[16,16] clamp(clamp_lo_bc_7, subtract_10, clamp_hi_bc_7)
+  negate_2 = s8[16,16] negate(clamp_7)
+  maximum_4 = s8[16,16] maximum(clamp_7, broadcast_3)
+  subtract_0 = s8[16,16] subtract(maximum_4, maximum_4)
+  add_1 = s8[16,16] add(maximum_4, maximum_4)
+  negate_5 = s8[16,16] negate(subtract_0)
+  negate_9 = s8[16,16] negate(subtract_0)
+  subtract_13 = s8[16,16] subtract(subtract_10, negate_5)
+  subtract_24 = s8[16,16] subtract(broadcast_18, negate_9)
+  concat_0 = s8[16,16] add(reverse_32, minimum_17)
+  concat_1 = s8[16,16] add(concat_0, negate_8)
+  concat_2 = s8[16,16] add(concat_1, clamp_11)
+  concat_3 = s8[16,16] add(concat_2, clamp_6)
+  concat_4 = s8[16,16] add(concat_3, add_15)
+  concat_5 = s8[16,16] add(concat_4, negate_2)
+  concat_6 = s8[16,16] add(concat_5, add_1)
+  concat_7 = s8[16,16] add(concat_6, subtract_13)
+  ROOT concat_8 = s8[16,16] add(concat_7, subtract_24)
+}

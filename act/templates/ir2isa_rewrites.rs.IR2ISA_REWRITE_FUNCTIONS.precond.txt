@@ -1,0 +1,7 @@
+pub fn precond_{{instruction_name}}(egraph: &EGraph<TensorOp, TensorInfo>, lhs_eclasses: &Vec<Id>) -> bool {
+    assert_eq!(lhs_eclasses.len(), {{num_assignments}});
+    let lhs_metadata: Vec<TensorInfo> = lhs_eclasses.iter().map(|id| egraph[*id].data.clone()).collect();
+{{comp_attr_code}}
+{{shape_checks}}
+    true
+}

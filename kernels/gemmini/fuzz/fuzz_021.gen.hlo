@@ -1,0 +1,51 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,1],s8[16,1])->s8[16,16]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  constant_4 = s8[] constant(-4)
+  broadcast_4 = s8[16,16] broadcast(constant_4), dimensions={}
+  constant_6 = s8[] constant(-31)
+  broadcast_6 = s8[16,16] broadcast(constant_6), dimensions={}
+  constant_13 = s8[] constant(-5)
+  broadcast_13 = s8[16,16] broadcast(constant_13), dimensions={}
+  input_16 = s8[16,1] parameter(0)
+  broadcast_16 = s8[16,16] broadcast(input_16), dimensions={0,1}
+  constant_17 = s8[] constant(25)
+  broadcast_17 = s8[16,16] broadcast(constant_17), dimensions={}
+  maximum_18 = s8[16,16] maximum(broadcast_16, broadcast_17)
+  maximum_15 = s8[16,16] maximum(broadcast_13, maximum_18)
+  minimum_12 = s8[16,16] minimum(broadcast_6, maximum_15)
+  clamp_lo_9 = s8[] constant(-18)
+  clamp_lo_bc_9 = s8[16,16] broadcast(clamp_lo_9), dimensions={}
+  clamp_hi_9 = s8[] constant(2)
+  clamp_hi_bc_9 = s8[16,16] broadcast(clamp_hi_9), dimensions={}
+  clamp_9 = s8[16,16] clamp(clamp_lo_bc_9, minimum_12, clamp_hi_bc_9)
+  maximum_3 = s8[16,16] maximum(broadcast_4, clamp_9)
+  input_19 = s8[16,1] parameter(1)
+  broadcast_19 = s8[16,16] broadcast(input_19), dimensions={0,1}
+  constant_20 = s8[] constant(-31)
+  broadcast_20 = s8[16,16] broadcast(constant_20), dimensions={}
+  minimum_21 = s8[16,16] minimum(broadcast_19, broadcast_20)
+  negate_10 = s8[16,16] negate(minimum_21)
+  subtract_8 = s8[16,16] subtract(negate_10, clamp_9)
+  minimum_5 = s8[16,16] minimum(subtract_8, broadcast_4)
+  subtract_0 = s8[16,16] subtract(minimum_5, minimum_5)
+  clamp_lo_1 = s8[] constant(-29)
+  clamp_lo_bc_1 = s8[16,16] broadcast(clamp_lo_1), dimensions={}
+  clamp_hi_1 = s8[] constant(7)
+  clamp_hi_bc_1 = s8[16,16] broadcast(clamp_hi_1), dimensions={}
+  clamp_1 = s8[16,16] clamp(clamp_lo_bc_1, minimum_5, clamp_hi_bc_1)
+  subtract_2 = s8[16,16] subtract(clamp_1, minimum_5)
+  add_11 = s8[16,16] add(negate_10, subtract_8)
+  subtract_7 = s8[16,16] subtract(broadcast_19, add_11)
+  negate_14 = s8[16,16] negate(subtract_0)
+  concat_0 = s8[16,16] add(maximum_3, subtract_2)
+  concat_1 = s8[16,16] add(concat_0, subtract_7)
+  ROOT concat_2 = s8[16,16] add(concat_1, negate_14)
+}

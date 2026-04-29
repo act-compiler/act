@@ -1,0 +1,42 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,16])->s8[16,1]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  constant_1 = s8[] constant(16)
+  broadcast_1 = s8[16,16] broadcast(constant_1), dimensions={}
+  constant_5 = s8[] constant(30)
+  broadcast_5 = s8[16,16] broadcast(constant_5), dimensions={}
+  constant_7 = s8[] constant(29)
+  broadcast_7 = s8[16,16] broadcast(constant_7), dimensions={}
+  negate_11 = s8[16,16] negate(broadcast_7)
+  input_12 = s8[16,16] parameter(0)
+  constant_13 = s8[] constant(-17)
+  broadcast_13 = s8[16,16] broadcast(constant_13), dimensions={}
+  minimum_14 = s8[16,16] minimum(input_12, broadcast_13)
+  maximum_16 = s8[16,16] maximum(minimum_14, broadcast_13)
+  constant_17 = s8[] constant(28)
+  broadcast_17 = s8[16,16] broadcast(constant_17), dimensions={}
+  constant_18 = s8[] constant(-28)
+  broadcast_18 = s8[16,16] broadcast(constant_18), dimensions={}
+  add_19 = s8[16,16] add(broadcast_17, broadcast_18)
+  reverse_20 = s8[16,16] reverse(broadcast_5), dimensions={0,1}
+  add_10 = s8[16,16] add(reverse_20, minimum_14)
+  maximum_8 = s8[16,16] maximum(add_10, broadcast_7)
+  subtract_6 = s8[16,16] subtract(maximum_8, add_19)
+  minimum_3 = s8[16,16] minimum(broadcast_1, subtract_6)
+  reverse_0 = s8[16,16] reverse(minimum_3), dimensions={0,1}
+  add_2 = s8[16,16] add(broadcast_7, reverse_0)
+  maximum_9 = s8[16,16] maximum(add_2, broadcast_7)
+  maximum_15 = s8[16,16] maximum(broadcast_1, add_2)
+  concat_0 = s8[16,16] add(negate_11, maximum_16)
+  concat_1 = s8[16,16] add(concat_0, maximum_9)
+  concat_2 = s8[16,16] add(concat_1, maximum_15)
+  concat_2_reduced = s8[16] reduce(concat_2, reduce_init), dimensions={0}, to_apply=reduce_add
+  ROOT concat_2_reshaped = s8[16,1] reshape(concat_2_reduced)
+}
