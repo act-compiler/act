@@ -1,0 +1,21 @@
+HloModule qkv, entry_computation_layout={(bf16[64,64]{1,0}, bf16[64,64]{1,0}, bf16[64,64]{1,0})->bf16[64,64]{1,0}}
+
+// Helper function for reduce_sum
+%reduce_add (x: bf16[], y: bf16[]) -> bf16[] {
+  %x = bf16[] parameter(0)
+  %y = bf16[] parameter(1)
+  ROOT %sum = bf16[] add(%x, %y)
+}
+
+ENTRY main {
+  // Input tensors
+  %q = bf16[64,64] parameter(0)
+  %k = bf16[64,64] parameter(1)
+  %v = bf16[64,64] parameter(2)
+
+  // Step 1: Compute attention scores S = Q × K^T
+
+  // Step 2: Apply softmax normalization
+
+  // Step 3: Compute weighted sum O = P × V
+}
