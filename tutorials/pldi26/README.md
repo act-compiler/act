@@ -1,4 +1,4 @@
-# ASPLOS 2026 ACT Tutorial: End-to-End Compiler Infrastructure for Emerging AI Accelerators
+# PLDI 2026 ACT Tutorial: End-to-End Compiler Infrastructure for Emerging AI Accelerators
 
 ## Introduction
 
@@ -30,29 +30,28 @@ By the end, participants will have hands-on experience with the complete ACT wor
 
 ## Agenda
 
-Date: Mar 22, 2026 (Sunday)  
-Time: 1:30 PM - 6:00 PM (UTC-4)  
-Venue: Ohio Room, The Landing Hotel  
-Location: 757 Casino Dr. Pittsburgh, PA, USA  
+Date: Jun 16, 2026 (Tuesday)  
+Time: 9:00 AM - 12:30 PM (UTC-6)  
+Venue: Bear Peak, Limelight Boulder  
+Location: 1295 University Ave, Boulder, CO, USA  
 Prerequisites: Please bring your own laptop with a working installation of Docker and follow the [tutorial setup instructions](./setup.md).
 
 **Contents and Timeline (tentative)**
 
-| Time           | Topic                                                                         | Presenter            | Slide or Code                                       |
-| -------------- | ----------------------------------------------------------------------------- | -------------------- | --------------------------------------------------- |
-| 1:30 - 1:35 PM | Welcome and Introduction                                                      | Prof. Charith Mendis | [Guide: Setup Instructions](./setup.md)             |
-| 1:35 - 1:45 PM | Tutorial Logistics                                                            | Devansh Jain         |
-| 1:50 - 2:10 PM | Talk: Overview of ACT Ecosystem                                               | Prof. Charith Mendis | Slide will be uploaded after the tutorials         |
-| 2:10 - 2:20 PM | Demonstration 1: Quick walkthrough of ACT Ecosystem                           | Devansh Jain         | [Demo: ACT-walkthrough](./demos/act-walkthrough.md) |
-| 2:20 - 2:50 PM | Hands-on Exercise 1: Specifying a new Accelerator ISA                         | Devansh Jain         | [Guide: Hands-on (1)](./exercise1/README.md)        |
-| 2:50 - 3:10 PM | Talk: Expressivity and Extensibility of TAIDL                                 | Marco Frigo          | Slide will be uploaded after the tutorials         |
-| 3:10 - 3:30 PM | Hands-on Exercise 2: Writing custom Accelerator Kernels                       | Devansh Jain         | [Guide: Hands-on (2)](./exercise2/README.md)        |
-| 3:30 - 4:00 PM | Coffee Break                                                                  |                      |
-| 4:00 - 4:30 PM | Talk: Automatically Generating Compiler Backends just from ISA Specifications | Akash Pardeshi       | Slide will be uploaded after the tutorials         |
-| 4:30 - 5:00 PM | Hands-on Exercise 3: Generating a Compiler Backend for a new Accelerator ISA  | Devansh Jain         | [Guide: Hands-on (3)](./exercise3/README.md)        |
-| 5:00 - 5:10 PM | Demonstration 2: Integrating the new Accelerator Backend with XLA Compiler    | Devansh Jain         | [Demo: JAX-XLA-ACT](./demos/jax-integration.md)     |
-| 5:10 - 5:40 PM | Hands-on Exercise 4: Tweaking the ISA and Open Discussion                     | Devansh Jain         | [Guide: Hands-on (4)](./exercise4/README.md)        |
-| 5:40 - 6:00 PM | Q&A and Closing Remarks                                                       | Prof. Charith Mendis |
+| Time             | Topic                                                                         | Presenter            | Slide or Code                                       |
+| ---------------- | ----------------------------------------------------------------------------- | -------------------- | --------------------------------------------------- |
+| 9:00 - 9:05 AM   | Welcome and Introduction                                                      | Prof. Charith Mendis | [Guide: Setup Instructions](./setup.md)             |
+| 9:05 - 9:15 AM   | Tutorial Logistics                                                            | Devansh Jain         |
+| 9:20 - 9:40 AM   | Talk: Overview of ACT Ecosystem                                               | Prof. Charith Mendis | Slide will be uploaded after the tutorials          |
+| 9:40 - 9:50 AM   | Demonstration 1: Quick walkthrough of ACT Ecosystem                           | Devansh Jain         | [Demo: ACT-walkthrough](./demos/act-walkthrough.md) |
+| 9:50 - 10:10 AM  | Hands-on Exercise 1: Specifying a new Accelerator ISA                         | Devansh Jain         | [Guide: Hands-on (1)](./exercise1/README.md)        |
+| 10:10 - 10:40 AM | Coffee Break                                                                  |                      |
+| 10:40 - 11:00 AM | Hands-on Exercise 2: Writing custom Accelerator Kernels                       | Devansh Jain         | [Guide: Hands-on (2)](./exercise2/README.md)        |
+| 11:00 - 11:30 AM | Talk: Automatically Generating Compiler Backends just from ISA Specifications | Akash Pardeshi       | Slide will be uploaded after the tutorials          |
+| 11:30 - 11:50 AM | Hands-on Exercise 3: Generating a Compiler Backend for a new Accelerator ISA  | Devansh Jain         | [Guide: Hands-on (3)](./exercise3/README.md)        |
+| 11:50 - 12:00 PM | Demonstration 2: Integrating the new Accelerator Backend with XLA Compiler    | Devansh Jain         | [Demo: JAX-XLA-ACT](./demos/jax-integration.md)     |
+| 12:00 - 12:20 PM | Hands-on Exercise 4: Tweaking the ISA and Open Discussion                     | Devansh Jain         | [Guide: Hands-on (4)](./exercise4/README.md)        |
+| 12:20 - 12:30 PM | Q&A and Closing Remarks                                                       | Prof. Charith Mendis |
 
 ---
 

@@ -54,7 +54,7 @@ targets/QKV/backend/
 
 Let's begin by preparing the skeleton for the attention program in XLA-HLO IR.
 
-From your host machine in the `tutorials/asplos26/` directory, copy the boilerplate for Exercise 3.
+From your host machine in the `tutorials/pldi26/` directory, copy the boilerplate for Exercise 3.
 
 ```bash
 ./copy.sh exercise3
@@ -97,7 +97,7 @@ generate_backend(qkv)  # ← Add this line
 Now, it's time to generate the compiler backend.
 **This step requires running inside the Docker container.**
 
-From your host machine in the `tutorials/asplos26/` directory, launch Docker:
+From your host machine in the `tutorials/pldi26/` directory, launch Docker:
 
 ```bash
 ./docker.sh --compile
@@ -328,7 +328,7 @@ ENTRY main {
 Now that you've completed the HLO program, it's time to compile it using the generated backend.
 **This step requires running inside the Docker container.**
 
-From your host machine in the `tutorials/asplos26/` directory, launch Docker:
+From your host machine in the `tutorials/pldi26/` directory, launch Docker:
 
 ```bash
 ./docker.sh --compile
@@ -403,7 +403,7 @@ The test script `test_qkv.py` does the following:
 
 Now that you've compiled the HLO program, it's time to validate the compiled assembly against real FPGA data using the generated test oracle.
 
-From your host machine in the `tutorials/asplos26/` directory, launch Docker:
+From your host machine in the `tutorials/pldi26/` directory, launch Docker:
 
 ```bash
 ./docker.sh --sim

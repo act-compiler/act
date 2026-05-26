@@ -1,6 +1,6 @@
 # Setup Instructions
 
-Welcome to the ACT Tutorial at ASPLOS 2026! This guide will help you set up your environment for the hands-on exercises.
+Welcome to the ACT Tutorial at PLDI 2026! This guide will help you set up your environment for the hands-on exercises.
 
 **Prerequisites**: A laptop with ~10GB free disk space and a working internet connection.
 
@@ -19,10 +19,10 @@ Clone the ACT repository:
 
 ```bash
 git clone https://github.com/act-compiler/act.git
-cd act/tutorials/asplos26  # Navigate to the tutorial directory
+cd act/tutorials/pldi26  # Navigate to the tutorial directory
 ```
 
-Note that all tutorial materials are contained within the `tutorials/asplos26/` directory and all commands should be run from there.
+Note that all tutorial materials are contained within the `tutorials/pldi26/` directory and all commands should be run from there.
 
 ### Step 2: Pull the Docker Image
 
@@ -35,8 +35,8 @@ Pull the pre-built Docker image(s) containing all tutorial dependencies based on
 **For in-person attendees**, the tutorial organizers will also provide a USB drive with Docker images pre-downloaded. You can load the Docker image from the USB drive using:
 
 ```bash
-cp /path/to/usb/act-tutorials-asplos26-<arch>.tar /path/to/local/act-tutorials-asplos26-<arch>.tar
-docker load -i /path/to/local/act-tutorials-asplos26-<arch>.tar
+cp /path/to/usb/act-v1.1-<arch>.tar /path/to/local/act-v1.1-<arch>.tar
+docker load -i /path/to/local/act-v1.1-<arch>.tar
 ```
 
 There would be two images in the USB drive, one for `amd64` and one for `arm64`. Please load the one corresponding to your system architecture.

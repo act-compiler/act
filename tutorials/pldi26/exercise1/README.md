@@ -109,7 +109,7 @@ This motivates the **data model abstraction** in TAIDL -- a unified formalism to
 
 Let's begin by preparing the boilerplate ISA specification file.
 
-From your host machine in the `tutorials/asplos26/` directory, copy the boilerplate for Exercise 1.
+From your host machine in the `tutorials/pldi26/` directory, copy the boilerplate for Exercise 1.
 
 ```bash
 ./copy.sh exercise1
@@ -554,7 +554,7 @@ generate_oracle(qkv)
 Now that you've completed the ISA specification, it's time to generate the test oracle.
 **This step requires running inside the Docker container.**
 
-From your host machine in the `tutorials/asplos26/` directory, launch Docker:
+From your host machine in the `tutorials/pldi26/` directory, launch Docker:
 
 ```bash
 ./docker.sh --sim

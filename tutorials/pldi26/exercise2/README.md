@@ -76,7 +76,7 @@ Recall the QKV memory hierarchy:
 
 Let's begin by preparing the skeleton for the attention kernel.
 
-From your host machine in the `tutorials/asplos26/` directory, copy the boilerplate for Exercise 2.
+From your host machine in the `tutorials/pldi26/` directory, copy the boilerplate for Exercise 2.
 
 ```bash
 ./copy.sh exercise2
@@ -749,7 +749,7 @@ The test script `test_qkv.py` does the following:
 Now that you've implemented the attention kernel, let's test it against real FPGA data using the generated test oracle.
 **This step requires running inside the Docker container.**
 
-From your host machine in the `tutorials/asplos26/` directory, launch Docker:
+From your host machine in the `tutorials/pldi26/` directory, launch Docker:
 
 ```bash
 ./docker.sh --sim
@@ -886,4 +886,3 @@ The manual kernel you wrote represents what compilers must generate automaticall
 ## Additional Resources
 
 - **TAIDL Paper**: Section 6-7 for test oracle implementation and evaluation
-- **Example Kernels**: `taidl-artifact-asplos26/accelerators/*/kernels.py`
