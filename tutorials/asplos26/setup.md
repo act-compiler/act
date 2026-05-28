@@ -1,6 +1,6 @@
 # Setup Instructions
 
-Welcome to the ACT Tutorial at MICRO 2025! This guide will help you set up your environment for the hands-on exercises.
+Welcome to the ACT Tutorial at ASPLOS 2026! This guide will help you set up your environment for the hands-on exercises.
 
 **Prerequisites**: A laptop with ~10GB free disk space and a working internet connection.
 
@@ -19,10 +19,10 @@ Clone the ACT repository:
 
 ```bash
 git clone https://github.com/act-compiler/act.git
-cd act/tutorials/micro25  # Navigate to the tutorial directory
+cd act/tutorials/asplos26  # Navigate to the tutorial directory
 ```
 
-Note that all tutorial materials are contained within the `tutorials/micro25/` directory and all commands should be run from there.
+Note that all tutorial materials are contained within the `tutorials/asplos26/` directory and all commands should be run from there.
 
 ### Step 2: Pull the Docker Image
 
@@ -31,6 +31,15 @@ Pull the pre-built Docker image(s) containing all tutorial dependencies based on
 ```bash
 ./docker.sh --setup
 ```
+
+**For in-person attendees**, the tutorial organizers will also provide a USB drive with Docker images pre-downloaded. You can load the Docker image from the USB drive using:
+
+```bash
+cp /path/to/usb/act-tutorials-asplos26-<arch>.tar /path/to/local/act-tutorials-asplos26-<arch>.tar
+docker load -i /path/to/local/act-tutorials-asplos26-<arch>.tar
+```
+
+There would be two images in the USB drive, one for `amd64` and one for `arm64`. Please load the one corresponding to your system architecture.
 
 ## Helper Guide: Install Docker
 
@@ -99,8 +108,8 @@ docker run hello-world
    ```bash
    docker --version
    ```
-If you have an Apple Silicon Mac, you will also need to install [Rosetta 2](https://support.apple.com/en-us/102527).
-Your Mac likely already has Rosetta, but if not, the system should automatically prompt you to install it.
+   If you have an Apple Silicon Mac, you will also need to install [Rosetta 2](https://support.apple.com/en-us/102527).
+   Your Mac likely already has Rosetta, but if not, the system should automatically prompt you to install it.
 
 #### Installing Docker on Windows
 

@@ -13,6 +13,7 @@ dependencies:
   - requests=2.32.2
   - flake8=7.0.0
   - pip
+  - pytest
   - pip:
       - jax==0.4.33
       - antlr4-python3-runtime==4.9.2

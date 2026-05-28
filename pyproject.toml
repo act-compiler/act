@@ -3,14 +3,23 @@ requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "act-artifact"
-version = "1.2"
-description = "ACT: Automatically Generating Compiler Backends from Tensor Accelerator ISA Descriptions"
+
+name = "act-ecosystem"
+version = "1.1"
+description = "ACT: Accelerator Compiler Toolchain"
 requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [
+    {name = "ACT Compiler Team"},
+]
+readme = "README.md"
 dependencies = [
-    "numpy>=1.26",
-    "antlr4-python3-runtime==4.9.2",
+    "taidl @ git+https://github.com/act-compiler/taidl.git@v2.3",
+    "taidl-to @ git+https://github.com/act-compiler/act-oracle.git@v2.2",
+    "act-backend @ git+https://github.com/act-compiler/act-backend.git@v1.1",
 ]
 
 [tool.setuptools.packages.find]
+where = ["."]
+
 include = ["act*"]

@@ -36,9 +36,18 @@ RUN . $MINICONDA_DIR/etc/profile.d/conda.sh && \
 # so we intentionally skip Rust / OR-Tools / nlohmann setup here to keep the
 # image build lightweight and robust under rootless Podman.
 
+# Install act-ecosystem package
+COPY pyproject.toml /opt/act/pyproject.toml
+COPY act/ /opt/act/act/
+COPY README.md /opt/act/README.md
+COPY LICENSE /opt/act/LICENSE
+RUN . $MINICONDA_DIR/etc/profile.d/conda.sh && conda activate act && \
+  pip install --no-cache-dir /opt/act && \
+  rm -rf /opt/act
+
 RUN echo "umask 0002" >> ~/.bashrc
 
-COPY entrypoint.sh /entrypoint.sh
+COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
