@@ -12,3 +12,24 @@ asm/
 log/
 dse/output/
 dse_out*/
+
+.vscode/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+play/ir
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+*.log
+*.yaml
+*.csv
+*.pdf
+
+**/data/
+**/targets/
+**/backends/
+**/compiled_asm/

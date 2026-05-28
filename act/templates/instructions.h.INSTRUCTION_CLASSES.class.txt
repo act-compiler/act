@@ -1,0 +1,29 @@
+class {{CLASS_NAME}} : public Instruction {
+private:
+{{COMP_ATTR_MEMBERS}}{{ADDR_VAR_MEMBERS}}
+{{GET_H_METHODS}}
+public:
+  {{CLASS_NAME}}(Tensor *y, std::vector<Tensor *> X{{COMP_ATTR_PARAMS}})
+      : Instruction("{{OP_NAME}}", y, X){{COMP_ATTR_INIT}} {
+{{CONSTRUCTOR_VALIDATIONS}}  }
+
+  std::string str() override {
+{{STR_BOUND_CHECKS}}    return op_name + "({{STR_FORMAT}}" + ")";
+  }
+
+{{INPLACE_OVERRIDE}}
+
+  std::vector<std::pair<IntExpr *, IntExpr *>> get_h(int num) override {
+    switch (num) {
+{{GET_H_CASES}}    default:
+      assert(false && "Too many indices for get_h");
+    }
+  }
+
+  Constraints get_e() override {
+    Constraints constraints;
+    return constraints;
+  }
+
+  std::vector<IntVar *> get_int_var() override { return {{{GET_INT_VAR_LIST}}}; }
+};

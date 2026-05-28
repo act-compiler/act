@@ -1,0 +1,23 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,16])->s8[16,16]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  input_5 = s8[16,16] parameter(0)
+  constant_6 = s8[] constant(21)
+  broadcast_6 = s8[16,16] broadcast(constant_6), dimensions={}
+  maximum_7 = s8[16,16] maximum(input_5, broadcast_6)
+  reverse_3 = s8[16,16] reverse(maximum_7), dimensions={0,1}
+  clamp_lo_2 = s8[] constant(-24)
+  clamp_lo_bc_2 = s8[16,16] broadcast(clamp_lo_2), dimensions={}
+  clamp_hi_2 = s8[] constant(2)
+  clamp_hi_bc_2 = s8[16,16] broadcast(clamp_hi_2), dimensions={}
+  clamp_2 = s8[16,16] clamp(clamp_lo_bc_2, reverse_3, clamp_hi_bc_2)
+  add_1 = s8[16,16] add(maximum_7, clamp_2)
+  ROOT add_4 = s8[16,16] add(add_1, clamp_2)
+}

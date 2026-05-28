@@ -1,0 +1,1 @@
+    let {{attr}} = lhs_metadata[{{index}}].shape[{{dim_index}}]{{division}};

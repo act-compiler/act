@@ -1,0 +1,2 @@
+      if (!std::getline(ss, tok, ',')) return panic("missing {{attr_name}} attribute");
+      try { {{attr_name}} = std::stoll(tok); } catch (...) { return panic("failed to parse {{attr_name}} attribute"); }

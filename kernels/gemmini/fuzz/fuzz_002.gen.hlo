@@ -1,0 +1,29 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,1])->s8[16,1]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  constant_4 = s8[] constant(-15)
+  broadcast_4 = s8[16,16] broadcast(constant_4), dimensions={}
+  input_5 = s8[16,1] parameter(0)
+  broadcast_5 = s8[16,16] broadcast(input_5), dimensions={0,1}
+  constant_8 = s8[] constant(25)
+  broadcast_8 = s8[16,16] broadcast(constant_8), dimensions={}
+  minimum_9 = s8[16,16] minimum(broadcast_5, broadcast_8)
+  negate_7 = s8[16,16] negate(minimum_9)
+  maximum_6 = s8[16,16] maximum(broadcast_4, negate_7)
+  add_1 = s8[16,16] add(maximum_6, maximum_6)
+  subtract_2 = s8[16,16] subtract(add_1, add_1)
+  clamp_lo_3 = s8[] constant(-21)
+  clamp_lo_bc_3 = s8[16,16] broadcast(clamp_lo_3), dimensions={}
+  clamp_hi_3 = s8[] constant(24)
+  clamp_hi_bc_3 = s8[16,16] broadcast(clamp_hi_3), dimensions={}
+  clamp_3 = s8[16,16] clamp(clamp_lo_bc_3, subtract_2, clamp_hi_bc_3)
+  clamp_3_reduced = s8[16] reduce(clamp_3, reduce_init), dimensions={0}, to_apply=reduce_add
+  ROOT clamp_3_reshaped = s8[16,1] reshape(clamp_3_reduced)
+}

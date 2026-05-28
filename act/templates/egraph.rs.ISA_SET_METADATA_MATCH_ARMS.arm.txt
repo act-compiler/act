@@ -1,0 +1,1 @@
+            TensorOp::{{variant_name}}(data, _) => *data = metadata.expect("{{variant_name}} needs metadata!"),

@@ -1,0 +1,3 @@
+    let shape_{{index}} = &lhs_metadata[{{index}}].shape;
+    if shape_{{index}}.len() <= {{dim_index}} { return false; }
+    let {{attr}} = shape_{{index}}[{{dim_index}}]{{division}};

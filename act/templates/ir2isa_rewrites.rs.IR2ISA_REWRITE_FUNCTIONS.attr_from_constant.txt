@@ -1,0 +1,12 @@
+    let {{attr}} = {
+        let ec = lhs_eclasses[{{index}}];
+        let mut val = 0i32;
+        for en in egraph[ec].nodes.iter() {
+            if let TensorOp::OpConstant(v) = en {
+                let num_str = v.split(':').next().unwrap_or(v);
+                val = num_str.parse::<i32>().unwrap_or(0);
+                break;
+            }
+        }
+        val
+    };

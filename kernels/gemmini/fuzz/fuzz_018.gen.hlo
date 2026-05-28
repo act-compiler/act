@@ -1,0 +1,42 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,1],s8[16,1])->s8[16,16]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  constant_4 = s8[] constant(-18)
+  broadcast_4 = s8[16,16] broadcast(constant_4), dimensions={}
+  constant_7 = s8[] constant(-29)
+  broadcast_7 = s8[16,16] broadcast(constant_7), dimensions={}
+  input_8 = s8[16,1] parameter(0)
+  broadcast_8 = s8[16,16] broadcast(input_8), dimensions={0,1}
+  constant_10 = s8[] constant(19)
+  broadcast_10 = s8[16,16] broadcast(constant_10), dimensions={}
+  negate_11 = s8[16,16] negate(broadcast_10)
+  constant_14 = s8[] constant(-10)
+  broadcast_14 = s8[16,16] broadcast(constant_14), dimensions={}
+  subtract_15 = s8[16,16] subtract(broadcast_7, broadcast_14)
+  input_18 = s8[16,1] parameter(1)
+  broadcast_18 = s8[16,16] broadcast(input_18), dimensions={0,1}
+  constant_20 = s8[] constant(-10)
+  broadcast_20 = s8[16,16] broadcast(constant_20), dimensions={}
+  subtract_21 = s8[16,16] subtract(broadcast_4, broadcast_20)
+  add_19 = s8[16,16] add(subtract_21, broadcast_18)
+  negate_16 = s8[16,16] negate(add_19)
+  add_13 = s8[16,16] add(subtract_15, negate_16)
+  add_9 = s8[16,16] add(add_13, broadcast_8)
+  negate_6 = s8[16,16] negate(add_9)
+  subtract_3 = s8[16,16] subtract(negate_6, negate_11)
+  subtract_5 = s8[16,16] subtract(negate_6, negate_11)
+  add_1 = s8[16,16] add(subtract_5, subtract_5)
+  add_0 = s8[16,16] add(add_1, add_1)
+  negate_2 = s8[16,16] negate(subtract_5)
+  add_12 = s8[16,16] add(subtract_5, subtract_15)
+  concat_0 = s8[16,16] add(subtract_3, add_0)
+  concat_1 = s8[16,16] add(concat_0, negate_2)
+  ROOT concat_2 = s8[16,16] add(concat_1, add_12)
+}

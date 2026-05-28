@@ -1,0 +1,7 @@
+            op if op.split('_').next().unwrap() == "{{kebab_name}}"
+                && <[Id; {{arity}}] as LanguageChildren>::can_be_length(children.len()) =>
+            {
+                let data = op.split('_').last().unwrap();
+                let children = <[Id; {{arity}}] as LanguageChildren>::from_vec(children);
+                Ok(TensorOp::{{variant_name}}(data.to_string(), children))
+            }

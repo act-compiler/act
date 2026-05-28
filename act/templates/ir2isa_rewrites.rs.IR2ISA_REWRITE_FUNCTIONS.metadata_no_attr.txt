@@ -1,0 +1,11 @@
+pub fn metadata_{{instruction_name}}(
+    egraph: &EGraph<TensorOp, TensorInfo>,
+    lhs_eclasses: &Vec<Id>,
+    _lhs_enodes: &Vec<Option<TensorOp>>,
+) -> Vec<Option<String>> {
+    assert_eq!(lhs_eclasses.len(), {{num_assignments}});
+    let _lhs_metadata: Vec<TensorInfo> = lhs_eclasses.iter().map(|id| egraph[*id].data.clone()).collect();
+
+    let rhs_metadata = vec![None; {{rhs_size}}];
+    rhs_metadata
+}

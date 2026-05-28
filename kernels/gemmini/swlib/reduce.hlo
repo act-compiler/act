@@ -1,0 +1,14 @@
+HloModule reduce, entry_computation_layout={(s8[16,16])->s8[16,1]}
+
+region_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT result = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  A = s8[16,16] parameter(0)
+  zero = s8[] constant(0)
+  reduced = s8[16] reduce(A, zero), dimensions={1}, to_apply=region_add
+  ROOT result = s8[16,1] reshape(reduced)
+}

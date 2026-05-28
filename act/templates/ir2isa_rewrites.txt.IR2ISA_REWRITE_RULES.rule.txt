@@ -1,0 +1,1 @@
+{{kebab_name}}:{{padding}} {{lhs_pattern}} => {{rhs}}

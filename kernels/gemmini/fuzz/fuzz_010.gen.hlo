@@ -1,0 +1,33 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,16])->s8[16,1]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  input_3 = s8[16,16] parameter(0)
+  clamp_lo_0 = s8[] constant(-13)
+  clamp_lo_bc_0 = s8[16,16] broadcast(clamp_lo_0), dimensions={}
+  clamp_hi_0 = s8[] constant(13)
+  clamp_hi_bc_0 = s8[16,16] broadcast(clamp_hi_0), dimensions={}
+  clamp_0 = s8[16,16] clamp(clamp_lo_bc_0, input_3, clamp_hi_bc_0)
+  constant_4 = s8[] constant(-7)
+  broadcast_4 = s8[16,16] broadcast(constant_4), dimensions={}
+  maximum_5 = s8[16,16] maximum(input_3, broadcast_4)
+  subtract_1 = s8[16,16] subtract(maximum_5, maximum_5)
+  negate_2 = s8[16,16] negate(maximum_5)
+  reverse_6 = s8[16,16] reverse(maximum_5), dimensions={0,1}
+  subtract_7 = s8[16,16] subtract(negate_2, input_3)
+  subtract_8 = s8[16,16] subtract(reverse_6, maximum_5)
+  negate_9 = s8[16,16] negate(maximum_5)
+  add_10 = s8[16,16] add(negate_9, subtract_7)
+  subtract_11 = s8[16,16] subtract(add_10, negate_2)
+  concat_0 = s8[16,16] add(clamp_0, subtract_1)
+  concat_1 = s8[16,16] add(concat_0, subtract_8)
+  concat_2 = s8[16,16] add(concat_1, subtract_11)
+  concat_2_reduced = s8[16] reduce(concat_2, reduce_init), dimensions={0}, to_apply=reduce_add
+  ROOT concat_2_reshaped = s8[16,1] reshape(concat_2_reduced)
+}

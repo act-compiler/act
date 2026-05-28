@@ -1,0 +1,1 @@
+  std::vector<bool> get_rhs_inplace() override { return {{{INPLACE_VEC}}}; }

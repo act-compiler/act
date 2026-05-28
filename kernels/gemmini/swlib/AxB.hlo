@@ -1,0 +1,7 @@
+HloModule AxB, entry_computation_layout={(s8[16,16], s8[16,16])->s8[16,16]}
+
+ENTRY main {
+  A = s8[16,16] parameter(0)
+  B = s8[16,16] parameter(1)
+  ROOT AB = s8[16,16] dot(A, B), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+}

@@ -1,0 +1,1 @@
+        {"{{storage_name}}", new Storage("{{storage_name}}", {{{storage_size}}}, 0)},

@@ -1,0 +1,10 @@
+  else if (op_name == "{{op_name}}") {
+{{attr_decls}}
+    {
+      std::stringstream ss(attr_str);
+      std::string tok;
+{{attr_parses}}
+    }
+
+    return new {{ClassName}}(lhs_tensor, rhs_tensors, {{attr_args}});
+  }

@@ -1,0 +1,96 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,1],s8[16,16],s8[16,16],s8[16,1],s8[16,1],s8[16,1],s8[16,16])->s8[16,1]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  input_13 = s8[16,1] parameter(0)
+  broadcast_13 = s8[16,16] broadcast(input_13), dimensions={0,1}
+  constant_21 = s8[] constant(-11)
+  broadcast_21 = s8[16,16] broadcast(constant_21), dimensions={}
+  input_24 = s8[16,16] parameter(1)
+  negate_31 = s8[16,16] negate(broadcast_13)
+  add_25 = s8[16,16] add(negate_31, input_24)
+  add_32 = s8[16,16] add(negate_31, input_24)
+  constant_33 = s8[] constant(17)
+  broadcast_33 = s8[16,16] broadcast(constant_33), dimensions={}
+  input_34 = s8[16,16] parameter(2)
+  add_35 = s8[16,16] add(broadcast_33, input_34)
+  constant_36 = s8[] constant(-3)
+  broadcast_36 = s8[16,16] broadcast(constant_36), dimensions={}
+  constant_42 = s8[] constant(-31)
+  broadcast_42 = s8[16,16] broadcast(constant_42), dimensions={}
+  constant_44 = s8[] constant(6)
+  broadcast_44 = s8[16,16] broadcast(constant_44), dimensions={}
+  input_46 = s8[16,1] parameter(3)
+  broadcast_46 = s8[16,16] broadcast(input_46), dimensions={0,1}
+  constant_47 = s8[] constant(-11)
+  broadcast_47 = s8[16,16] broadcast(constant_47), dimensions={}
+  add_48 = s8[16,16] add(broadcast_46, broadcast_47)
+  add_45 = s8[16,16] add(broadcast_36, add_48)
+  subtract_27 = s8[16,16] subtract(broadcast_21, add_45)
+  negate_19 = s8[16,16] negate(subtract_27)
+  negate_38 = s8[16,16] negate(add_45)
+  input_49 = s8[16,1] parameter(4)
+  broadcast_49 = s8[16,16] broadcast(input_49), dimensions={0,1}
+  subtract_50 = s8[16,16] subtract(broadcast_44, broadcast_49)
+  constant_51 = s8[] constant(25)
+  broadcast_51 = s8[16,16] broadcast(constant_51), dimensions={}
+  constant_52 = s8[] constant(-24)
+  broadcast_52 = s8[16,16] broadcast(constant_52), dimensions={}
+  add_53 = s8[16,16] add(broadcast_51, broadcast_52)
+  subtract_30 = s8[16,16] subtract(add_53, add_35)
+  add_26 = s8[16,16] add(add_45, subtract_30)
+  constant_54 = s8[] constant(-29)
+  broadcast_54 = s8[16,16] broadcast(constant_54), dimensions={}
+  negate_55 = s8[16,16] negate(broadcast_54)
+  subtract_14 = s8[16,16] subtract(negate_55, subtract_30)
+  negate_12 = s8[16,16] negate(subtract_14)
+  add_11 = s8[16,16] add(negate_19, negate_12)
+  add_7 = s8[16,16] add(add_11, add_11)
+  subtract_9 = s8[16,16] subtract(add_7, negate_19)
+  subtract_17 = s8[16,16] subtract(negate_12, subtract_14)
+  negate_20 = s8[16,16] negate(subtract_14)
+  negate_28 = s8[16,16] negate(subtract_9)
+  add_39 = s8[16,16] add(add_7, input_24)
+  input_56 = s8[16,1] parameter(5)
+  broadcast_56 = s8[16,16] broadcast(input_56), dimensions={0,1}
+  input_57 = s8[16,16] parameter(6)
+  subtract_58 = s8[16,16] subtract(broadcast_56, input_57)
+  add_43 = s8[16,16] add(subtract_58, broadcast_42)
+  add_37 = s8[16,16] add(subtract_50, add_43)
+  add_23 = s8[16,16] add(add_25, add_37)
+  negate_6 = s8[16,16] negate(add_23)
+  add_5 = s8[16,16] add(negate_6, add_11)
+  negate_2 = s8[16,16] negate(add_5)
+  add_0 = s8[16,16] add(negate_2, negate_2)
+  add_3 = s8[16,16] add(add_5, add_11)
+  negate_8 = s8[16,16] negate(negate_2)
+  subtract_4 = s8[16,16] subtract(negate_12, negate_8)
+  subtract_1 = s8[16,16] subtract(subtract_4, negate_6)
+  subtract_10 = s8[16,16] subtract(add_32, subtract_1)
+  negate_15 = s8[16,16] negate(add_0)
+  add_16 = s8[16,16] add(add_23, negate_55)
+  subtract_18 = s8[16,16] subtract(negate_6, add_7)
+  add_22 = s8[16,16] add(add_3, add_3)
+  negate_29 = s8[16,16] negate(add_23)
+  negate_40 = s8[16,16] negate(negate_6)
+  concat_0 = s8[16,16] add(negate_38, add_26)
+  concat_1 = s8[16,16] add(concat_0, subtract_17)
+  concat_2 = s8[16,16] add(concat_1, negate_20)
+  concat_3 = s8[16,16] add(concat_2, negate_28)
+  concat_4 = s8[16,16] add(concat_3, add_39)
+  concat_5 = s8[16,16] add(concat_4, subtract_10)
+  concat_6 = s8[16,16] add(concat_5, negate_15)
+  concat_7 = s8[16,16] add(concat_6, add_16)
+  concat_8 = s8[16,16] add(concat_7, subtract_18)
+  concat_9 = s8[16,16] add(concat_8, add_22)
+  concat_10 = s8[16,16] add(concat_9, negate_29)
+  concat_11 = s8[16,16] add(concat_10, negate_40)
+  concat_11_reduced = s8[16] reduce(concat_11, reduce_init), dimensions={0}, to_apply=reduce_add
+  ROOT concat_11_reshaped = s8[16,1] reshape(concat_11_reduced)
+}

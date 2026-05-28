@@ -1,0 +1,6 @@
+HloModule broadcast, entry_computation_layout={(s8[16,1])->s8[16,16]}
+
+ENTRY main {
+  B = s8[16,1] parameter(0)
+  ROOT result = s8[16,16] broadcast(B), dimensions={0,1}
+}

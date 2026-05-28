@@ -1,0 +1,125 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,16])->s8[16,1]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  constant_6 = s8[] constant(-20)
+  broadcast_6 = s8[16,16] broadcast(constant_6), dimensions={}
+  constant_17 = s8[] constant(-16)
+  broadcast_17 = s8[16,16] broadcast(constant_17), dimensions={}
+  input_19 = s8[16,16] parameter(0)
+  negate_20 = s8[16,16] negate(input_19)
+  constant_21 = s8[] constant(-9)
+  broadcast_21 = s8[16,16] broadcast(constant_21), dimensions={}
+  constant_22 = s8[] constant(29)
+  broadcast_22 = s8[16,16] broadcast(constant_22), dimensions={}
+  constant_24 = s8[] constant(23)
+  broadcast_24 = s8[16,16] broadcast(constant_24), dimensions={}
+  constant_25 = s8[] constant(10)
+  broadcast_25 = s8[16,16] broadcast(constant_25), dimensions={}
+  constant_27 = s8[] constant(-18)
+  broadcast_27 = s8[16,16] broadcast(constant_27), dimensions={}
+  constant_34 = s8[] constant(2)
+  broadcast_34 = s8[16,16] broadcast(constant_34), dimensions={}
+  constant_39 = s8[] constant(12)
+  broadcast_39 = s8[16,16] broadcast(constant_39), dimensions={}
+  constant_42 = s8[] constant(-20)
+  broadcast_42 = s8[16,16] broadcast(constant_42), dimensions={}
+  reverse_38 = s8[16,16] reverse(broadcast_42), dimensions={0,1}
+  constant_43 = s8[] constant(-9)
+  broadcast_43 = s8[16,16] broadcast(constant_43), dimensions={}
+  add_45 = s8[16,16] add(broadcast_27, broadcast_42)
+  constant_46 = s8[] constant(-27)
+  broadcast_46 = s8[16,16] broadcast(constant_46), dimensions={}
+  constant_48 = s8[] constant(31)
+  broadcast_48 = s8[16,16] broadcast(constant_48), dimensions={}
+  add_49 = s8[16,16] add(broadcast_34, broadcast_48)
+  minimum_47 = s8[16,16] minimum(add_49, broadcast_46)
+  minimum_35 = s8[16,16] minimum(broadcast_22, minimum_47)
+  subtract_33 = s8[16,16] subtract(broadcast_24, minimum_35)
+  minimum_28 = s8[16,16] minimum(subtract_33, broadcast_27)
+  reverse_29 = s8[16,16] reverse(minimum_28), dimensions={0,1}
+  subtract_32 = s8[16,16] subtract(minimum_28, reverse_29)
+  minimum_50 = s8[16,16] minimum(broadcast_25, broadcast_6)
+  constant_54 = s8[] constant(-25)
+  broadcast_54 = s8[16,16] broadcast(constant_54), dimensions={}
+  clamp_lo_59 = s8[] constant(-10)
+  clamp_lo_bc_59 = s8[16,16] broadcast(clamp_lo_59), dimensions={}
+  clamp_hi_59 = s8[] constant(6)
+  clamp_hi_bc_59 = s8[16,16] broadcast(clamp_hi_59), dimensions={}
+  clamp_59 = s8[16,16] clamp(clamp_lo_bc_59, broadcast_39, clamp_hi_bc_59)
+  negate_13 = s8[16,16] negate(clamp_59)
+  add_18 = s8[16,16] add(negate_20, clamp_59)
+  add_14 = s8[16,16] add(minimum_28, add_18)
+  maximum_7 = s8[16,16] maximum(add_14, broadcast_6)
+  negate_15 = s8[16,16] negate(add_14)
+  subtract_36 = s8[16,16] subtract(negate_13, minimum_47)
+  constant_60 = s8[] constant(-17)
+  broadcast_60 = s8[16,16] broadcast(constant_60), dimensions={}
+  minimum_61 = s8[16,16] minimum(broadcast_17, broadcast_60)
+  negate_56 = s8[16,16] negate(minimum_61)
+  dot_55 = s8[16,16] dot(negate_56, broadcast_54), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  dot_44 = s8[16,16] dot(broadcast_42, dot_55), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  reverse_30 = s8[16,16] reverse(dot_44), dimensions={0,1}
+  add_51 = s8[16,16] add(reverse_30, minimum_47)
+  negate_62 = s8[16,16] negate(broadcast_43)
+  negate_58 = s8[16,16] negate(negate_62)
+  dot_40 = s8[16,16] dot(dot_44, negate_58), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  clamp_lo_31 = s8[] constant(-23)
+  clamp_lo_bc_31 = s8[16,16] broadcast(clamp_lo_31), dimensions={}
+  clamp_hi_31 = s8[] constant(12)
+  clamp_hi_bc_31 = s8[16,16] broadcast(clamp_hi_31), dimensions={}
+  clamp_31 = s8[16,16] clamp(clamp_lo_bc_31, dot_40, clamp_hi_bc_31)
+  dot_26 = s8[16,16] dot(clamp_31, broadcast_25), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  minimum_23 = s8[16,16] minimum(broadcast_21, dot_26)
+  reverse_8 = s8[16,16] reverse(minimum_23), dimensions={0,1}
+  negate_9 = s8[16,16] negate(minimum_23)
+  clamp_lo_3 = s8[] constant(-18)
+  clamp_lo_bc_3 = s8[16,16] broadcast(clamp_lo_3), dimensions={}
+  clamp_hi_3 = s8[] constant(22)
+  clamp_hi_bc_3 = s8[16,16] broadcast(clamp_hi_3), dimensions={}
+  clamp_3 = s8[16,16] clamp(clamp_lo_bc_3, negate_9, clamp_hi_bc_3)
+  clamp_lo_0 = s8[] constant(-22)
+  clamp_lo_bc_0 = s8[16,16] broadcast(clamp_lo_0), dimensions={}
+  clamp_hi_0 = s8[] constant(21)
+  clamp_hi_bc_0 = s8[16,16] broadcast(clamp_hi_0), dimensions={}
+  clamp_0 = s8[16,16] clamp(clamp_lo_bc_0, clamp_3, clamp_hi_bc_0)
+  subtract_4 = s8[16,16] subtract(negate_9, maximum_7)
+  clamp_lo_1 = s8[] constant(-16)
+  clamp_lo_bc_1 = s8[16,16] broadcast(clamp_lo_1), dimensions={}
+  clamp_hi_1 = s8[] constant(21)
+  clamp_hi_bc_1 = s8[16,16] broadcast(clamp_hi_1), dimensions={}
+  clamp_1 = s8[16,16] clamp(clamp_lo_bc_1, subtract_4, clamp_hi_bc_1)
+  negate_2 = s8[16,16] negate(subtract_4)
+  subtract_10 = s8[16,16] subtract(subtract_4, broadcast_6)
+  subtract_5 = s8[16,16] subtract(add_14, subtract_10)
+  negate_11 = s8[16,16] negate(clamp_1)
+  dot_12 = s8[16,16] dot(clamp_31, clamp_3), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  subtract_16 = s8[16,16] subtract(negate_2, add_18)
+  add_37 = s8[16,16] add(dot_12, dot_12)
+  dot_41 = s8[16,16] dot(negate_2, negate_58), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  subtract_52 = s8[16,16] subtract(reverse_8, clamp_59)
+  dot_53 = s8[16,16] dot(negate_58, negate_2), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  reverse_57 = s8[16,16] reverse(add_37), dimensions={0,1}
+  concat_0 = s8[16,16] add(reverse_38, add_45)
+  concat_1 = s8[16,16] add(concat_0, subtract_32)
+  concat_2 = s8[16,16] add(concat_1, minimum_50)
+  concat_3 = s8[16,16] add(concat_2, negate_15)
+  concat_4 = s8[16,16] add(concat_3, subtract_36)
+  concat_5 = s8[16,16] add(concat_4, add_51)
+  concat_6 = s8[16,16] add(concat_5, clamp_0)
+  concat_7 = s8[16,16] add(concat_6, subtract_5)
+  concat_8 = s8[16,16] add(concat_7, negate_11)
+  concat_9 = s8[16,16] add(concat_8, subtract_16)
+  concat_10 = s8[16,16] add(concat_9, dot_41)
+  concat_11 = s8[16,16] add(concat_10, subtract_52)
+  concat_12 = s8[16,16] add(concat_11, dot_53)
+  concat_13 = s8[16,16] add(concat_12, reverse_57)
+  concat_13_reduced = s8[16] reduce(concat_13, reduce_init), dimensions={0}, to_apply=reduce_add
+  ROOT concat_13_reshaped = s8[16,1] reshape(concat_13_reduced)
+}

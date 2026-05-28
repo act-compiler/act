@@ -1,0 +1,67 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,16],s8[16,16])->s8[16,16]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  input_8 = s8[16,16] parameter(0)
+  constant_9 = s8[] constant(18)
+  broadcast_9 = s8[16,16] broadcast(constant_9), dimensions={}
+  constant_13 = s8[] constant(-29)
+  broadcast_13 = s8[16,16] broadcast(constant_13), dimensions={}
+  constant_18 = s8[] constant(-18)
+  broadcast_18 = s8[16,16] broadcast(constant_18), dimensions={}
+  constant_24 = s8[] constant(26)
+  broadcast_24 = s8[16,16] broadcast(constant_24), dimensions={}
+  negate_26 = s8[16,16] negate(broadcast_18)
+  minimum_25 = s8[16,16] minimum(negate_26, broadcast_24)
+  constant_27 = s8[] constant(11)
+  broadcast_27 = s8[16,16] broadcast(constant_27), dimensions={}
+  input_28 = s8[16,16] parameter(1)
+  minimum_29 = s8[16,16] minimum(broadcast_27, input_28)
+  subtract_14 = s8[16,16] subtract(minimum_29, broadcast_13)
+  constant_30 = s8[] constant(-9)
+  broadcast_30 = s8[16,16] broadcast(constant_30), dimensions={}
+  subtract_31 = s8[16,16] subtract(broadcast_9, broadcast_30)
+  subtract_19 = s8[16,16] subtract(subtract_31, minimum_25)
+  add_5 = s8[16,16] add(subtract_19, subtract_19)
+  subtract_12 = s8[16,16] subtract(subtract_14, subtract_19)
+  subtract_10 = s8[16,16] subtract(input_8, subtract_12)
+  negate_6 = s8[16,16] negate(subtract_10)
+  reverse_3 = s8[16,16] reverse(negate_6), dimensions={0,1}
+  clamp_lo_4 = s8[] constant(-7)
+  clamp_lo_bc_4 = s8[16,16] broadcast(clamp_lo_4), dimensions={}
+  clamp_hi_4 = s8[] constant(10)
+  clamp_hi_bc_4 = s8[16,16] broadcast(clamp_hi_4), dimensions={}
+  clamp_4 = s8[16,16] clamp(clamp_lo_bc_4, negate_6, clamp_hi_bc_4)
+  subtract_1 = s8[16,16] subtract(clamp_4, clamp_4)
+  subtract_0 = s8[16,16] subtract(subtract_1, subtract_1)
+  add_2 = s8[16,16] add(clamp_4, clamp_4)
+  reverse_7 = s8[16,16] reverse(negate_6), dimensions={0,1}
+  clamp_lo_11 = s8[] constant(-8)
+  clamp_lo_bc_11 = s8[16,16] broadcast(clamp_lo_11), dimensions={}
+  clamp_hi_11 = s8[] constant(22)
+  clamp_hi_bc_11 = s8[16,16] broadcast(clamp_hi_11), dimensions={}
+  clamp_11 = s8[16,16] clamp(clamp_lo_bc_11, subtract_10, clamp_hi_bc_11)
+  add_15 = s8[16,16] add(negate_6, negate_6)
+  add_16 = s8[16,16] add(add_5, minimum_29)
+  reverse_20 = s8[16,16] reverse(subtract_0), dimensions={0,1}
+  clamp_lo_21 = s8[] constant(-4)
+  clamp_lo_bc_21 = s8[16,16] broadcast(clamp_lo_21), dimensions={}
+  clamp_hi_21 = s8[] constant(12)
+  clamp_hi_bc_21 = s8[16,16] broadcast(clamp_hi_21), dimensions={}
+  clamp_21 = s8[16,16] clamp(clamp_lo_bc_21, reverse_3, clamp_hi_bc_21)
+  subtract_22 = s8[16,16] subtract(subtract_19, reverse_3)
+  subtract_23 = s8[16,16] subtract(add_16, subtract_31)
+  concat_0 = s8[16,16] add(add_2, reverse_7)
+  concat_1 = s8[16,16] add(concat_0, clamp_11)
+  concat_2 = s8[16,16] add(concat_1, add_15)
+  concat_3 = s8[16,16] add(concat_2, reverse_20)
+  concat_4 = s8[16,16] add(concat_3, clamp_21)
+  concat_5 = s8[16,16] add(concat_4, subtract_22)
+  ROOT concat_6 = s8[16,16] add(concat_5, subtract_23)
+}

@@ -1,0 +1,48 @@
+HloModule xla_computation_unknown, entry_computation_layout={(s8[16,16],s8[16,1])->s8[16,16]}
+
+reduce_add {
+  lhs = s8[] parameter(0)
+  rhs = s8[] parameter(1)
+  ROOT sum = s8[] add(lhs, rhs)
+}
+
+ENTRY main {
+  reduce_init = s8[] constant(0)
+  constant_0 = s8[] constant(5)
+  broadcast_0 = s8[16,16] broadcast(constant_0), dimensions={}
+  constant_13 = s8[] constant(2)
+  broadcast_13 = s8[16,16] broadcast(constant_13), dimensions={}
+  negate_15 = s8[16,16] negate(broadcast_0)
+  constant_17 = s8[] constant(22)
+  broadcast_17 = s8[16,16] broadcast(constant_17), dimensions={}
+  input_18 = s8[16,16] parameter(0)
+  minimum_19 = s8[16,16] minimum(broadcast_17, input_18)
+  input_20 = s8[16,1] parameter(1)
+  broadcast_20 = s8[16,16] broadcast(input_20), dimensions={0,1}
+  constant_21 = s8[] constant(4)
+  broadcast_21 = s8[16,16] broadcast(constant_21), dimensions={}
+  dot_22 = s8[16,16] dot(broadcast_20, broadcast_21), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  dot_14 = s8[16,16] dot(dot_22, broadcast_13), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  maximum_11 = s8[16,16] maximum(broadcast_0, dot_14)
+  subtract_9 = s8[16,16] subtract(maximum_11, minimum_19)
+  negate_2 = s8[16,16] negate(subtract_9)
+  negate_4 = s8[16,16] negate(subtract_9)
+  negate_3 = s8[16,16] negate(negate_4)
+  add_1 = s8[16,16] add(negate_3, negate_3)
+  subtract_5 = s8[16,16] subtract(negate_3, negate_4)
+  subtract_6 = s8[16,16] subtract(add_1, negate_2)
+  add_7 = s8[16,16] add(add_1, dot_14)
+  subtract_10 = s8[16,16] subtract(broadcast_0, subtract_9)
+  dot_8 = s8[16,16] dot(dot_22, subtract_10), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  clamp_lo_12 = s8[] constant(-22)
+  clamp_lo_bc_12 = s8[16,16] broadcast(clamp_lo_12), dimensions={}
+  clamp_hi_12 = s8[] constant(6)
+  clamp_hi_bc_12 = s8[16,16] broadcast(clamp_hi_12), dimensions={}
+  clamp_12 = s8[16,16] clamp(clamp_lo_bc_12, negate_3, clamp_hi_bc_12)
+  subtract_16 = s8[16,16] subtract(add_7, maximum_11)
+  concat_0 = s8[16,16] add(negate_15, subtract_5)
+  concat_1 = s8[16,16] add(concat_0, subtract_6)
+  concat_2 = s8[16,16] add(concat_1, dot_8)
+  concat_3 = s8[16,16] add(concat_2, clamp_12)
+  ROOT concat_4 = s8[16,16] add(concat_3, subtract_16)
+}
