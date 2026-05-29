@@ -1,4 +1,9 @@
-FROM ubuntu:jammy
+# syntax=docker/dockerfile:1.6
+
+# -------------------------
+# Stage 1: base -- apt deps shared by builder + final stages
+# -------------------------
+FROM ubuntu:jammy AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -13,6 +18,37 @@ RUN apt-get update && \
   apt-get install -y graphviz && \
   apt-get clean -y && \
   rm -rf /var/lib/apt/lists/*
+
+# -------------------------
+# Stage 2: ortools -- build OR-Tools from source (no official arm64 ubuntu prebuilt)
+#   All build-time clutter (source tree, vendored Abseil/protobuf builds) lives in this
+#   stage and is discarded; only /opt/ortools is copied into the final image.
+# -------------------------
+FROM base AS ortools
+
+ENV ORTOOLS_DIR=/opt/ortools
+ENV ORTOOLS_VERSION=v9.12
+RUN apt-get update && \
+  apt-get install -y pkg-config && \
+  rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch ${ORTOOLS_VERSION} https://github.com/google/or-tools.git /tmp/or-tools && \
+  cmake -S /tmp/or-tools -B /tmp/or-tools/build -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=$ORTOOLS_DIR \
+    -DBUILD_DEPS=ON \
+    -DBUILD_SAMPLES=OFF \
+    -DBUILD_EXAMPLES=OFF \
+    -DBUILD_PYTHON=OFF \
+    -DBUILD_FLATZINC=OFF \
+    -DBUILD_TESTING=OFF && \
+  cmake --build /tmp/or-tools/build -j$(nproc) && \
+  cmake --install /tmp/or-tools/build && \
+  rm -rf /tmp/or-tools
+
+# -------------------------
+# Stage 3: final -- runtime image
+# -------------------------
+FROM base AS final
 
 # Install Miniconda
 ENV MINICONDA_DIR=/opt/miniconda
@@ -39,13 +75,10 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no
   chmod -R a+rx /opt/cargo /opt/rustup && \
   echo 'export PATH="/opt/cargo/bin:$PATH"' >> ~/.bashrc
 
-# Install OR-Tools [note: arm64 build is not officially provided, emulating amd64 build for now]
+# Pull OR-Tools from the ortools builder stage
 ENV ORTOOLS_DIR=/opt/ortools
-RUN wget -q https://github.com/google/or-tools/releases/download/v9.12/or-tools_amd64_ubuntu-22.04_cpp_v9.12.4544.tar.gz -O /tmp/ortools.tar.gz && \
-  mkdir -p $ORTOOLS_DIR && \
-  tar -xzf /tmp/ortools.tar.gz -C $ORTOOLS_DIR --strip-components=1 && \
-  rm -rf /tmp/ortools.tar.gz && \
-  echo "export LD_LIBRARY_PATH=$ORTOOLS_DIR/lib:$LD_LIBRARY_PATH" >> ~/.bashrc && \
+COPY --from=ortools /opt/ortools /opt/ortools
+RUN echo "export LD_LIBRARY_PATH=$ORTOOLS_DIR/lib:$LD_LIBRARY_PATH" >> ~/.bashrc && \
   echo "export ORTOOLS_DIR=$ORTOOLS_DIR" >> ~/.bashrc
 
 # Install nlohmann/json (for C++ backend)
