@@ -18,7 +18,7 @@ If not, please refer to the [**Helper Guide**](#helper-guide-install-docker) bel
 Clone the ACT repository:
 
 ```bash
-git clone https://github.com/act-compiler/act.git
+git clone --branch pldi26 https://github.com/act-compiler/act.git
 cd act/tutorials/pldi26  # Navigate to the tutorial directory
 ```
 
