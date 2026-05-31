@@ -18,7 +18,7 @@ If not, please refer to the [**Helper Guide**](#helper-guide-install-docker) bel
 Clone the ACT top-level repository with all submodules:
 
 ```bash
-git clone --recursive https://github.com/act-compiler/act.git
+git clone --branch micro25 --recursive https://github.com/act-compiler/act.git
 cd act/tutorials/micro25  # Navigate to the tutorial directory
 ```
 
@@ -26,6 +26,7 @@ cd act/tutorials/micro25  # Navigate to the tutorial directory
 
 ```bash
 cd act
+git checkout micro25
 git submodule update --init --recursive
 cd tutorials/micro25  # Navigate to the tutorial directory
 ```
