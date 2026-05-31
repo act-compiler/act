@@ -557,7 +557,7 @@ Now that you've completed the ISA specification, it's time to generate the test 
 From your host machine in the `tutorials/pldi26/` directory, launch Docker:
 
 ```bash
-./docker.sh --sim
+./docker.sh
 ```
 
 Inside the Docker container, you'll be at the `/workspace` which maps to the `act/` repository.

@@ -35,8 +35,8 @@ Pull the pre-built Docker image(s) containing all tutorial dependencies based on
 **For in-person attendees**, the tutorial organizers will also provide a USB drive with Docker images pre-downloaded. You can load the Docker image from the USB drive using:
 
 ```bash
-cp /path/to/usb/act-v1.1-<arch>.tar /path/to/local/act-v1.1-<arch>.tar
-docker load -i /path/to/local/act-v1.1-<arch>.tar
+cp /path/to/usb/act-v1.2-<arch>.tar /path/to/local/act-v1.2-<arch>.tar
+docker load -i /path/to/local/act-v1.2-<arch>.tar
 ```
 
 There would be two images in the USB drive, one for `amd64` and one for `arm64`. Please load the one corresponding to your system architecture.

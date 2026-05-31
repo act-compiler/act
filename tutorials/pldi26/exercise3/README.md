@@ -100,7 +100,7 @@ Now, it's time to generate the compiler backend.
 From your host machine in the `tutorials/pldi26/` directory, launch Docker:
 
 ```bash
-./docker.sh --compile
+./docker.sh
 ```
 
 Inside the Docker container, you'll be at the `/workspace` which maps to the `act/` repository.
@@ -331,7 +331,7 @@ Now that you've completed the HLO program, it's time to compile it using the gen
 From your host machine in the `tutorials/pldi26/` directory, launch Docker:
 
 ```bash
-./docker.sh --compile
+./docker.sh
 ```
 
 Inside the Docker container, you'll be at the `/workspace` which maps to the `act/` repository.
@@ -406,7 +406,7 @@ Now that you've compiled the HLO program, it's time to validate the compiled ass
 From your host machine in the `tutorials/pldi26/` directory, launch Docker:
 
 ```bash
-./docker.sh --sim
+./docker.sh
 ```
 
 Inside the Docker container, you'll be at the `/workspace` which maps to the `act/` repository.
