@@ -1,6 +1,6 @@
 # ACT: Accelerator Compiler Toolkit
 
-Recent years have seen a proliferation of specialized ML accelerators – proposed in both academia (e.g., Gemmini, FEATHER) and industry (e.g., Google TPU, Intel AMX) -- that depart significantly from traditional CPU/GPU architectures. However, research on compiler and systems support for these accelerators remains sparse, largely due to the lack of mature open-source compiler infrastructures capable of targeting them from popular ML frameworks like PyTorch, and JAX. Building such support involves considerable manual effort, slowing innovation and creating a gap between hardware and software research communities.
+Recent years have seen a proliferation of specialized ML accelerators -- proposed in both academia (e.g., Gemmini, FEATHER) and industry (e.g., Google TPU, Intel AMX) -- that depart significantly from traditional CPU/GPU architectures. However, research on compiler and systems support for these accelerators remains sparse, largely due to the lack of mature open-source compiler infrastructures capable of targeting them from popular ML frameworks like PyTorch, and JAX. Building such support involves considerable manual effort, slowing innovation and creating a gap between hardware and software research communities.
 
 To bridge this gap, we present **ACT (Accelerator Compiler Toolkit) Ecosystem**, an ecosystem that automatically generates complete compiler backends and essential software tooling from high-level ISA specifications of tensor accelerators.
 
@@ -85,7 +85,7 @@ For TAIDL and TAIDL-TO, please cite our MICRO 2025 paper:
   url = {https://doi.org/10.1145/3725843.3756075},
   doi = {10.1145/3725843.3756075},
   booktitle = {Proceedings of the 2025 58th IEEE/ACM International Symposium on Microarchitecture},
-  pages = {1316–1333},
+  pages = {1316--1333},
   numpages = {18},
   series = {MICRO '25},
   month = oct
