@@ -886,4 +886,3 @@ The manual kernel you wrote represents what compilers must generate automaticall
 ## Additional Resources
 
 - **TAIDL Paper**: Section 6-7 for test oracle implementation and evaluation
-- **Example Kernels**: `taidl-artifact-micro25/accelerators/*/kernels.py`
