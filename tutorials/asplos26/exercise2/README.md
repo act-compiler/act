@@ -113,7 +113,7 @@ You can now edit the kernel files in your preferred editor on your host machine.
 
 ## Step 2: Example Kernel Walkthroughs
 
-Before implementing the attention kernel, let's study three complete examples that demonstrate different programming patterns. **You don't need to write these—they're already complete in the boilerplate.**
+Before implementing the attention kernel, let's study three complete examples that demonstrate different programming patterns. **You don't need to write these -- they're already complete in the boilerplate.**
 
 ### Example 1: Identity Kernel
 
@@ -886,4 +886,3 @@ The manual kernel you wrote represents what compilers must generate automaticall
 ## Additional Resources
 
 - **TAIDL Paper**: Section 6-7 for test oracle implementation and evaluation
-- **Example Kernels**: `taidl-artifact-asplos26/accelerators/*/kernels.py`
