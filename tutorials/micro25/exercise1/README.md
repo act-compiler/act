@@ -124,7 +124,7 @@ Your `QKV.py` file should begin with:
 ```python
 """QKV Accelerator ISA Definition"""
 
-from act.taidl import Accelerator
+from taidl import Accelerator
 
 qkv = Accelerator("QKV")
 ```
@@ -429,14 +429,11 @@ The final step in the ISA specification is to add the generation command. This w
 
 ### Add the Generation Command
 
-Add the oracle import and generation call to your `QKV.py` file:
+Add the following line at the end of your `QKV.py` file:
 
 ```python
-# At the top of QKV.py, add the import
-from act.generators import generate_oracle
-
-# At the end of QKV.py, add the generation call
-generate_oracle(qkv)
+# Generate kernel programming APIs and functional simulator (TAIDL-TO)
+qkv.generate_oracle()
 ```
 
 **What gets generated?**
@@ -452,8 +449,7 @@ Here's the full `QKV.py` file with all components:
 ```python
 """QKV Accelerator ISA Definition"""
 
-from act.taidl import Accelerator
-from act.generators import generate_oracle
+from taidl import Accelerator
 
 qkv = Accelerator("QKV")
 
@@ -546,7 +542,7 @@ ENTRY softmax {
 """)
 
 # Generate programming APIs and test oracle (functional simulator)
-generate_oracle(qkv)
+qkv.generate_oracle()
 ```
 
 ### Running the Generator
