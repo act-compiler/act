@@ -41,6 +41,15 @@ generate_oracle(acc)    # Generate functional simulator
 generate_backend(acc)   # Generate compiler backend
 ```
 
+## Docker Images
+
+`docker/build.sh` builds two images per architecture (`amd64`, `arm64`):
+
+- `devanshdvj/act-env:<env>-<arch>`: the environment alone (Python, JAX, OR-Tools, Rust and the ANTLR tool), in which the sub-projects' CI installs and tests each package. Its tag names the environment's Python and JAX, `py3.14-jax0.10.2` as set in `docker/act-env.env`, and changes only when the environment does.
+- `devanshdvj/act:<version>-<arch>`: the ecosystem, the `act` package with its pinned components, built on the environment image, one per ACT release.
+
+`docker/build.sh` builds the ecosystem image, first pulling or building the environment image if it is not present; `docker/build.sh --env` builds the environment image alone. `docker/exec.sh` and `docker/run.sh` run the ecosystem image.
+
 ## Version Compatibility
 
 | ACT                                                           | TAIDL                                                           | TAIDL-TO                                                             | ACT-Backend                                                           | Docker Image                                                                  |

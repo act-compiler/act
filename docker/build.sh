@@ -3,6 +3,7 @@ set -euo pipefail
 
 # Change to script directory
 cd "$(dirname "$0")"
+source act-env.env
 
 # Detect architecture
 ARCH=$(uname -m)
@@ -10,9 +11,11 @@ ARCH=$(uname -m)
 if [ "$ARCH" = "x86_64" ]; then
   DOCKERFILE="Dockerfile.amd64"
   IMAGE_NAME="devanshdvj/act:v1.2-amd64"
+  ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_TAG}-amd64"
 elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
   DOCKERFILE="Dockerfile.arm64"
   IMAGE_NAME="devanshdvj/act:v1.2-arm64"
+  ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_TAG}-arm64"
 else
   echo "Error: Unsupported architecture: $ARCH"
   exit 1
@@ -20,9 +23,10 @@ fi
 
 usage() {
   cat <<EOF
-Usage: $0 [-r|--rebuild] [-f|--force] [-y|--no-confirm] [-h|--help]
+Usage: $0 [-e|--env] [-r|--rebuild] [-f|--force] [-y|--no-confirm] [-h|--help]
 
 Options:
+  -e, --env         Build only the environment image ${ENV_IMAGE_NAME}.
   -r, --rebuild     Remove old image (and optionally containers with --force) and rebuild.
   -f, --force       Remove containers referencing ${IMAGE_NAME} (only useful with --rebuild).
   -y, --no-confirm  Do not prompt for confirmation when --force is used.
@@ -31,11 +35,16 @@ EOF
 }
 
 # Parse args
+ENV_ONLY=0
 REBUILD=0
 FORCE=0
 NO_CONFIRM=0
 while [ $# -gt 0 ]; do
   case "$1" in
+    --env)
+      ENV_ONLY=1
+      shift
+      ;;
     --rebuild)
       REBUILD=1
       shift
@@ -58,6 +67,7 @@ while [ $# -gt 0 ]; do
       for ((i = 0; i < ${#flags}; i++)); do
         ch="${flags:i:1}"
         case "$ch" in
+          e) ENV_ONLY=1 ;;
           r) REBUILD=1 ;;
           f) FORCE=1 ;;
           y) NO_CONFIRM=1 ;;
@@ -83,6 +93,11 @@ while [ $# -gt 0 ]; do
       ;;
   esac
 done
+
+# The environment alone is the image to check and build
+if [ "${ENV_ONLY}" -eq 1 ]; then
+  IMAGE_NAME="${ENV_IMAGE_NAME}"
+fi
 
 # Does an old image exist?
 if docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
@@ -141,10 +156,23 @@ if [ "${IMAGE_EXISTS}" -eq 1 ] && [ "${REBUILD}" -eq 1 ]; then
   docker image rm "${IMAGE_NAME}"
 fi
 
+# Build one stage of the Dockerfile as an image
+build_stage() {
+  echo
+  echo "Building $2..."
+  docker build -f "${DOCKERFILE}" --target "$1" --build-arg ACT_ENV_TAG="${ACT_ENV_TAG}" -t "$2" ..
+}
+
 # Build
-echo
-echo "Building ${IMAGE_NAME}..."
-docker build -f "${DOCKERFILE}" -t "${IMAGE_NAME}" ..
+if [ "${ENV_ONLY}" -eq 1 ]; then
+  build_stage env "${IMAGE_NAME}"
+else
+  # The ecosystem needs the environment: local, pulled, else built
+  if ! docker image inspect "${ENV_IMAGE_NAME}" >/dev/null 2>&1 && ! docker pull "${ENV_IMAGE_NAME}"; then
+    build_stage env "${ENV_IMAGE_NAME}"
+  fi
+  build_stage ecosystem "${IMAGE_NAME}"
+fi
 
 # Prune dangling images
 echo "Pruning dangling images..."
