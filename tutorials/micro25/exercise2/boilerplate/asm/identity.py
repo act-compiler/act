@@ -10,7 +10,7 @@ def identity(kernel, api):
         constant=[],
         output=[
             {'addr': 8192, 'shape': (64, 64), 'dtype': jnp.bfloat16},
-        ]
+        ],
     )
     def identity_():
         # Load 64 rows from HBM address 0 to scratchpad d1 address 0

@@ -1,10 +1,12 @@
 try:
     import sys
+
     sys.path.insert(0, '/workspace/targets/QKV')
     from oracle.decorator import kernel
     import oracle.api as api
 
     from oracle.decorator import set_simulation_backend
+
     # Run the simulations on CPU
     set_simulation_backend('CPU')
 except Exception as e:
@@ -14,6 +16,7 @@ except Exception as e:
 
 try:
     import sys
+
     sys.path.insert(0, '/workspace/asm')
     from attention import qkv
 except Exception as e:
@@ -37,7 +40,7 @@ def load_bf16_matrix(path, shape):
     """
     np_uint8 = np.fromfile(path, dtype=np.uint8)
     if np_uint8.size != (shape[0] * shape[1] * 2):
-        raise ValueError(f"Data in {path} has size {np_uint8.size}, expected {shape[0]*shape[1]}")
+        raise ValueError(f"Data in {path} has size {np_uint8.size}, expected {shape[0] * shape[1]}")
     np_uint8 = np_uint8.reshape(shape[0], shape[1], 2)
     j_uint8 = jnp.array(np_uint8, dtype=jnp.uint8)
     mat = jax.lax.bitcast_convert_type(j_uint8, jnp.bfloat16)

@@ -5,12 +5,12 @@ cd "$(dirname "$0")"
 
 ARCH=$(uname -m)
 if [ "$ARCH" = "x86_64" ]; then
-    IMAGE_NAME="devanshdvj/act:v1.2-amd64"
+  IMAGE_NAME="devanshdvj/act:v1.2-amd64"
 elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
-    IMAGE_NAME="devanshdvj/act:v1.2-arm64"
+  IMAGE_NAME="devanshdvj/act:v1.2-arm64"
 else
-    echo "Error: Unsupported architecture: $ARCH"
-    exit 1
+  echo "Error: Unsupported architecture: $ARCH"
+  exit 1
 fi
 
 HOST_MOUNT="$(pwd)/.."

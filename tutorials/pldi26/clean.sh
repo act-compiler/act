@@ -4,7 +4,7 @@ set -e
 
 cd "$(dirname "$0")"/../..
 
-./docker/chown.sh > /dev/null 2>&1 || true
+./docker/chown.sh >/dev/null 2>&1 || true
 
 find . -type d -name "__pycache__" -exec rm -rf {} +
 find . -type d -name "build" -exec rm -rf {} +

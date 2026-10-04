@@ -12,8 +12,8 @@ GID_N="$(id -g)"
 
 # Remove any previous leftover act-chown container
 if docker ps -a --format '{{.Names}}' | grep -xq "${CHOWN_CONTAINER_NAME}"; then
-    echo "Removing existing leftover container named ${CHOWN_CONTAINER_NAME}..."
-    docker rm -f ${CHOWN_CONTAINER_NAME} >/dev/null 2>&1
+  echo "Removing existing leftover container named ${CHOWN_CONTAINER_NAME}..."
+  docker rm -f ${CHOWN_CONTAINER_NAME} >/dev/null 2>&1
 fi
 
 # Use busybox (tiny image) to perform chown

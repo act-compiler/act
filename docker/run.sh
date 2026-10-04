@@ -8,12 +8,12 @@ cd "$(dirname "$0")"
 ARCH=$(uname -m)
 
 if [ "$ARCH" = "x86_64" ]; then
-    IMAGE_NAME="devanshdvj/act:v1.2-amd64"
+  IMAGE_NAME="devanshdvj/act:v1.2-amd64"
 elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
-    IMAGE_NAME="devanshdvj/act:v1.2-arm64"
+  IMAGE_NAME="devanshdvj/act:v1.2-arm64"
 else
-    echo "Error: Unsupported architecture: $ARCH"
-    exit 1
+  echo "Error: Unsupported architecture: $ARCH"
+  exit 1
 fi
 
 USER_NAME="$(id -un)"
@@ -39,105 +39,117 @@ EOF
 PERSISTENT=0
 NO_DEFAULT=0
 while [ $# -gt 0 ]; do
-    case "$1" in
-        --persistent) PERSISTENT=1; shift ;;
-        --no-default) NO_DEFAULT=1; shift ;;
-        -h|--help) usage; exit 0 ;;
-        *) echo "Unknown arg: $1"; usage; exit 1 ;;
-    esac
+  case "$1" in
+    --persistent)
+      PERSISTENT=1
+      shift
+      ;;
+    --no-default)
+      NO_DEFAULT=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown arg: $1"
+      usage
+      exit 1
+      ;;
+  esac
 done
 
 # Helper: List all persistent containers of form act-<base>-<username>
 list_persistent_all() {
-    docker ps -a --format '{{.Names}}\t{{.Image}}\t{{.Status}}' \
-      | awk -v user="${USER_NAME}" -F '\t' '$1 ~ ("^act-.*-"user"$") { print $0 }'
+  docker ps -a --format '{{.Names}}\t{{.Image}}\t{{.Status}}' |
+    awk -v user="${USER_NAME}" -F '\t' '$1 ~ ("^act-.*-"user"$") { print $0 }'
 }
 
 # Helper: Ensure name is normalized to: act-<base>-<username>
 normalize_name() {
-    local raw="$1"
-    local prefix="act-"
-    local suffix="-${USER_NAME}"
+  local raw="$1"
+  local prefix="act-"
+  local suffix="-${USER_NAME}"
 
-    # remove leading prefix if present
-    local base="${raw#${prefix}}"
+  # remove leading prefix if present
+  local base="${raw#${prefix}}"
 
-    # remove trailing suffix if present
-    if [[ "${base}" == *"${suffix}" ]]; then
-        base="${base%${suffix}}"
-    fi
+  # remove trailing suffix if present
+  if [[ "${base}" == *"${suffix}" ]]; then
+    base="${base%${suffix}}"
+  fi
 
-    printf '%s' "${prefix}${base}${suffix}"
+  printf '%s' "${prefix}${base}${suffix}"
 }
 
 # Helper: Create persistent container
 create_persistent() {
-    local name="$1"
-    echo "Creating persistent container (will not be removed on exit) with name ${name}."
+  local name="$1"
+  echo "Creating persistent container (will not be removed on exit) with name ${name}."
 
-    docker run -it --name "${name}" \
-      -v "${HOST_MOUNT}:${CONTAINER_MOUNT}:rw" \
-      -w "${CONTAINER_MOUNT}" \
-      -e HOST_UID="${HOST_UID}" -e HOST_GID="${HOST_GID}" \
-      "${IMAGE_NAME}"
+  docker run -it --name "${name}" \
+    -v "${HOST_MOUNT}:${CONTAINER_MOUNT}:rw" \
+    -w "${CONTAINER_MOUNT}" \
+    -e HOST_UID="${HOST_UID}" -e HOST_GID="${HOST_GID}" \
+    "${IMAGE_NAME}"
 }
 
 # Helper: Restart an existing container
 attach_existing() {
-    local name="$1"
-    echo "Restarting persistent container (will not be removed on exit) with name ${name}."
+  local name="$1"
+  echo "Restarting persistent container (will not be removed on exit) with name ${name}."
 
-    docker start -ai "${name}"
-    ./chown.sh >/dev/null
+  docker start -ai "${name}"
+  ./chown.sh >/dev/null
 }
-
 
 # Ensure image exists
 if ! docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
-    echo "Image ${IMAGE_NAME} not found locally. Build it first with ./build.sh"
-    exit 1
+  echo "Image ${IMAGE_NAME} not found locally. Build it first with ./build.sh"
+  exit 1
 fi
 
 # Ephemeral flow: if --persistent is not set, run an ephemeral container
 if [ "${PERSISTENT}" -eq 0 ]; then
-    echo "Launching ephemeral container (will be removed on exit) with name ${EPHEMERAL_NAME}."
-    docker run -it --rm \
-      --name "${EPHEMERAL_NAME}" \
-      -v "${HOST_MOUNT}:${CONTAINER_MOUNT}:rw" \
-      -w "${CONTAINER_MOUNT}" \
-      -e HOST_UID="${HOST_UID}" -e HOST_GID="${HOST_GID}" \
-      "${IMAGE_NAME}"
-    exit 0
+  echo "Launching ephemeral container (will be removed on exit) with name ${EPHEMERAL_NAME}."
+  docker run -it --rm \
+    --name "${EPHEMERAL_NAME}" \
+    -v "${HOST_MOUNT}:${CONTAINER_MOUNT}:rw" \
+    -w "${CONTAINER_MOUNT}" \
+    -e HOST_UID="${HOST_UID}" -e HOST_GID="${HOST_GID}" \
+    "${IMAGE_NAME}"
+  exit 0
 fi
 
 # Persistent flow: if --persistent is set, we handle persistent containers
 if [ "${NO_DEFAULT}" -eq 0 ]; then
-    # default behavior: use default name
-    if docker ps -a --format '{{.Names}}' | grep -xq "${DEFAULT_PERSISTENT_NAME}"; then
-        attach_existing "${DEFAULT_PERSISTENT_NAME}"
-        exit 0
-    else
-        create_persistent "${DEFAULT_PERSISTENT_NAME}"
-        exit 0
-    fi
+  # default behavior: use default name
+  if docker ps -a --format '{{.Names}}' | grep -xq "${DEFAULT_PERSISTENT_NAME}"; then
+    attach_existing "${DEFAULT_PERSISTENT_NAME}"
+    exit 0
+  else
+    create_persistent "${DEFAULT_PERSISTENT_NAME}"
+    exit 0
+  fi
 fi
 
 # If --no-default: interactive selection/creation
 EXISTING="$(list_persistent_all)"
 if [ -z "${EXISTING}" ]; then
-    read -rp "No persistent containers found. Enter a name for the new persistent container (without suffix): " NAME_IN
-    if [ -z "${NAME_IN}" ]; then
-      echo "No name provided. Aborting."
-      exit 1
-    fi
-    if [[ ! "$NAME_IN" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
-        echo "Invalid name: $NAME_IN. Aborting."
-        echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*"
-        exit 1
-    fi
-    NAME="$(normalize_name "${NAME_IN}")"
-    create_persistent "${NAME}"
-    exit 0
+  read -rp "No persistent containers found. Enter a name for the new persistent container (without suffix): " NAME_IN
+  if [ -z "${NAME_IN}" ]; then
+    echo "No name provided. Aborting."
+    exit 1
+  fi
+  if [[ ! "$NAME_IN" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
+    echo "Invalid name: $NAME_IN. Aborting."
+    echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*"
+    exit 1
+  fi
+  NAME="$(normalize_name "${NAME_IN}")"
+  create_persistent "${NAME}"
+  exit 0
 fi
 
 # Present choices: create new or choose existing
@@ -170,9 +182,9 @@ case "$CHOICE" in
     fi
 
     if [[ ! "$NAME_IN" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
-        echo "Invalid name: $NAME_IN. Aborting."
-        echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*"
-        exit 1
+      echo "Invalid name: $NAME_IN. Aborting."
+      echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*"
+      exit 1
     fi
     NAME="$(normalize_name "${NAME_IN}")"
     if docker ps -a --format '{{.Names}}' | grep -xq "${NAME}"; then

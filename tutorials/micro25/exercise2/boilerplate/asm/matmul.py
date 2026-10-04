@@ -5,13 +5,13 @@ def matmul(kernel, api):
     @kernel(
         hbm=24576,  # 24 KB: 3 matrices × 8 KB
         input=[
-            {'addr': 0, 'shape': (64, 64), 'dtype': jnp.bfloat16},      # Matrix A
-            {'addr': 8192, 'shape': (64, 64), 'dtype': jnp.bfloat16},   # Matrix B
+            {'addr': 0, 'shape': (64, 64), 'dtype': jnp.bfloat16},  # Matrix A
+            {'addr': 8192, 'shape': (64, 64), 'dtype': jnp.bfloat16},  # Matrix B
         ],
         constant=[],
         output=[
             {'addr': 16384, 'shape': (64, 64), 'dtype': jnp.bfloat16},  # Matrix C = A × B
-        ]
+        ],
     )
     def matmul_():
         # Load matrix A into d1[0:63]
