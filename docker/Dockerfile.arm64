@@ -67,6 +67,10 @@ RUN . $MINICONDA_DIR/etc/profile.d/conda.sh && \
   conda clean -y --all && \
   echo "conda list --name act >/dev/null 2>&1 && conda activate act" >> ~/.bashrc
 
+# Expose the env's libpython to binaries that embed it
+RUN ln -s $MINICONDA_DIR/envs/act/lib/libpython3*.so.1.0 /usr/local/lib/ && \
+  ldconfig
+
 # Install Rust (rustup)
 ENV RUSTUP_HOME=/opt/rustup
 ENV CARGO_HOME=/opt/cargo
