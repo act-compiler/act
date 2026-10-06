@@ -1,3 +1,12 @@
+> [!NOTE]
+> **Stay tuned:** New releases of the ACT tools are coming soon!
+> - [`taidl`](https://github.com/act-compiler/taidl) v2.12 (up from v2.3)
+> - [`act-oracle`](https://github.com/act-compiler/act-oracle) v2.9 (up from v2.2)
+> - [`act-backend`](https://github.com/act-compiler/act-backend) v1.18 (up from v1.2)
+> - `act-allo` v1.0, a new generator
+>
+> More is in the works, including `act-oracle` v3 and `act-e2e` for end-to-end LLM deployment.
+
 # ACT: Accelerator Compiler Toolkit
 
 Recent years have seen a proliferation of specialized ML accelerators -- proposed in both academia (e.g., Gemmini, FEATHER) and industry (e.g., Google TPU, Intel AMX) -- that depart significantly from traditional CPU/GPU architectures. However, research on compiler and systems support for these accelerators remains sparse, largely due to the lack of mature open-source compiler infrastructures capable of targeting them from popular ML frameworks like PyTorch, and JAX. Building such support involves considerable manual effort, slowing innovation and creating a gap between hardware and software research communities.
