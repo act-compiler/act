@@ -93,6 +93,14 @@ RUN wget -q https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.
   rm -rf /tmp/json.tar.xz && \
   echo "export NLOHMANN_JSON_DIR=$NLOHMANN_JSON_DIR" >> ~/.bashrc
 
+# Install ANTLR tool (matches the antlr4 runtime pin)
+RUN apt-get update && \
+  apt-get install -y openjdk-17-jre-headless && \
+  apt-get clean -y && \
+  rm -rf /var/lib/apt/lists/* && \
+  mkdir -p /opt/antlr && \
+  wget -q https://www.antlr.org/download/antlr-4.9.2-complete.jar -O /opt/antlr/antlr-4.9.2-complete.jar
+
 # Install act-ecosystem package
 COPY pyproject.toml /opt/act/pyproject.toml
 COPY act/ /opt/act/act/
