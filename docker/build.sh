@@ -5,17 +5,31 @@ set -euo pipefail
 cd "$(dirname "$0")"
 source act-env.env
 
+# Pick the cuda13 images on a GPU host, else the CPU ones
+VARIANT=""
+if nvidia-smi >/dev/null 2>&1 &&
+  docker info -f '{{json .Runtimes}}' 2>/dev/null | grep -q '"nvidia"'; then
+  VARIANT="-cuda13"
+fi
+# --cpu or --cuda13 overrides the host's pick
+for arg in "$@"; do
+  case "$arg" in
+    --cpu) VARIANT="" ;;
+    --cuda13) VARIANT="-cuda13" ;;
+  esac
+done
+
 # Detect architecture
 ARCH=$(uname -m)
 
 if [ "$ARCH" = "x86_64" ]; then
   DOCKERFILE="Dockerfile.amd64"
-  IMAGE_NAME="devanshdvj/act:v1.2-amd64"
-  ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_TAG}-amd64"
+  IMAGE_NAME="devanshdvj/act:v1.2${VARIANT}-amd64"
+  ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_TAG}${VARIANT}-amd64"
 elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
   DOCKERFILE="Dockerfile.arm64"
-  IMAGE_NAME="devanshdvj/act:v1.2-arm64"
-  ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_TAG}-arm64"
+  IMAGE_NAME="devanshdvj/act:v1.2${VARIANT}-arm64"
+  ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_TAG}${VARIANT}-arm64"
 else
   echo "Error: Unsupported architecture: $ARCH"
   exit 1
@@ -23,10 +37,12 @@ fi
 
 usage() {
   cat <<EOF
-Usage: $0 [-e|--env] [-r|--rebuild] [-f|--force] [-y|--no-confirm] [-h|--help]
+Usage: $0 [-e|--env] [--cpu|--cuda13] [-r|--rebuild] [-f|--force] [-y|--no-confirm] [-h|--help]
 
 Options:
   -e, --env         Build only the environment image ${ENV_IMAGE_NAME}.
+  --cpu             Build the CPU images, the default unless the host has a GPU and the nvidia runtime.
+  --cuda13          Build the cuda13 images, with jax's CUDA 13 runtime, the default on such a host.
   -r, --rebuild     Remove old image (and optionally containers with --force) and rebuild.
   -f, --force       Remove containers referencing ${IMAGE_NAME} (only useful with --rebuild).
   -y, --no-confirm  Do not prompt for confirmation when --force is used.
@@ -45,6 +61,7 @@ while [ $# -gt 0 ]; do
       ENV_ONLY=1
       shift
       ;;
+    --cpu | --cuda13) shift ;;
     --rebuild)
       REBUILD=1
       shift
@@ -160,16 +177,16 @@ fi
 build_stage() {
   echo
   echo "Building $2..."
-  docker build -f "${DOCKERFILE}" --target "$1" --build-arg ACT_ENV_TAG="${ACT_ENV_TAG}" -t "$2" ..
+  docker build -f "${DOCKERFILE}" --target "$1" --build-arg ACT_ENV_TAG="${ACT_ENV_TAG}" --build-arg VARIANT="${VARIANT}" -t "$2" ..
 }
 
 # Build
 if [ "${ENV_ONLY}" -eq 1 ]; then
-  build_stage env "${IMAGE_NAME}"
+  build_stage "env${VARIANT}" "${IMAGE_NAME}"
 else
   # The ecosystem needs the environment: local, pulled, else built
   if ! docker image inspect "${ENV_IMAGE_NAME}" >/dev/null 2>&1 && ! docker pull "${ENV_IMAGE_NAME}"; then
-    build_stage env "${ENV_IMAGE_NAME}"
+    build_stage "env${VARIANT}" "${ENV_IMAGE_NAME}"
   fi
   build_stage ecosystem "${IMAGE_NAME}"
 fi

@@ -2,6 +2,8 @@
 
 # Environment image tag, passed by build.sh from act-env.env
 ARG ACT_ENV_TAG
+# Image variant, empty for the CPU or -cuda13, passed by build.sh
+ARG VARIANT
 
 # -------------------------
 # Stage 1: base -- apt deps shared by builder + env stages
@@ -112,9 +114,18 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # -------------------------
-# Stage 4: ecosystem -- the act package on the environment image
+# Stage 4: env-cuda13 -- the environment image with jax's CUDA 13 runtime
 # -------------------------
-FROM devanshdvj/act-env:${ACT_ENV_TAG}-amd64 AS ecosystem
+FROM env AS env-cuda13
+
+# Install jax's CUDA 13 runtime at the env's jax version
+RUN . $MINICONDA_DIR/etc/profile.d/conda.sh && conda activate act && \
+  pip install --no-cache-dir "jax[cuda13]==$(python -c 'import jax; print(jax.__version__)')"
+
+# -------------------------
+# Stage 5: ecosystem -- the act package on the environment image
+# -------------------------
+FROM devanshdvj/act-env:${ACT_ENV_TAG}${VARIANT}-amd64 AS ecosystem
 
 # Install act-ecosystem package
 COPY pyproject.toml /opt/act/pyproject.toml
