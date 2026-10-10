@@ -43,12 +43,16 @@ generate_backend(acc)   # Generate compiler backend
 
 ## Docker Images
 
-`docker/build.sh` builds two images per architecture (`amd64`, `arm64`):
+`docker/build.sh` builds two images per architecture (`amd64`, `arm64`) and variant (the CPU, or `cuda13` with JAX's CUDA 13 runtime):
 
-- `devanshdvj/act-env:<env>-<arch>`: the environment alone (Python, JAX, OR-Tools, Rust and the ANTLR tool), in which the sub-projects' CI installs and tests each package. Its tag names the environment's Python and JAX, `py3.14-jax0.10.2` as set in `docker/act-env.env`, and changes only when the environment does.
-- `devanshdvj/act:<version>-<arch>`: the ecosystem, the `act` package with its pinned components, built on the environment image, one per ACT release.
+- `devanshdvj/act-env:<env>-<arch>` and `devanshdvj/act-env:<env>-cuda13-<arch>`: the environment alone (Python, JAX, OR-Tools, Rust and the ANTLR tool), in whose CPU variant the sub-projects' CI installs and tests each package. Its tag names the environment's Python and JAX, `py3.14-jax0.10.2` as set in `docker/act-env.env`, and changes only when the environment does.
+- `devanshdvj/act:<version>-<arch>` and `devanshdvj/act:<version>-cuda13-<arch>`: the ecosystem, the `act` package with its pinned components, built on the environment image of the same variant, one per ACT release.
 
 `docker/build.sh` builds the ecosystem image, first pulling or building the environment image if it is not present; `docker/build.sh --env` builds the environment image alone. `docker/exec.sh` and `docker/run.sh` run the ecosystem image.
+
+When `nvidia-smi` succeeds and Docker lists the `nvidia` runtime, the scripts pick the `cuda13` images, and `docker/exec.sh` and `docker/run.sh` pass all GPUs to the containers they create; otherwise they pick the CPU images.
+`docker/build.sh --cpu` and `docker/build.sh --cuda13` build either variant on any host.
+The `cuda13` images need an NVIDIA driver of 580 or later and a GPU that CUDA 13 supports.
 
 ## Version Compatibility
 
