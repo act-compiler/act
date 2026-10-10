@@ -1,7 +1,10 @@
 # syntax=docker/dockerfile:1.6
 
+# Environment image tag, passed by build.sh from act-env.env
+ARG ACT_ENV_TAG
+
 # -------------------------
-# Stage 1: base -- apt deps shared by builder + final stages
+# Stage 1: base -- apt deps shared by builder + env stages
 # -------------------------
 FROM ubuntu:jammy AS base
 
@@ -22,7 +25,7 @@ RUN apt-get update && \
 # -------------------------
 # Stage 2: ortools -- build OR-Tools from source (consistent with arm64 image)
 #   All build-time clutter (source tree, vendored Abseil/protobuf builds) lives in this
-#   stage and is discarded; only /opt/ortools is copied into the final image.
+#   stage and is discarded; only /opt/ortools is copied into the env stage.
 # -------------------------
 FROM base AS ortools
 
@@ -46,9 +49,9 @@ RUN git clone --depth 1 --branch ${ORTOOLS_VERSION} https://github.com/google/or
   rm -rf /tmp/or-tools
 
 # -------------------------
-# Stage 3: final -- runtime image
+# Stage 3: env -- the environment image, without the act package
 # -------------------------
-FROM base AS final
+FROM base AS env
 
 # Install Miniconda
 ENV MINICONDA_DIR=/opt/miniconda
@@ -101,6 +104,18 @@ RUN apt-get update && \
   mkdir -p /opt/antlr && \
   wget -q https://www.antlr.org/download/antlr-4.9.2-complete.jar -O /opt/antlr/antlr-4.9.2-complete.jar
 
+RUN echo "umask 0002" >> ~/.bashrc
+
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+# -------------------------
+# Stage 4: ecosystem -- the act package on the environment image
+# -------------------------
+FROM devanshdvj/act-env:${ACT_ENV_TAG}-amd64 AS ecosystem
+
 # Install act-ecosystem package
 COPY pyproject.toml /opt/act/pyproject.toml
 COPY act/ /opt/act/act/
@@ -109,10 +124,3 @@ COPY LICENSE /opt/act/LICENSE
 RUN . $MINICONDA_DIR/etc/profile.d/conda.sh && conda activate act && \
   pip install --no-cache-dir /opt/act && \
   rm -rf /opt/act
-
-RUN echo "umask 0002" >> ~/.bashrc
-
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
