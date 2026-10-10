@@ -5,15 +5,15 @@ def qkv(kernel, api):
     @kernel(
         hbm=32768,  # 32 KB: enough for 3 inputs + 1 output
         input=[
-            {'addr': 0, 'shape': (64, 64), 'dtype': jnp.bfloat16},      # Q
-            {'addr': 8192, 'shape': (64, 64), 'dtype': jnp.bfloat16},   # K
+            {'addr': 0, 'shape': (64, 64), 'dtype': jnp.bfloat16},  # Q
+            {'addr': 8192, 'shape': (64, 64), 'dtype': jnp.bfloat16},  # K
             {'addr': 16384, 'shape': (64, 64), 'dtype': jnp.bfloat16},  # V
         ],
         constant=[],  # No constants needed
         output=[
             # O = softmax(Q × K^T) × V
             {'addr': 24576, 'shape': (64, 64), 'dtype': jnp.bfloat16},
-        ]
+        ],
     )
     def qkv_():
         # Kernel implementation goes here

@@ -9,12 +9,16 @@ def softmax(kernel, api):
         ],
         constant=[
             # Identity matrix I
-            {'addr': 8192, 'shape': (64, 64), 'dtype': jnp.bfloat16,
-             'value': jnp.eye(64, dtype=jnp.bfloat16)},
+            {
+                'addr': 8192,
+                'shape': (64, 64),
+                'dtype': jnp.bfloat16,
+                'value': jnp.eye(64, dtype=jnp.bfloat16),
+            },
         ],
         output=[
             {'addr': 16384, 'shape': (64, 64), 'dtype': jnp.bfloat16},
-        ]
+        ],
     )
     def softmax_():
         # Load input matrix A

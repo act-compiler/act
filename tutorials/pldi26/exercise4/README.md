@@ -10,15 +10,15 @@ Starting from `QKV.py`, create a new ISA variant (`QKV_new.py`) with the followi
 
 1. Add a new on-chip buffer `d3`, a duplicate of `d1`.
 2. Remove column-major load/store instructions, and replace them with row-major variants specialized by destination/source buffer:
-	- `load_01` (HBM -> `d1`), `load_03` (HBM -> `d3`)
-	- `store_10` (`d1` -> HBM), `store_30` (`d3` -> HBM)
+   - `load_01` (HBM -> `d1`), `load_03` (HBM -> `d3`)
+   - `store_10` (`d1` -> HBM), `store_30` (`d3` -> HBM)
 3. Add a transpose-copy instruction `transpose_13` from `d1` to `d3`.
 4. Split GEMM into two ISA instructions that both write to `d2`:
-	- `gemm_33`: reads both operands from `d3`
-	- `gemm_13`: reads operands from `d1` and `d3`
+   - `gemm_33`: reads both operands from `d3`
+   - `gemm_13`: reads operands from `d1` and `d3`
 5. Add two move instructions from `d2`:
-	- `mov_21`: `d2` -> `d1`
-	- `mov_23`: `d2` -> `d3`
+   - `mov_21`: `d2` -> `d1`
+   - `mov_23`: `d2` -> `d3`
 
 These changes let us model a richer memory topology while keeping the same high-level attention computation.
 
