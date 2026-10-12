@@ -27,9 +27,9 @@ esac
 
 ARCH=$(uname -m)
 if [ "$ARCH" = "x86_64" ]; then
-  IMAGE_NAME="devanshdvj/act:v1.2${VARIANT}-amd64"
+  IMAGE_NAME="devanshdvj/act:v1.3${VARIANT}-amd64"
 elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
-  IMAGE_NAME="devanshdvj/act:v1.2${VARIANT}-arm64"
+  IMAGE_NAME="devanshdvj/act:v1.3${VARIANT}-arm64"
 else
   echo "Error: Unsupported architecture: $ARCH"
   exit 1
