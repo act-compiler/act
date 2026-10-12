@@ -52,6 +52,7 @@ generate_backend(acc)   # Generate compiler backend
 
 When `nvidia-smi` succeeds and Docker lists the `nvidia` runtime, the scripts pick the `cuda13` images, and `docker/exec.sh` and `docker/run.sh` pass all GPUs to the containers they create; otherwise they pick the CPU images.
 `docker/build.sh --cpu` and `docker/build.sh --cuda13` build either variant on any host.
+`docker/exec.sh`, `docker/run.sh` and `docker/cleanup.sh` take the same two flags, as in `docker/exec.sh --cpu "<cmd>"`, the flag overriding the host's pick, and a CPU image is passed no GPU.
 The `cuda13` images need an NVIDIA driver of 580 or later and a GPU that CUDA 13 supports.
 
 ## Version Compatibility
