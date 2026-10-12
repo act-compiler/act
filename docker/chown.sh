@@ -5,16 +5,11 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 CONTAINER_MOUNT="/workspace"
-CHOWN_CONTAINER_NAME="act-chown"
+# One name per call, so concurrent calls never collide
+CHOWN_CONTAINER_NAME="act-chown-$$-${RANDOM}"
 
 UID_N="$(id -u)"
 GID_N="$(id -g)"
-
-# Remove any previous leftover act-chown container
-if docker ps -a --format '{{.Names}}' | grep -xq "${CHOWN_CONTAINER_NAME}"; then
-  echo "Removing existing leftover container named ${CHOWN_CONTAINER_NAME}..."
-  docker rm -f ${CHOWN_CONTAINER_NAME} >/dev/null 2>&1
-fi
 
 # Use busybox (tiny image) to perform chown
 docker run --rm --name "${CHOWN_CONTAINER_NAME}" \
