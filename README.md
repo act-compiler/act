@@ -22,6 +22,8 @@ The ACT ecosystem consists of:
 
 ## Installation
 
+ACT needs Python 3.14 or later.
+
 ```bash
 pip install git+https://github.com/act-compiler/act.git@v1.1
 ```
