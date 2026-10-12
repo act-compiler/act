@@ -66,6 +66,17 @@ The `cuda13` images need an NVIDIA driver of 580 or later and a GPU that CUDA 13
 | [v1.1](https://github.com/act-compiler/act/releases/tag/v1.1) | [v2.3](https://github.com/act-compiler/taidl/releases/tag/v2.3) | [v2.2](https://github.com/act-compiler/act-oracle/releases/tag/v2.2) | [v1.1](https://github.com/act-compiler/act-backend/releases/tag/v1.1) | [devanshdvj/act:v1.1](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.1) |
 | [v1.0](https://github.com/act-compiler/act/releases/tag/v1.0) | [v2.2](https://github.com/act-compiler/taidl/releases/tag/v2.2) | [v2.1](https://github.com/act-compiler/act-oracle/releases/tag/v2.1) | [v1.0](https://github.com/act-compiler/act-backend/releases/tag/v1.0) | [devanshdvj/act:v1.0](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.0) |
 
+## Testing
+
+```bash
+./docker/build.sh --rebuild                        # the ecosystem image, built anew with the pinned components
+./docker/exec.sh "python tests/check_versions.py"  # every place that names a version agrees, and pip check passes
+./tests/pytest.sh                                  # one accelerator through both generators, a kernel compiled and simulated
+./tests/pytest.sh --platform GPU                   # the same, simulated on an NVIDIA GPU
+```
+
+The CI builds the CPU image and runs the two checks in it, on amd64 and arm64.
+
 ## Repositories
 
 The ACT Ecosystem is composed of independently installable packages:
