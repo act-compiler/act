@@ -114,18 +114,21 @@ For TAIDL and TAIDL-TO, please cite our MICRO 2025 paper:
 }
 ```
 
-For ACT Backend, please cite our arXiv preprint:
+For ACT-Backend, please cite our OOPSLA 2026 paper:
 
 ```
-@misc{act-arxiv,
-  title = {ACT: Automatically Generating Compiler Backends from Tensor Accelerator ISA Descriptions},
-  author = {Jain, Devansh and Pardeshi, Akash and Frigo, Marco and Patel, Krut and Khulbe, Kaustubh and Arora, Jai and Mendis, Charith},
-  year = {2025},
-  eprint = {2510.09932},
-  archiveprefix = {arXiv},
-  primaryclass = {cs.PL},
-  url = {https://arxiv.org/abs/2510.09932},
-  doi = {10.48550/arXiv.2510.09932},
+@article{act-oopsla2026,
+  author = {Jain, Devansh and Pardeshi, Akash and Frigo, Marco and Khulbe, Kaustubh and Patel, Krut and Lochan, Saatvik and Arora, Jai and Mendis, Charith},
+  title = {Automatically Generating ML Compiler Backends from Tensor Accelerator ISA Descriptions},
+  year = {2026},
+  publisher = {Association for Computing Machinery},
+  volume = {10},
+  number = {OOPSLA2},
+  issn = {2475-1421},
+  url = {https://doi.org/10.1145/3839457},
+  doi = {10.1145/3839457},
+  journal = {Proceedings of the ACM on Programming Languages},
+  pages = {288--319},
   month = oct
 }
 ```
