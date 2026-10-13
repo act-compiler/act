@@ -191,9 +191,5 @@ else
   build_stage ecosystem "${IMAGE_NAME}"
 fi
 
-# Prune dangling images
-echo "Pruning dangling images..."
-docker image prune -f || true
-
 echo
 echo "Docker image ${IMAGE_NAME} built successfully."
