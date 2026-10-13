@@ -13,9 +13,9 @@ authors = [
 ]
 readme = "README.md"
 dependencies = [
-    "taidl @ git+https://github.com/act-compiler/taidl.git@v2.3",
-    "taidl-to @ git+https://github.com/act-compiler/act-oracle.git@v2.5",
-    "act-backend @ git+https://github.com/act-compiler/act-backend.git@v1.6",
+    "taidl @ git+https://github.com/act-compiler/taidl.git@v2.13",
+    "taidl-to @ git+https://github.com/act-compiler/act-oracle.git@v2.7",
+    "act-backend @ git+https://github.com/act-compiler/act-backend.git@v1.7",
 ]
 
 [tool.setuptools.packages.find]
