@@ -33,9 +33,9 @@ def accelerator(base_dir):
     instr.set_inputs([['d0', ['@a.addr_in'], ['@c.n * 8']]])
     instr.set_outputs([['d1', ['@a.addr_out'], ['@c.n']]])
     instr.add_semantics("""
-ENTRY load {
-    %In1 = u8[`@c.n * 8`] parameter(0);
-    %a = u8[`@c.n`,4,2] reshape(%In1);
+ENTRY {
+    %In0 = u8[`@c.n * 8`] parameter(0);
+    %a = u8[`@c.n`,4,2] reshape(%In0);
     ROOT %Out0 = bf16[`@c.n`,4] bitcast_convert(%a);
 }
 """)
@@ -45,10 +45,10 @@ ENTRY load {
     instr.set_inputs([['d1', ['@a.addr_1'], ['4']], ['d1', ['@a.addr_2'], ['4']]])
     instr.set_outputs([['d1', ['@a.addr_out'], ['4']]])
     instr.add_semantics("""
-ENTRY gemm {
-    %In1 = bf16[4,4] parameter(0);
-    %In2 = bf16[4,4] parameter(1);
-    ROOT %Out0 = bf16[4,4] dot(%In1, %In2), lhs_contracting_dims={1}, rhs_contracting_dims={0};
+ENTRY {
+    %In0 = bf16[4,4] parameter(0);
+    %In1 = bf16[4,4] parameter(1);
+    ROOT %Out0 = bf16[4,4] dot(%In0, %In1), lhs_contracting_dims={1}, rhs_contracting_dims={0};
 }
 """)
 
@@ -57,9 +57,9 @@ ENTRY gemm {
     instr.set_inputs([['d1', ['@a.addr_in'], ['@c.n']]])
     instr.set_outputs([['d0', ['@a.addr_out'], ['@c.n * 8']]])
     instr.add_semantics("""
-ENTRY store {
-    %In1 = bf16[`@c.n`,4] parameter(0);
-    %a = u8[`@c.n`,4,2] bitcast_convert(%In1);
+ENTRY {
+    %In0 = bf16[`@c.n`,4] parameter(0);
+    %a = u8[`@c.n`,4,2] bitcast_convert(%In0);
     ROOT %Out0 = u8[`@c.n * 8`] reshape(%a);
 }
 """)
