@@ -11,6 +11,19 @@ if nvidia-smi >/dev/null 2>&1 &&
   VARIANT="-cuda13"
   GPU_FLAGS=(--gpus all)
 fi
+# --cpu or --cuda13 overrides the host's pick
+case "${1:-}" in
+  --cpu)
+    VARIANT=""
+    shift
+    ;;
+  --cuda13)
+    VARIANT="-cuda13"
+    shift
+    ;;
+esac
+# The GPU is passed to the cuda13 image alone
+[ -n "${VARIANT}" ] || GPU_FLAGS=()
 
 ARCH=$(uname -m)
 if [ "$ARCH" = "x86_64" ]; then
