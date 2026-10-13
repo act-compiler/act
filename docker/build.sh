@@ -24,11 +24,11 @@ ARCH=$(uname -m)
 
 if [ "$ARCH" = "x86_64" ]; then
   DOCKERFILE="Dockerfile.amd64"
-  IMAGE_NAME="devanshdvj/act:v1.2${VARIANT}-amd64"
+  IMAGE_NAME="devanshdvj/act:v1.3${VARIANT}-amd64"
   ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_TAG}${VARIANT}-amd64"
 elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
   DOCKERFILE="Dockerfile.arm64"
-  IMAGE_NAME="devanshdvj/act:v1.2${VARIANT}-arm64"
+  IMAGE_NAME="devanshdvj/act:v1.3${VARIANT}-arm64"
   ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_TAG}${VARIANT}-arm64"
 else
   echo "Error: Unsupported architecture: $ARCH"

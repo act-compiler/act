@@ -25,7 +25,7 @@ The ACT ecosystem consists of:
 ACT needs Python 3.14 or later.
 
 ```bash
-pip install git+https://github.com/act-compiler/act.git@v1.1
+pip install git+https://github.com/act-compiler/act.git@v1.3
 ```
 
 This installs the `act` package along with all components (TAIDL, TAIDL-TO, ACT-Backend).
@@ -65,6 +65,8 @@ The `cuda13` images need an NVIDIA driver of 580 or later and a GPU that CUDA 13
 | [v1.2](https://github.com/act-compiler/act/releases/tag/v1.2) | [v2.3](https://github.com/act-compiler/taidl/releases/tag/v2.3) | [v2.2](https://github.com/act-compiler/act-oracle/releases/tag/v2.2) | [v1.2](https://github.com/act-compiler/act-backend/releases/tag/v1.2) | [devanshdvj/act:v1.2](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.2) |
 | [v1.1](https://github.com/act-compiler/act/releases/tag/v1.1) | [v2.3](https://github.com/act-compiler/taidl/releases/tag/v2.3) | [v2.2](https://github.com/act-compiler/act-oracle/releases/tag/v2.2) | [v1.1](https://github.com/act-compiler/act-backend/releases/tag/v1.1) | [devanshdvj/act:v1.1](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.1) |
 | [v1.0](https://github.com/act-compiler/act/releases/tag/v1.0) | [v2.2](https://github.com/act-compiler/taidl/releases/tag/v2.2) | [v2.1](https://github.com/act-compiler/act-oracle/releases/tag/v2.1) | [v1.0](https://github.com/act-compiler/act-backend/releases/tag/v1.0) | [devanshdvj/act:v1.0](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.0) |
+
+ACT v1.3 moves the ecosystem to Python 3.14 and JAX 0.10.2.
 
 ## Testing
 

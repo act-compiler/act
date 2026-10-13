@@ -52,6 +52,9 @@ if __name__ == '__main__':
     places['act'] = {
         'pyproject.toml': project['version'],
         'installed': version('act-ecosystem'),
+        'act/__init__.py': re.search(r"__version__ = '(\S+)'", read('act/__init__.py'))[1],
+        "README.md's install line": re.search(r'act\.git@v(\S+)', readme)[1],
+        "README.md's table": labels['act'],
     }
     for script in SCRIPTS:
         # The tag each image name carries, ahead of its variant
