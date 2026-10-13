@@ -17,7 +17,7 @@ The ACT ecosystem consists of:
 
 - **TAIDL (Tensor Accelerator ISA Definition Language)**: A Python-based DSL for specifying tensor accelerator ISAs. TAIDL leverages tensor IRs like XLA-HLO to compactly and precisely model execution semantics of tensor accelerator ISAs.
 - **TAIDL-TO (Test Oracle) Generator**: Automatically generates scalable functional simulators just from TAIDL specifications, enabling correctness testing of the software stack. TAIDL-TOs are orders of magnitude faster than existing simulators.
-- **ACT Backend Generator**: Automatically generates sound and complete compiler backends just from TAIDL specification. ACT backends match or outperform state-of-the-art expert-written libraries, while maintaining low compile times (<1 sec).
+- **ACT-Backend Generator**: Automatically generates sound and complete compiler backends just from TAIDL specification. ACT backends match or outperform state-of-the-art expert-written libraries, while maintaining low compile times (<1 sec).
 - **XLA Integration**: Enables end-to-end compilation from popular ML frameworks like JAX and PyTorch.
 
 ## Installation
@@ -26,7 +26,7 @@ The ACT ecosystem consists of:
 pip install git+https://github.com/act-compiler/act.git@v1.1
 ```
 
-This installs the `act` package along with all components (TAIDL, TAIDL-TO, ACT Backend).
+This installs the `act` package along with all components (TAIDL, TAIDL-TO, ACT-Backend).
 
 ### Usage
 
@@ -114,18 +114,21 @@ For TAIDL and TAIDL-TO, please cite our MICRO 2025 paper:
 }
 ```
 
-For ACT Backend, please cite our arXiv preprint:
+For ACT-Backend, please cite our OOPSLA 2026 paper:
 
 ```
-@misc{act-arxiv,
-  title = {ACT: Automatically Generating Compiler Backends from Tensor Accelerator ISA Descriptions},
-  author = {Jain, Devansh and Pardeshi, Akash and Frigo, Marco and Patel, Krut and Khulbe, Kaustubh and Arora, Jai and Mendis, Charith},
-  year = {2025},
-  eprint = {2510.09932},
-  archiveprefix = {arXiv},
-  primaryclass = {cs.PL},
-  url = {https://arxiv.org/abs/2510.09932},
-  doi = {10.48550/arXiv.2510.09932},
+@article{act-oopsla2026,
+  author = {Jain, Devansh and Pardeshi, Akash and Frigo, Marco and Khulbe, Kaustubh and Patel, Krut and Lochan, Saatvik and Arora, Jai and Mendis, Charith},
+  title = {Automatically Generating ML Compiler Backends from Tensor Accelerator ISA Descriptions},
+  year = {2026},
+  publisher = {Association for Computing Machinery},
+  volume = {10},
+  number = {OOPSLA2},
+  issn = {2475-1421},
+  url = {https://doi.org/10.1145/3839457},
+  doi = {10.1145/3839457},
+  journal = {Proceedings of the ACM on Programming Languages},
+  pages = {288--319},
   month = oct
 }
 ```
