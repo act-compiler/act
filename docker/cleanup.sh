@@ -7,6 +7,26 @@ cd "$(dirname "$0")"
 # The image of this host, or of --cpu or --cuda13
 source ./image.sh "$@"
 
+usage() {
+  echo "Usage: $0 [--cpu|--cuda13] [-h|--help]"
+}
+
+# Any argument but --cpu, --cuda13 and --help is refused
+for arg in "$@"; do
+  case "$arg" in
+    --cpu | --cuda13) ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown argument: $arg" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
+done
+
 # Every container of the image
 LISTED=$(docker ps -a --format '{{.ID}} {{.Names}} {{.Image}} {{.Status}}')
 mapfile -t CONTAINERS < <(awk -v img="${IMAGE_NAME}" '$3 == img' <<<"${LISTED}")
