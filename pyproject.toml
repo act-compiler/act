@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "act-ecosystem"
-version = "2.1"
+version = "2.2"
 description = "ACT: Accelerator Compiler Toolkit"
 requires-python = ">=3.14"
 license = "Apache-2.0"
