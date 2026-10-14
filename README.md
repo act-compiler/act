@@ -41,7 +41,7 @@ This installs the `act` package along with all components (TAIDL, TAIDL-TO, ACT-
 from act.taidl import Accelerator
 from act.generators import generate_oracle, generate_backend
 
-acc = Accelerator("MyAccel")
+acc = Accelerator('MyAccel')
 # ... define ISA spec ...
 
 generate_oracle(acc)    # Generate functional simulator
