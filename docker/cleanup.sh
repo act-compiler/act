@@ -25,7 +25,6 @@ echo
 for line in "${CONTAINERS[@]}"; do
   CID=$(echo "$line" | cut -d' ' -f1)
   CNAME=$(echo "$line" | cut -d' ' -f2)
-  CINFO=$(echo "$line" | cut -d' ' -f3-)
   read -rp "Remove container ${CNAME} (${CID})? [y/N] " RESP
   case "${RESP}" in
     y | Y)
