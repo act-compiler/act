@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Change to script directory
+# Work in the docker/ directory
 cd "$(dirname "$0")"
 
 # The image of this host, or of --cpu or --cuda13
@@ -28,7 +28,7 @@ Options:
 EOF
 }
 
-# Parse args
+# The options; image.sh reads --cpu and --cuda13
 PERSISTENT=0
 NO_DEFAULT=0
 while [ $# -gt 0 ]; do
@@ -54,22 +54,22 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-# Helper: List all persistent containers of form act-<base>-<username>
+# Every persistent container, named act-<base>-<username>
 list_persistent_all() {
   docker ps -a --format '{{.Names}}\t{{.Image}}\t{{.Status}}' |
     awk -v user="${USER_NAME}" -F '\t' '$1 ~ ("^act-.*-"user"$") { print $0 }'
 }
 
-# Helper: Ensure name is normalized to: act-<base>-<username>
+# A name normalized to act-<base>-<username>
 normalize_name() {
   local raw="$1"
   local prefix="act-"
   local suffix="-${USER_NAME}"
 
-  # remove leading prefix if present
+  # Drop a leading prefix
   local base="${raw#${prefix}}"
 
-  # remove trailing suffix if present
+  # Drop a trailing suffix
   if [[ "${base}" == *"${suffix}" ]]; then
     base="${base%${suffix}}"
   fi
@@ -77,7 +77,7 @@ normalize_name() {
   printf '%s' "${prefix}${base}${suffix}"
 }
 
-# Helper: Create persistent container
+# Create a persistent container
 create_persistent() {
   local name="$1"
   echo "Creating persistent container (will not be removed on exit) with name ${name}."
@@ -90,7 +90,7 @@ create_persistent() {
     "${IMAGE_NAME}"
 }
 
-# Helper: Restart an existing container
+# Restart an existing container
 attach_existing() {
   local name="$1"
   echo "Restarting persistent container (will not be removed on exit) with name ${name}."
@@ -99,13 +99,13 @@ attach_existing() {
   ./chown.sh >/dev/null
 }
 
-# Ensure image exists
+# The image must be built first
 if ! docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
   echo "Image ${IMAGE_NAME} not found locally. Build it first with ./build.sh"
   exit 1
 fi
 
-# Ephemeral flow: if --persistent is not set, run an ephemeral container
+# Without --persistent, an ephemeral container
 if [ "${PERSISTENT}" -eq 0 ]; then
   echo "Launching ephemeral container (will be removed on exit) with name ${EPHEMERAL_NAME}."
   docker run -it --rm \
@@ -118,9 +118,9 @@ if [ "${PERSISTENT}" -eq 0 ]; then
   exit 0
 fi
 
-# Persistent flow: if --persistent is set, we handle persistent containers
+# With --persistent, the default container or a chosen one
 if [ "${NO_DEFAULT}" -eq 0 ]; then
-  # default behavior: use default name
+  # The default name, unless --no-default
   if docker ps -a --format '{{.Names}}' | grep -xq "${DEFAULT_PERSISTENT_NAME}"; then
     attach_existing "${DEFAULT_PERSISTENT_NAME}"
     exit 0
@@ -130,7 +130,7 @@ if [ "${NO_DEFAULT}" -eq 0 ]; then
   fi
 fi
 
-# If --no-default: interactive selection/creation
+# With --no-default and none yet, create one
 EXISTING="$(list_persistent_all)"
 if [ -z "${EXISTING}" ]; then
   read -rp "No persistent containers found. Enter a name for the new persistent container (without suffix): " NAME_IN

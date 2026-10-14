@@ -1,13 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-# Change to script directory
+# Work in the docker/ directory
 cd "$(dirname "$0")"
 
 # The image of this host, or of --cpu or --cuda13
 source ./image.sh "$@"
 
-# collect candidate containers (all containers using the image)
+# Every container of the image
 mapfile -t CONTAINERS < <(docker ps -a --format '{{.ID}} {{.Names}} {{.Image}} {{.Status}}' | awk -v img="${IMAGE_NAME}" '$3 == img')
 
 NUM_CONTAINERS=${#CONTAINERS[@]}
