@@ -9,15 +9,20 @@
 
 # ACT: Accelerator Compiler Toolkit
 
-Recent years have seen a proliferation of specialized ML accelerators -- proposed in both academia (e.g., Gemmini, FEATHER) and industry (e.g., Google TPU, Intel AMX) -- that depart significantly from traditional CPU/GPU architectures. However, research on compiler and systems support for these accelerators remains sparse, largely due to the lack of mature open-source compiler infrastructures capable of targeting them from popular ML frameworks like PyTorch, and JAX. Building such support involves considerable manual effort, slowing innovation and creating a gap between hardware and software research communities.
+Recent years have seen a proliferation of specialized ML accelerators -- proposed in both academia (e.g., Gemmini, FEATHER) and industry (e.g., Google TPU, Intel AMX) -- that depart significantly from traditional CPU/GPU architectures.
+However, research on compiler and systems support for these accelerators remains sparse, largely due to the lack of mature open-source compiler infrastructures capable of targeting them from popular ML frameworks like PyTorch, and JAX.
+Building such support involves considerable manual effort, slowing innovation and creating a gap between hardware and software research communities.
 
 To bridge this gap, we present **ACT (Accelerator Compiler Toolkit) Ecosystem**, an ecosystem that automatically generates complete compiler backends and essential software tooling from high-level ISA specifications of tensor accelerators.
 
 The ACT ecosystem consists of:
 
-- **TAIDL (Tensor Accelerator ISA Definition Language)**: A Python-based DSL for specifying tensor accelerator ISAs. TAIDL leverages tensor IRs like XLA-HLO to compactly and precisely model execution semantics of tensor accelerator ISAs.
-- **TAIDL-TO (Test Oracle) Generator**: Automatically generates scalable functional simulators just from TAIDL specifications, enabling correctness testing of the software stack. TAIDL-TOs are orders of magnitude faster than existing simulators.
-- **ACT-Backend Generator**: Automatically generates sound and complete compiler backends just from TAIDL specification. ACT backends match or outperform state-of-the-art expert-written libraries, while maintaining low compile times (<1 sec).
+- **TAIDL (Tensor Accelerator ISA Definition Language)**: A Python-based DSL for specifying tensor accelerator ISAs.
+  TAIDL leverages tensor IRs like XLA-HLO to compactly and precisely model execution semantics of tensor accelerator ISAs.
+- **TAIDL-TO (Test Oracle) Generator**: Automatically generates scalable functional simulators just from TAIDL specifications, enabling correctness testing of the software stack.
+  TAIDL-TOs are orders of magnitude faster than existing simulators.
+- **ACT-Backend Generator**: Automatically generates sound and complete compiler backends just from TAIDL specification.
+  ACT backends match or outperform state-of-the-art expert-written libraries, while maintaining low compile times (<1 sec).
 - **XLA Integration**: Enables end-to-end compilation from popular ML frameworks like JAX and PyTorch.
 
 ## Installation
@@ -47,10 +52,12 @@ generate_backend(acc)   # Generate compiler backend
 
 `docker/build.sh` builds two images per architecture (`amd64`, `arm64`) and variant (the CPU, or `cuda13` with JAX's CUDA 13 runtime):
 
-- `devanshdvj/act-env:<env>-<arch>` and `devanshdvj/act-env:<env>-cuda13-<arch>`: the environment alone (Python, JAX, OR-Tools, Rust, the ANTLR tool, ruff, clang-format and shfmt), in whose CPU variant the sub-projects' CI installs and tests each package. Its tag names the environment's Python and JAX, `py3.14-jax0.10.2` as set in `docker/act-env.env`, and changes only when the environment does.
+- `devanshdvj/act-env:<env>-<arch>` and `devanshdvj/act-env:<env>-cuda13-<arch>`: the environment alone (Python, JAX, OR-Tools, Rust, the ANTLR tool, ruff, clang-format and shfmt), in whose CPU variant the sub-projects' CI installs and tests each package.
+  Its tag names the environment's Python and JAX, `py3.14-jax0.10.2` as set in `docker/act-env.env`, and changes only when the environment does.
 - `devanshdvj/act:<version>-<arch>` and `devanshdvj/act:<version>-cuda13-<arch>`: the ecosystem, the `act` package with its pinned components, built on the environment image of the same variant, one per ACT release.
 
-`docker/build.sh` builds the ecosystem image, first pulling or building the environment image if it is not present; `docker/build.sh --env` builds the environment image alone. `docker/exec.sh` and `docker/run.sh` run the ecosystem image.
+`docker/build.sh` builds the ecosystem image, first pulling or building the environment image if it is not present; `docker/build.sh --env` builds the environment image alone.
+`docker/exec.sh` and `docker/run.sh` run the ecosystem image.
 
 When `nvidia-smi` succeeds and Docker lists the `nvidia` runtime, the scripts pick the `cuda13` images, and `docker/exec.sh` and `docker/run.sh` pass all GPUs to the containers they create; otherwise they pick the CPU images.
 `docker/build.sh --cpu` and `docker/build.sh --cuda13` build either variant on any host.
@@ -106,7 +113,8 @@ If you are interested in contributing to the ACT Ecosystem (e.g., adding new lan
 | Compiler Backend Generator | [act-compiler/act-backend](https://github.com/act-compiler/act-backend)        |
 | Documentation & Bug Fixes  | Corresponding repository                                                       |
 
-**Unable to decide?** Open an issue in [act-compiler/act](https://github.com/act-compiler/act) and we can help route it to the appropriate place.
+**Unable to decide?**
+Open an issue in [act-compiler/act](https://github.com/act-compiler/act) and we can help route it to the appropriate place.
 
 # Citing ACT
 
