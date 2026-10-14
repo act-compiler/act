@@ -4,35 +4,8 @@ set -euo pipefail
 # Change to script directory
 cd "$(dirname "$0")"
 
-# Pick the cuda13 image and pass the GPU on a GPU host
-VARIANT=""
-GPU_FLAGS=()
-if nvidia-smi >/dev/null 2>&1 &&
-  docker info -f '{{json .Runtimes}}' 2>/dev/null | grep -q '"nvidia"'; then
-  VARIANT="-cuda13"
-  GPU_FLAGS=(--gpus all)
-fi
-# --cpu or --cuda13 overrides the host's pick
-for arg in "$@"; do
-  case "$arg" in
-    --cpu) VARIANT="" ;;
-    --cuda13) VARIANT="-cuda13" ;;
-  esac
-done
-# The GPU is passed to the cuda13 image alone
-[ -n "${VARIANT}" ] || GPU_FLAGS=()
-
-# Detect architecture
-ARCH=$(uname -m)
-
-if [ "$ARCH" = "x86_64" ]; then
-  IMAGE_NAME="devanshdvj/act:v1.3${VARIANT}-amd64"
-elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
-  IMAGE_NAME="devanshdvj/act:v1.3${VARIANT}-arm64"
-else
-  echo "Error: Unsupported architecture: $ARCH"
-  exit 1
-fi
+# The image of this host, or of --cpu or --cuda13
+source ./image.sh "$@"
 
 USER_NAME="$(id -un)"
 HOST_UID="$(id -u)"

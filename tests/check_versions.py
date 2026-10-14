@@ -8,7 +8,7 @@ from importlib.metadata import version
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SCRIPTS = ['docker/build.sh', 'docker/cleanup.sh', 'docker/exec.sh', 'docker/run.sh']
+SCRIPTS = ['docker/image.sh']
 
 
 def read(path):
