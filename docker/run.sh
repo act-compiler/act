@@ -77,6 +77,21 @@ normalize_name() {
   printf '%s' "${prefix}${base}${suffix}"
 }
 
+# A new container's name, read, checked and normalized into NAME
+read_name() {
+  read -rp "$1" NAME_IN
+  if [ -z "${NAME_IN}" ]; then
+    echo "No name provided. Aborting."
+    exit 1
+  fi
+  if [[ ! "$NAME_IN" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
+    echo "Invalid name: $NAME_IN. Aborting."
+    echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*"
+    exit 1
+  fi
+  NAME="$(normalize_name "${NAME_IN}")"
+}
+
 # Create a persistent container
 create_persistent() {
   local name="$1"
@@ -133,17 +148,7 @@ fi
 # With --no-default and none yet, create one
 EXISTING="$(list_persistent_all)"
 if [ -z "${EXISTING}" ]; then
-  read -rp "No persistent containers found. Enter a name for the new persistent container (without suffix): " NAME_IN
-  if [ -z "${NAME_IN}" ]; then
-    echo "No name provided. Aborting."
-    exit 1
-  fi
-  if [[ ! "$NAME_IN" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
-    echo "Invalid name: $NAME_IN. Aborting."
-    echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*"
-    exit 1
-  fi
-  NAME="$(normalize_name "${NAME_IN}")"
+  read_name "No persistent containers found. Enter a name for the new persistent container (without suffix): "
   create_persistent "${NAME}"
   exit 0
 fi
@@ -171,18 +176,7 @@ done
 read -rp "Enter choice [0-${#NAMES[@]}]: " CHOICE
 case "$CHOICE" in
   0)
-    read -rp "Enter a name for the new persistent container (without suffix): " NAME_IN
-    if [ -z "${NAME_IN}" ]; then
-      echo "No name provided. Aborting."
-      exit 1
-    fi
-
-    if [[ ! "$NAME_IN" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
-      echo "Invalid name: $NAME_IN. Aborting."
-      echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*"
-      exit 1
-    fi
-    NAME="$(normalize_name "${NAME_IN}")"
+    read_name "Enter a name for the new persistent container (without suffix): "
     if docker ps -a --format '{{.Names}}' | grep -xq "${NAME}"; then
       echo "Container ${NAME} already exists. Aborting."
       exit 1
