@@ -69,9 +69,9 @@ while [ $# -gt 0 ]; do
             exit 0
             ;;
           *)
-            echo "Unknown flag: -${ch}"
-            echo
-            usage
+            echo "Unknown flag: -${ch}" >&2
+            echo >&2
+            usage >&2
             exit 1
             ;;
         esac
@@ -79,9 +79,9 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     *)
-      echo "Unknown argument: $1"
-      echo
-      usage
+      echo "Unknown argument: $1" >&2
+      echo >&2
+      usage >&2
       exit 1
       ;;
   esac
@@ -127,7 +127,7 @@ if [ "${IMAGE_EXISTS}" -eq 1 ] && [ "${REBUILD}" -eq 1 ]; then
             echo "--force confirmed: removing containers that reference ${IMAGE_NAME}."
             ;;
           *)
-            echo "--force not confirmed: Aborting."
+            echo "--force not confirmed: Aborting." >&2
             exit 1
             ;;
         esac
@@ -137,7 +137,7 @@ if [ "${IMAGE_EXISTS}" -eq 1 ] && [ "${REBUILD}" -eq 1 ]; then
       # Remove by container id
       docker ps -a --filter "ancestor=${IMAGE_NAME}" --format '{{.ID}}' | xargs -r docker rm -f
     else
-      echo "Rebuild requested but containers reference this image. Re-run with --rebuild --force to remove them automatically, or remove them manually. Aborting."
+      echo "Rebuild requested but containers reference this image. Re-run with --rebuild --force to remove them automatically, or remove them manually. Aborting." >&2
       exit 1
     fi
   else
