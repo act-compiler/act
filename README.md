@@ -67,7 +67,7 @@ The `cuda13` images set `XLA_PYTHON_CLIENT_PREALLOCATE=false`, so JAX allocates 
 | [v1.1](https://github.com/act-compiler/act/releases/tag/v1.1) | [v2.3](https://github.com/act-compiler/taidl/releases/tag/v2.3) | [v2.2](https://github.com/act-compiler/act-oracle/releases/tag/v2.2) | [v1.1](https://github.com/act-compiler/act-backend/releases/tag/v1.1) | [devanshdvj/act:v1.1](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.1) |
 | [v1.0](https://github.com/act-compiler/act/releases/tag/v1.0) | [v2.2](https://github.com/act-compiler/taidl/releases/tag/v2.2) | [v2.1](https://github.com/act-compiler/act-oracle/releases/tag/v2.1) | [v1.0](https://github.com/act-compiler/act-backend/releases/tag/v1.0) | [devanshdvj/act:v1.0](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.0) |
 
-ACT v1.3 moves the ecosystem to Python 3.14 and JAX 0.10.2.
+ACT v1.3 moves the ecosystem to Python 3.14, JAX 0.10.2, TAIDL-TO v2.5 and ACT-Backend v1.6.
 
 ## Testing
 
