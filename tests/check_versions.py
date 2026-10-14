@@ -20,14 +20,14 @@ if __name__ == '__main__':
     readme = read('README.md')
     failures = []
 
-    # The compatibility table: its columns, then the cells of each release, newest first
+    # The compatibility table: its columns, then each release, newest first
     section = readme.split('## Version Compatibility\n')[1].split('\n## ')[0]
     lines = [line for line in section.splitlines() if line.startswith('|')]
     table = [[cell.strip() for cell in line.strip('|').split('|')] for line in lines]
     columns, releases = [cell.lower() for cell in table[0]], table[2:]
     newest = dict(zip(columns, releases[0]))
 
-    # Each cell of the newest row links the release its label names
+    # Each newest-row cell links the release it names
     for column, cell in newest.items():
         link = re.fullmatch(r'\[(\S+)\]\((\S+)\)', cell)
         if not link or not link[2].endswith(link[1].rsplit(':', 1)[-1]):
@@ -65,7 +65,7 @@ if __name__ == '__main__':
         'its image cell': labels['docker image'],
     }
 
-    # The first place of each is the one the others are held to
+    # Every place of a name is held to its first
     for name, found in places.items():
         print(f'{name}: ' + ', '.join(f'{place} {value}' for place, value in found.items()))
         first_place, first = next(iter(found.items()))
