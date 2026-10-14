@@ -112,7 +112,7 @@ fi
 if [ "${IMAGE_EXISTS}" -eq 1 ] && [ "${REBUILD}" -eq 1 ]; then
   echo "--rebuild specified: will attempt to remove existing image ${IMAGE_NAME}."
   # Containers of the image, removed only with --force
-  CONTAINERS=$(docker ps -a --filter "ancestor=${IMAGE_NAME}" --format '{{.ID}}	{{.Names}}	{{.Status}}') || true
+  CONTAINERS=$(docker ps -a --filter "ancestor=${IMAGE_NAME}" --format '{{.ID}}	{{.Names}}	{{.Status}}')
   if [ -n "${CONTAINERS}" ]; then
     echo
     echo "Containers referencing image ${IMAGE_NAME}:"
