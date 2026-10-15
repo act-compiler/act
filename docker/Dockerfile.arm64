@@ -79,8 +79,7 @@ RUN ln -s $MINICONDA_DIR/envs/act/lib/libpython3*.so.1.0 /usr/local/lib/ && \
 # Install Rust (rustup)
 ENV RUSTUP_HOME=/opt/rustup
 ENV CARGO_HOME=/opt/cargo
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path && \
-  /opt/cargo/bin/rustup default stable && \
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain 1.99.0 && \
   chmod -R a+rx /opt/cargo /opt/rustup && \
   echo 'export PATH="/opt/cargo/bin:$PATH"' >> ~/.bashrc
 
