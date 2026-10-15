@@ -1,36 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-# Change to script directory
+# Work in the docker/ directory
 cd "$(dirname "$0")"
 
-# Pick the cuda13 image on a GPU host
-VARIANT=""
-if nvidia-smi >/dev/null 2>&1 &&
-  docker info -f '{{json .Runtimes}}' 2>/dev/null | grep -q '"nvidia"'; then
-  VARIANT="-cuda13"
-fi
-# --cpu or --cuda13 overrides the host's pick
-for arg in "$@"; do
-  case "$arg" in
-    --cpu) VARIANT="" ;;
-    --cuda13) VARIANT="-cuda13" ;;
-  esac
-done
+# The image of this host, or of --cpu or --cuda13
+source ./image.sh "$@"
 
-# Detect architecture
-ARCH=$(uname -m)
-
-if [ "$ARCH" = "x86_64" ]; then
-  IMAGE_NAME="devanshdvj/act:v1.3${VARIANT}-amd64"
-elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
-  IMAGE_NAME="devanshdvj/act:v1.3${VARIANT}-arm64"
-else
-  echo "Error: Unsupported architecture: $ARCH"
-  exit 1
-fi
-
-# collect candidate containers (all containers using the image)
+# Every container of the image
 mapfile -t CONTAINERS < <(docker ps -a --format '{{.ID}} {{.Names}} {{.Image}} {{.Status}}' | awk -v img="${IMAGE_NAME}" '$3 == img')
 
 NUM_CONTAINERS=${#CONTAINERS[@]}

@@ -1,39 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 
-# Change to script directory
+# Work in the docker/ directory
 cd "$(dirname "$0")"
-source act-env.env
+source ./act-env.env
 
-# Pick the cuda13 images on a GPU host, else the CPU ones
-VARIANT=""
-if nvidia-smi >/dev/null 2>&1 &&
-  docker info -f '{{json .Runtimes}}' 2>/dev/null | grep -q '"nvidia"'; then
-  VARIANT="-cuda13"
-fi
-# --cpu or --cuda13 overrides the host's pick
-for arg in "$@"; do
-  case "$arg" in
-    --cpu) VARIANT="" ;;
-    --cuda13) VARIANT="-cuda13" ;;
-  esac
-done
-
-# Detect architecture
-ARCH=$(uname -m)
-
-if [ "$ARCH" = "x86_64" ]; then
-  DOCKERFILE="Dockerfile.amd64"
-  IMAGE_NAME="devanshdvj/act:v1.3${VARIANT}-amd64"
-  ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_BUILD_TAG}${VARIANT}-amd64"
-elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
-  DOCKERFILE="Dockerfile.arm64"
-  IMAGE_NAME="devanshdvj/act:v1.3${VARIANT}-arm64"
-  ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_BUILD_TAG}${VARIANT}-arm64"
-else
-  echo "Error: Unsupported architecture: $ARCH"
-  exit 1
-fi
+# The image of this host, or of --cpu or --cuda13
+source ./image.sh "$@"
+# The Dockerfile and environment image of this architecture
+DOCKERFILE="Dockerfile.${ARCH}"
+ENV_IMAGE_NAME="devanshdvj/act-env:${ACT_ENV_BUILD_TAG}${VARIANT}-${ARCH}"
 
 usage() {
   cat <<EOF
@@ -50,7 +26,7 @@ Options:
 EOF
 }
 
-# Parse args
+# The options; image.sh reads --cpu and --cuda13
 ENV_ONLY=0
 REBUILD=0
 FORCE=0
@@ -79,7 +55,7 @@ while [ $# -gt 0 ]; do
       exit 0
       ;;
     -[!-]*)
-      # support combined short flags e.g. -rf or -rfy
+      # Combined short flags, as in -rf or -rfy
       flags="${1#-}"
       for ((i = 0; i < ${#flags}; i++)); do
         ch="${flags:i:1}"
@@ -116,7 +92,7 @@ if [ "${ENV_ONLY}" -eq 1 ]; then
   IMAGE_NAME="${ENV_IMAGE_NAME}"
 fi
 
-# Does an old image exist?
+# An existing image of the name
 if docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
   echo "Found existing image ${IMAGE_NAME}."
   IMAGE_EXISTS=1
@@ -125,19 +101,19 @@ else
   IMAGE_EXISTS=0
 fi
 
-# If image exists and user didn't ask to rebuild, just inform and exit
+# An existing image stays unless --rebuild is given
 if [ "${IMAGE_EXISTS}" -eq 1 ] && [ "${REBUILD}" -eq 0 ]; then
   echo
   echo "Image ${IMAGE_NAME} already exists. To replace it, re-run with --rebuild. Aborting."
   exit 0
 fi
 
-# If image exists and user asked to rebuild, attempt to remove it
+# --rebuild removes the existing image first
 if [ "${IMAGE_EXISTS}" -eq 1 ] && [ "${REBUILD}" -eq 1 ]; then
   echo "--rebuild specified: will attempt to remove existing image ${IMAGE_NAME}."
-  # List containers that reference this image (do not remove automatically unless --force)
+  # Containers of the image, removed only with --force
   CONTAINERS=$(docker ps -a --filter "ancestor=${IMAGE_NAME}" --format '{{.ID}}	{{.Names}}	{{.Status}}') || true
-  if [ -n "${CONTAINERS}" ]; then # Containers reference this image
+  if [ -n "${CONTAINERS}" ]; then
     echo
     echo "Containers referencing image ${IMAGE_NAME}:"
     echo -e "CONTAINER_ID\tNAME\tSTATUS"
@@ -158,13 +134,13 @@ if [ "${IMAGE_EXISTS}" -eq 1 ] && [ "${REBUILD}" -eq 1 ]; then
       else
         echo "--force and --no-confirm specified: removing containers that reference ${IMAGE_NAME}."
       fi
-      # remove by container id
+      # Remove by container id
       docker ps -a --filter "ancestor=${IMAGE_NAME}" --format '{{.ID}}' | xargs -r docker rm -f
     else
       echo "Rebuild requested but containers reference this image. Re-run with --rebuild --force to remove them automatically, or remove them manually. Aborting."
       exit 1
     fi
-  else # No containers reference this image
+  else
     echo
     echo "No containers reference ${IMAGE_NAME}."
   fi
@@ -180,7 +156,7 @@ build_stage() {
   docker build -f "${DOCKERFILE}" --target "$1" --build-arg ACT_ENV_TAG="${ACT_ENV_TAG}" --build-arg VARIANT="${VARIANT}" -t "$2" ..
 }
 
-# Build
+# The environment image alone, or the ecosystem on it
 if [ "${ENV_ONLY}" -eq 1 ]; then
   build_stage "env${VARIANT}" "${IMAGE_NAME}"
 else

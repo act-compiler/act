@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Run from docker/ directory
+# Work in the docker/ directory
 cd "$(dirname "$0")"
 
 CONTAINER_MOUNT="/workspace"
@@ -11,7 +11,7 @@ CHOWN_CONTAINER_NAME="act-chown-$$-${RANDOM}"
 UID_N="$(id -u)"
 GID_N="$(id -g)"
 
-# Use busybox (tiny image) to perform chown
+# Return the repository to the caller in a busybox container
 docker run --rm --name "${CHOWN_CONTAINER_NAME}" \
   -v "$(pwd)/..:${CONTAINER_MOUNT}:rw" \
   busybox:1.36 \

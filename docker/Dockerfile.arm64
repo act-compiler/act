@@ -2,12 +2,10 @@
 
 # Environment image tag, passed by build.sh from act-env.env
 ARG ACT_ENV_TAG
-# Image variant, empty for the CPU or -cuda13, passed by build.sh
+# Image variant, empty or -cuda13, passed by build.sh
 ARG VARIANT
 
-# -------------------------
-# Stage 1: base -- apt deps shared by builder + env stages
-# -------------------------
+# Stage 1: base, the apt packages the other stages share
 FROM ubuntu:24.04 AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -24,11 +22,7 @@ RUN apt-get update && \
   apt-get clean -y && \
   rm -rf /var/lib/apt/lists/*
 
-# -------------------------
-# Stage 2: ortools -- build OR-Tools from source (no official arm64 ubuntu prebuilt)
-#   All build-time clutter (source tree, vendored Abseil/protobuf builds) lives in this
-#   stage and is discarded; only /opt/ortools is copied into the env stage.
-# -------------------------
+# Stage 2: ortools, OR-Tools built from source
 FROM base AS ortools
 
 ENV ORTOOLS_DIR=/opt/ortools
@@ -50,9 +44,7 @@ RUN git clone --depth 1 --branch ${ORTOOLS_VERSION} https://github.com/google/or
   cmake --install /tmp/or-tools/build && \
   rm -rf /tmp/or-tools
 
-# -------------------------
-# Stage 3: env -- the environment image, without the act package
-# -------------------------
+# Stage 3: env, the environment image without the act package
 FROM base AS env
 
 # Install Miniconda
@@ -112,9 +104,7 @@ RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-# -------------------------
-# Stage 4: env-cuda13 -- the environment image with jax's CUDA 13 runtime
-# -------------------------
+# Stage 4: env-cuda13, the environment with jax's CUDA 13 runtime
 FROM env AS env-cuda13
 
 # Install jax's CUDA 13 runtime at the env's jax version
@@ -124,9 +114,7 @@ RUN . $MINICONDA_DIR/etc/profile.d/conda.sh && conda activate act && \
 # Let jax allocate GPU memory on demand
 ENV XLA_PYTHON_CLIENT_PREALLOCATE=false
 
-# -------------------------
-# Stage 5: ecosystem -- the act package on the environment image
-# -------------------------
+# Stage 5: ecosystem, the act package on the environment image
 FROM devanshdvj/act-env:${ACT_ENV_TAG}${VARIANT}-arm64 AS ecosystem
 
 # Install act-ecosystem package

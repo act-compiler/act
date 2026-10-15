@@ -77,7 +77,7 @@ def test_end_to_end(tmp_path, pytestconfig):
     hlo.write_text(KERNEL)
     subprocess.run([backend, '--input', hlo, '--output', assembly, '--log', log], check=True)
 
-    # The oracle, imported as a package from where it was generated
+    # The oracle, imported from its generated package
     oracle_dir = tmp_path / 'targets' / 'MM' / 'oracle'
     spec = importlib.util.spec_from_file_location(
         'oracle', oracle_dir / '__init__.py', submodule_search_locations=[str(oracle_dir)]
@@ -97,5 +97,5 @@ def test_end_to_end(tmp_path, pytestconfig):
     b = np.arange(16).reshape(4, 4) % 3
     outputs, _ = kernel('fsim')(jnp.array(a, jnp.bfloat16), jnp.array(b, jnp.bfloat16))
 
-    # Every product and sum is a small integer, exact in bf16
+    # Small integer products and sums are exact in bf16
     assert np.array_equal(np.asarray(outputs[0], np.float64), a @ b)
