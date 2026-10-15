@@ -15,6 +15,6 @@ dependencies:
   - pip
   - pytest
   - pip:
-      - jax==0.10.2
+      - jax==0.11.2
       - antlr4-python3-runtime==4.9.2
       - nanobind==2.8.0
