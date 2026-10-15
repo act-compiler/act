@@ -56,6 +56,7 @@ When `nvidia-smi` succeeds and Docker lists the `nvidia` runtime, the scripts pi
 `docker/build.sh --cpu` and `docker/build.sh --cuda13` build either variant on any host.
 `docker/exec.sh`, `docker/run.sh` and `docker/cleanup.sh` take the same two flags, as in `docker/exec.sh --cpu "<cmd>"`, the flag overriding the host's pick, and a CPU image is passed no GPU.
 The `cuda13` images need an NVIDIA driver of 580 or later and a GPU that CUDA 13 supports.
+The `cuda13` images set `XLA_PYTHON_CLIENT_PREALLOCATE=false`, so JAX allocates GPU memory on demand.
 
 ## Version Compatibility
 

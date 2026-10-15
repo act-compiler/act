@@ -8,7 +8,7 @@ ARG VARIANT
 # -------------------------
 # Stage 1: base -- apt deps shared by builder + env stages
 # -------------------------
-FROM ubuntu:jammy AS base
+FROM ubuntu:24.04 AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -121,6 +121,9 @@ FROM env AS env-cuda13
 # Install jax's CUDA 13 runtime at the env's jax version
 RUN . $MINICONDA_DIR/etc/profile.d/conda.sh && conda activate act && \
   pip install --no-cache-dir "jax[cuda13]==$(python -c 'import jax; print(jax.__version__)')"
+
+# Let jax allocate GPU memory on demand
+ENV XLA_PYTHON_CLIENT_PREALLOCATE=false
 
 # -------------------------
 # Stage 5: ecosystem -- the act package on the environment image
