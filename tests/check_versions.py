@@ -64,10 +64,6 @@ if __name__ == '__main__':
         'its ACT cell': labels['act'],
         'its image cell': labels['docker image'],
     }
-    places['environment'] = {
-        'docker/act-env.env': read('docker/act-env.env').strip().split('=')[1],
-        'running': f'py{sys.version_info.major}.{sys.version_info.minor}-jax{version("jax")}',
-    }
 
     # The first place of each is the one the others are held to
     for name, found in places.items():
