@@ -1,0 +1,10 @@
+root = true
+
+[*.sh]
+indent_style = space
+indent_size = 2
+switch_case_indent = true
+
+# The tutorials, kept as they are written
+[tutorials/**]
+ignore = true
