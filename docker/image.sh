@@ -23,7 +23,7 @@ case "$(uname -m)" in
   x86_64) ARCH=amd64 ;;
   arm64 | aarch64) ARCH=arm64 ;;
   *)
-    echo "Error: Unsupported architecture: $(uname -m)"
+    echo "Error: Unsupported architecture: $(uname -m)" >&2
     exit 1
     ;;
 esac

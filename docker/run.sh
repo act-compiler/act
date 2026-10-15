@@ -47,8 +47,8 @@ while [ $# -gt 0 ]; do
       exit 0
       ;;
     *)
-      echo "Unknown arg: $1"
-      usage
+      echo "Unknown arg: $1" >&2
+      usage >&2
       exit 1
       ;;
   esac
@@ -81,12 +81,12 @@ normalize_name() {
 read_name() {
   read -rp "$1" NAME_IN
   if [ -z "${NAME_IN}" ]; then
-    echo "No name provided. Aborting."
+    echo "No name provided. Aborting." >&2
     exit 1
   fi
   if [[ ! "$NAME_IN" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
-    echo "Invalid name: $NAME_IN. Aborting."
-    echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*"
+    echo "Invalid name: $NAME_IN. Aborting." >&2
+    echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*" >&2
     exit 1
   fi
   NAME="$(normalize_name "${NAME_IN}")"
@@ -116,7 +116,7 @@ attach_existing() {
 
 # The image must be built first
 if ! docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
-  echo "Image ${IMAGE_NAME} not found locally. Build it first with ./build.sh"
+  echo "Image ${IMAGE_NAME} not found locally. Build it first with ./build.sh" >&2
   exit 1
 fi
 
@@ -136,7 +136,8 @@ fi
 # With --persistent, the default container or a chosen one
 if [ "${NO_DEFAULT}" -eq 0 ]; then
   # The default name, unless --no-default
-  if docker ps -a --format '{{.Names}}' | grep -xq "${DEFAULT_PERSISTENT_NAME}"; then
+  LISTED=$(docker ps -a --format '{{.Names}}')
+  if grep -xq "${DEFAULT_PERSISTENT_NAME}" <<<"${LISTED}"; then
     attach_existing "${DEFAULT_PERSISTENT_NAME}"
     exit 0
   else
@@ -177,19 +178,20 @@ read -rp "Enter choice [0-${#NAMES[@]}]: " CHOICE
 case "$CHOICE" in
   0)
     read_name "Enter a name for the new persistent container (without suffix): "
-    if docker ps -a --format '{{.Names}}' | grep -xq "${NAME}"; then
-      echo "Container ${NAME} already exists. Aborting."
+    LISTED=$(docker ps -a --format '{{.Names}}')
+    if grep -xq "${NAME}" <<<"${LISTED}"; then
+      echo "Container ${NAME} already exists. Aborting." >&2
       exit 1
     fi
     create_persistent "${NAME}"
     ;;
   *)
     if ! [[ "$CHOICE" =~ ^[0-9]+$ ]]; then
-      echo "Invalid choice. Aborting."
+      echo "Invalid choice. Aborting." >&2
       exit 1
     fi
     if [ -z "${NAMES[$CHOICE]:-}" ]; then
-      echo "Invalid choice. Aborting."
+      echo "Invalid choice. Aborting." >&2
       exit 1
     fi
     SEL="${NAMES[$CHOICE]}"

@@ -15,6 +15,6 @@ GID_N="$(id -g)"
 docker run --rm --name "${CHOWN_CONTAINER_NAME}" \
   -v "$(pwd)/..:${CONTAINER_MOUNT}:rw" \
   busybox:1.36 \
-  sh -c "chown -R ${UID_N}:${GID_N} ${CONTAINER_MOUNT} || (echo \"Failed to change ownership.\" && exit 1)"
+  sh -c "chown -R ${UID_N}:${GID_N} ${CONTAINER_MOUNT}"
 
 echo "Ownership changed successfully."
