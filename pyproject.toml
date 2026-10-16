@@ -21,3 +21,14 @@ dependencies = [
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["act*"]
+
+[tool.ruff]
+line-length = 100
+# Python files alone, not markdown code blocks
+include = ["*.py"]
+# The tutorials, kept as they are written
+extend-exclude = ["tutorials"]
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "single"

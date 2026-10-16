@@ -88,6 +88,7 @@ ACT v1.3 moves the ecosystem to Python 3.14, JAX 0.10.2, TAIDL-TO v2.5 and ACT-B
 ```
 
 The CI builds the CPU image and runs the two checks in it, on amd64 and arm64.
+After the version check, the CI checks the formatting and lint against `pyproject.toml` and `.editorconfig` with `./docker/exec.sh "ruff format --check && ruff check && shfmt -d ."`.
 
 ## Repositories
 

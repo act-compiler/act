@@ -15,4 +15,4 @@ def generate_backend(*args, **kwargs):
     return act_backend.generate_backend(*args, **kwargs)
 
 
-__all__ = ['generate_oracle', 'generate_backend']
+__all__ = ['generate_backend', 'generate_oracle']

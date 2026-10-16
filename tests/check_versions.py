@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     # The installed packages' requirements, as pip reads them
     sys.stdout.flush()
-    if subprocess.run([sys.executable, '-m', 'pip', 'check']).returncode != 0:
+    if subprocess.run([sys.executable, '-m', 'pip', 'check'], check=False).returncode != 0:
         failures.append('pip check fails')
 
     if failures:
