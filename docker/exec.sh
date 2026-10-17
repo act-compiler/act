@@ -1,10 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-# Work in the docker/ directory
 cd "$(dirname "$0")"
 
-# A leading --cpu or --cuda13 overrides the host's pick
+# A leading --cpu or --cuda13 overrides the host's default
 source ./image.sh "${1:-}"
 case "${1:-}" in
   --cpu | --cuda13) shift ;;
