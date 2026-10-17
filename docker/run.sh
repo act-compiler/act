@@ -116,7 +116,7 @@ attach_existing() {
 
 # The image must be built first
 if ! docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
-  echo "Image ${IMAGE_NAME} not found locally. Build it first with ./build.sh" >&2
+  echo "Image ${IMAGE_NAME} not found locally. Build it first with ./docker/build.sh" >&2
   exit 1
 fi
 
