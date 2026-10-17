@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "act-ecosystem"
-version = "2.1"
+version = "2.2"
 description = "ACT: Accelerator Compiler Toolkit"
 requires-python = ">=3.14"
 license = "Apache-2.0"
@@ -14,8 +14,8 @@ authors = [
 readme = "README.md"
 dependencies = [
     "taidl @ git+https://github.com/act-compiler/taidl.git@v2.13",
-    "taidl-to @ git+https://github.com/act-compiler/act-oracle.git@v2.7",
-    "act-backend @ git+https://github.com/act-compiler/act-backend.git@v1.7",
+    "taidl-to @ git+https://github.com/act-compiler/act-oracle.git@v2.8",
+    "act-backend @ git+https://github.com/act-compiler/act-backend.git@v1.9",
 ]
 
 [tool.setuptools.packages.find]
