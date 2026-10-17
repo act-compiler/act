@@ -1,4 +1,4 @@
-"""ACT Generators - re-exports from generator packages"""
+"""ACT Generators - each generator, imported on call"""
 
 
 def generate_oracle(*args, **kwargs):
