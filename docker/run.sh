@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Work in the docker/ directory
+# Change to script directory
 cd "$(dirname "$0")"
 
 # The image of this host, or of --cpu or --cuda13
@@ -28,7 +28,7 @@ Options:
 EOF
 }
 
-# The options; image.sh reads --cpu and --cuda13
+# Parse args
 PERSISTENT=0
 NO_DEFAULT=0
 while [ $# -gt 0 ]; do
@@ -54,22 +54,22 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-# Every persistent container, named act-<base>-<username>
+# Helper: List all persistent containers of form act-<base>-<username>
 list_persistent_all() {
   docker ps -a --format '{{.Names}}\t{{.Image}}\t{{.Status}}' |
     awk -v user="${USER_NAME}" -F '\t' '$1 ~ ("^act-.*-"user"$") { print $0 }'
 }
 
-# A name normalized to act-<base>-<username>
+# Helper: Ensure name is normalized to: act-<base>-<username>
 normalize_name() {
   local raw="$1"
   local prefix="act-"
   local suffix="-${USER_NAME}"
 
-  # Drop a leading prefix
+  # remove leading prefix if present
   local base="${raw#${prefix}}"
 
-  # Drop a trailing suffix
+  # remove trailing suffix if present
   if [[ "${base}" == *"${suffix}" ]]; then
     base="${base%${suffix}}"
   fi
@@ -77,22 +77,7 @@ normalize_name() {
   printf '%s' "${prefix}${base}${suffix}"
 }
 
-# A new container's name, read, checked and normalized into NAME
-read_name() {
-  read -rp "$1" NAME_IN
-  if [ -z "${NAME_IN}" ]; then
-    echo "No name provided. Aborting." >&2
-    exit 1
-  fi
-  if [[ ! "$NAME_IN" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
-    echo "Invalid name: $NAME_IN. Aborting." >&2
-    echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*" >&2
-    exit 1
-  fi
-  NAME="$(normalize_name "${NAME_IN}")"
-}
-
-# Create a persistent container
+# Helper: Create persistent container
 create_persistent() {
   local name="$1"
   echo "Creating persistent container (will not be removed on exit) with name ${name}."
@@ -105,7 +90,7 @@ create_persistent() {
     "${IMAGE_NAME}"
 }
 
-# Restart an existing container
+# Helper: Restart an existing container
 attach_existing() {
   local name="$1"
   echo "Restarting persistent container (will not be removed on exit) with name ${name}."
@@ -114,7 +99,7 @@ attach_existing() {
   ./chown.sh >/dev/null
 }
 
-# The image must be built first
+# Ensure image exists
 if ! docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
   echo "Image ${IMAGE_NAME} not found locally. Build it first with ./docker/build.sh" >&2
   exit 1
@@ -133,9 +118,9 @@ if [ "${PERSISTENT}" -eq 0 ]; then
   exit 0
 fi
 
-# With --persistent, the default container or a chosen one
+# With --persistent, a persistent container
 if [ "${NO_DEFAULT}" -eq 0 ]; then
-  # The default name, unless --no-default
+  # default behavior: use default name
   if docker ps -a --format '{{.Names}}' | grep -xq "${DEFAULT_PERSISTENT_NAME}"; then
     attach_existing "${DEFAULT_PERSISTENT_NAME}"
     exit 0
@@ -145,10 +130,20 @@ if [ "${NO_DEFAULT}" -eq 0 ]; then
   fi
 fi
 
-# With --no-default and none yet, create one
+# If --no-default: interactive selection/creation
 EXISTING="$(list_persistent_all)"
 if [ -z "${EXISTING}" ]; then
-  read_name "No persistent containers found. Enter a name for the new persistent container (without suffix): "
+  read -rp "No persistent containers found. Enter a name for the new persistent container (without suffix): " NAME_IN
+  if [ -z "${NAME_IN}" ]; then
+    echo "No name provided. Aborting." >&2
+    exit 1
+  fi
+  if [[ ! "$NAME_IN" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
+    echo "Invalid name: $NAME_IN. Aborting." >&2
+    echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*" >&2
+    exit 1
+  fi
+  NAME="$(normalize_name "${NAME_IN}")"
   create_persistent "${NAME}"
   exit 0
 fi
@@ -176,7 +171,18 @@ done
 read -rp "Enter choice [0-${#NAMES[@]}]: " CHOICE
 case "$CHOICE" in
   0)
-    read_name "Enter a name for the new persistent container (without suffix): "
+    read -rp "Enter a name for the new persistent container (without suffix): " NAME_IN
+    if [ -z "${NAME_IN}" ]; then
+      echo "No name provided. Aborting." >&2
+      exit 1
+    fi
+
+    if [[ ! "$NAME_IN" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
+      echo "Invalid name: $NAME_IN. Aborting." >&2
+      echo "Supported Format: [a-zA-Z0-9][a-zA-Z0-9_.-]*" >&2
+      exit 1
+    fi
+    NAME="$(normalize_name "${NAME_IN}")"
     if docker ps -a --format '{{.Names}}' | grep -xq "${NAME}"; then
       echo "Container ${NAME} already exists. Aborting." >&2
       exit 1
