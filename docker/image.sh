@@ -27,4 +27,4 @@ case "$(uname -m)" in
     exit 1
     ;;
 esac
-IMAGE_NAME="devanshdvj/act:v2.2${VARIANT}-${ARCH}"
+IMAGE_NAME="devanshdvj/act:v2.3${VARIANT}-${ARCH}"
