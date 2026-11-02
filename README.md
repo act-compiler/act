@@ -26,7 +26,7 @@ The ACT Ecosystem consists of:
 ACT needs Python 3.14 or later.
 
 ```bash
-pip install git+https://github.com/act-compiler/act.git@v2.3
+pip install git+https://github.com/act-compiler/act.git@v2.4
 ```
 
 This installs the `act` package along with all components (TAIDL, TAIDL-TO, ACT-Backend).
@@ -65,6 +65,7 @@ The `cuda13` images set `XLA_PYTHON_CLIENT_PREALLOCATE=false`, so JAX allocates 
 
 | ACT                                                           | TAIDL                                                             | TAIDL-TO                                                               | ACT-Backend                                                             | Docker Image                                                                  |
 | ------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [v2.4](https://github.com/act-compiler/act/releases/tag/v2.4) | [v2.15](https://github.com/act-compiler/taidl/releases/tag/v2.15) | [v2.11](https://github.com/act-compiler/act-oracle/releases/tag/v2.11) | [v1.16](https://github.com/act-compiler/act-backend/releases/tag/v1.16) | [devanshdvj/act:v2.4](https://hub.docker.com/r/devanshdvj/act/tags?name=v2.4) |
 | [v2.3](https://github.com/act-compiler/act/releases/tag/v2.3) | [v2.14](https://github.com/act-compiler/taidl/releases/tag/v2.14) | [v2.10](https://github.com/act-compiler/act-oracle/releases/tag/v2.10) | [v1.12](https://github.com/act-compiler/act-backend/releases/tag/v1.12) | [devanshdvj/act:v2.3](https://hub.docker.com/r/devanshdvj/act/tags?name=v2.3) |
 | [v2.2](https://github.com/act-compiler/act/releases/tag/v2.2) | [v2.13](https://github.com/act-compiler/taidl/releases/tag/v2.13) | [v2.8](https://github.com/act-compiler/act-oracle/releases/tag/v2.8)   | [v1.9](https://github.com/act-compiler/act-backend/releases/tag/v1.9)   | [devanshdvj/act:v2.2](https://hub.docker.com/r/devanshdvj/act/tags?name=v2.2) |
 | [v2.1](https://github.com/act-compiler/act/releases/tag/v2.1) | [v2.13](https://github.com/act-compiler/taidl/releases/tag/v2.13) | [v2.7](https://github.com/act-compiler/act-oracle/releases/tag/v2.7)   | [v1.7](https://github.com/act-compiler/act-backend/releases/tag/v1.7)   | [devanshdvj/act:v2.1](https://hub.docker.com/r/devanshdvj/act/tags?name=v2.1) |
@@ -73,6 +74,7 @@ The `cuda13` images set `XLA_PYTHON_CLIENT_PREALLOCATE=false`, so JAX allocates 
 | [v1.1](https://github.com/act-compiler/act/releases/tag/v1.1) | [v2.3](https://github.com/act-compiler/taidl/releases/tag/v2.3)   | [v2.2](https://github.com/act-compiler/act-oracle/releases/tag/v2.2)   | [v1.1](https://github.com/act-compiler/act-backend/releases/tag/v1.1)   | [devanshdvj/act:v1.1](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.1) |
 | [v1.0](https://github.com/act-compiler/act/releases/tag/v1.0) | [v2.2](https://github.com/act-compiler/taidl/releases/tag/v2.2)   | [v2.1](https://github.com/act-compiler/act-oracle/releases/tag/v2.1)   | [v1.0](https://github.com/act-compiler/act-backend/releases/tag/v1.0)   | [devanshdvj/act:v1.0](https://hub.docker.com/r/devanshdvj/act/tags?name=v1.0) |
 
+ACT v2.4 moves the ecosystem to TAIDL v2.15, TAIDL-TO v2.11 and ACT-Backend v1.16.
 ACT v2.3 moves the ecosystem to TAIDL v2.14, TAIDL-TO v2.10 and ACT-Backend v1.12.
 ACT v2.2 moves the ecosystem to TAIDL-TO v2.8 and ACT-Backend v1.9.
 ACT v2.1 moves the ecosystem to an environment of Ubuntu 24.04, Python 3.14 and JAX 0.11.2, with TAIDL v2.13, TAIDL-TO v2.7 and ACT-Backend v1.7.
