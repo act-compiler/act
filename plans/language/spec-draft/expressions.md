@@ -12,36 +12,27 @@ A semantics refers to attributes and state only inside backticks.
 | --- | --- | --- | --- |
 | computational attribute | `@c.<name>` | an entry of `computation_attr` | every place |
 | addressing attribute | `@a.<name>` | an entry of `addressing_attr` | a start and a constraint |
-| state variable | `@s.<name>` | a state variable of `add_initial_state` | every place |
+| state variable | `@s.<name>` | a state variable of `add_state` | every place |
 
 - A reference names an attribute of its own instruction or a declared state variable; any other name is rejected.
-- An addressing attribute in any other place is undefined; the front end does not yet reject it (S9).
+- An addressing attribute in any other place is rejected with `SyntaxError` (S9).
 - The target of a state update is a state variable.
 
 ## S6.2 Integer arithmetic
 
-- An integer literal is decimal, unsigned, and has no leading zero.
-- The operators are `+`, `-`, `*`, `/`, `%`, unary `-`, and parentheses, with precedence as S3.2 gives.
-- Every integer an expression reads or computes is a signed 64-bit integer.
+- An integer literal is decimal and unsigned; it is `0` or has no leading zero.
+- An integer literal is at most 2^63 - 1, so the least signed 64-bit value is written `-9223372036854775807 - 1`.
+- The operators are `+`, `-`, `*`, `/`, `%`, unary `-`, and parentheses, with precedence as the expression grammar gives (S3).
+- An expression is evaluated in exact integer arithmetic, with no intermediate overflow.
 - `/` is floor division: `floor(a / b)`, so `15 / 2` is 7 and `-7 / 2` is -4.
 - `%` is the remainder with the sign of the divisor, so `a == (a / b) * b + a % b`.
-- A literal outside signed 64 bits, and a `/` or `%` whose right operand is the literal `0`, are rejected.
-- A computed divisor of 0 is undefined (S1.3).
-- A computed integer outside signed 64 bits is implementation-defined (S1.3).
-- TAIDL-TO computes such an integer exactly and warns.
-- ACT-Backend leaves an instruction unselected where an operand's size overflows.
-- A constraint whose arithmetic overflows does not hold.
+- A `/` or `%` whose right operand is exactly the token `0` is rejected; `(0)`, `-0`, and a computed 0 are faults (S1.3.2).
+- A start, size, shape dimension, operation attribute value, comparison operand, or state update whose final value lies outside signed 64 bits is a fault (S1.3.1).
 - There is no `//`, `**`, `not`, function such as `min`, or conditional value, and an update has no `+=`.
 
 ## S6.3 Conditions
 
-- A condition is one or more comparisons joined by `and` and `or`, with parentheses, as S3.2 gives.
+- A condition is one or more comparisons joined by `and` and `or`, with parentheses, as the expression grammar gives.
 - A comparison is two expressions joined by one of `==`, `!=`, `<`, `<=`, `>`, `>=`.
+- Every comparison of a condition is evaluated, left to right, with no short circuit; a fault in any of them is a fault of the issue.
 - An example: `@a.x + @c.n <= @a.y or @a.y + 64 <= @a.x`.
-
-## Parsed trees
-
-- The front end parses each text when the call that takes it runs, and keeps its tree beside the text.
-- `constraint_asts` and `update_asts` hold one tree per constraint and per update.
-- `instr_input_asts` and `instr_output_asts` hold each region with one tree per start and per size.
-- `instr_expression_asts` maps each backtick expression's node in `instr_semantics_ast` to its tree.

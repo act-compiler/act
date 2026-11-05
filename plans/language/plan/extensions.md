@@ -2,22 +2,26 @@
 
 These items extend TAIDL so it can describe the main accelerator families from industry and academia.
 Each names the motivating designs, the smallest generic construct, and its cost; none changes the grammar this quarter without its own review.
-Sizes assume two engineers; every item marked breaking ships together in the TAIDL v3 release with a migration note.
+Sizes assume the shared 3-4 engineers; every item marked breaking ships together in the TAIDL v3 release with a migration note.
 
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
 | L17 | Low-precision and block-scaled element types, `scaled_dot` | L2, L3 | M | Q1 |
-| L18 | Write masks on output regions | L3, L24 | M | Q2 |
-| L19 | Strided regions | L5 | M | Q2 |
-| L20 | `convolution` with window attributes | L3 | M | Q2 |
-| L21 | Rounding and saturation attributes on `convert` | L3 | S | Q1 |
-| L22 | Sub-computations for `reduce`, `scatter`, `sort`, `map` | L3 | L | Q2 |
-| L23 | Indirect regions: starts read from a data model | L19 | M | Q2 |
-| L24 | Multi-core and async DMA idioms, documented without syntax | L1 | S | Q1 |
+| L18 | Write masks on output regions | L3, L24 | M | after v3 |
+| L19 | Strided regions | L5 | M | after v3 |
+| L20 | `convolution` with window attributes | L3 | M | after v3 |
+| L21 | Rounding and saturation attributes on `convert` | L3 | S | after v3 |
+| L22 | Sub-computations for `reduce`, `scatter`, `sort`, `map` | L3 | L | cut from v3 |
+| L23 | Indirect regions: starts read from a buffer | L5 | M | late Q2 |
+| L24 | Multi-core, async DMA, mask, stride, and saturation idioms, documented without syntax | L1 | S | Q1 |
+
+- An item deferred "after v3" has an idiom that describes it today (L24); it returns when a second real ISA description needs the syntax.
+- L22 names no accelerator and is the change that lets bodies into the grammar; it is cut from v3.
+- The general rule that an extension needs two case studies is pending panel (R59).
 
 ## L17 Low-precision and block-scaled element types, `scaled_dot`
 
-- What: add `f4e2m1fn`, `f6e2m3fn`, `f6e3m2fn`, `f8e8m0fnu`, `s1`, `u1`, and XLA's `scaled_dot` (block scales per operand).
+- What: add `f4e2m1fn`, `f8e8m0fnu`, and XLA's `scaled_dot` (block scales per operand); `f6e2m3fn`, `f6e3m2fn`, `s1`, and `u1` wait for a second named user.
 - Changes: `TYPE` in `IDLV2.g4`, `TYPES` in `taidl/data_model.py`, `OPERATIONS`; existing types kept.
 - Breaking: no, additive.
 - Benefits: covers MX formats on NVIDIA Blackwell tensor cores, AMD XDNA2, Trainium2 and Gaudi3 FP8, and binary networks.
@@ -84,13 +88,13 @@ Sizes assume two engineers; every item marked breaking ships together in the TAI
 
 ## L23 Indirect regions
 
-- What: a start given as a value read from another region, as in a gather from a data model.
+- What: a start given as a value read from another region, as in a gather from a buffer.
 - Changes: region starts in `taidl/instruction.py`; expression starts stay valid.
 - Breaking: no, additive.
 - Benefits: covers Trainium indirect DMA, NVIDIA TMA gather, embedding lookups on MTIA and TPU SparseCore.
 - Caveats: starts are no longer known before the instruction runs; B's allocator loses static addresses.
 - Fail points: placement marks become unsound; notice by rejecting marks on indirect regions.
-- Order and dependencies: after L19.
+- Order and dependencies: after L5 and L17; the second extension of v3.
 - Verification: embedding-lookup example runs in O.
 
 ## L24 Multi-core and async DMA idioms

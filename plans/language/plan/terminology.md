@@ -9,8 +9,12 @@ Sizes assume two engineers; every item marked breaking ships together in the TAI
 | --- | --- | --- | --- | --- |
 | L25 | Reconcile the glossary with the terminology reference | L1 | S | Q1 |
 | L26 | Apply the glossary to the taidl docs and error messages | L25 | M | Q1 |
-| L27 | Apply the glossary to B, O, and A docs | L25, B, O, A | M | Q1 |
-| L28 | Banned-synonym lint | L26 | S | Q2 |
+| L27 | Apply the glossary to B, O, and A docs | L25 | M | owned by B, O, A |
+| L28 | Banned-synonym lint | L26 | S | after v3 |
+
+- Owner decisions 19-21 fix buffer, state, `hbm`, region, and `@s.`; they override the reconciled glossary where it differs.
+- L27 is listed for its dependency only; the B, O, and A tracks plan and size it.
+- L28 waits until the banned lists settle, since an allow list per file would grow with every exception.
 
 ## L25 Reconcile the glossary with the terminology reference
 
@@ -18,7 +22,7 @@ Sizes assume two engineers; every item marked breaking ships together in the TAI
 - Changes: `docs/glossary.md`; terms that agree are kept.
 - Breaking: no.
 - Benefits: terms match what the community already reads.
-- Caveats: API names (`add_data_model`, `computation_attr`) fix some terms until L15.
+- Caveats: API names such as `computation_attr` fix some terms until the renames pending panel (R2) are settled.
 - Fail points: two terms for one concept survive; notice by L28.
 - Order and dependencies: first; disagreements are recorded as D entries.
 - Verification: every concept in the reference has one glossary row or a recorded disagreement.

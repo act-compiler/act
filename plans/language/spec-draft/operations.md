@@ -119,10 +119,12 @@ This section is S8.2, operands and operation attributes per operation.
 ## S8.3 Element types per operation
 
 - Each operation word accepts the element types of its row below, checked at its first operand, or at its result when it has no operand.
+- `select` is checked at its second operand, since its first is `pred`; `clamp` at its second, the operand it bounds.
+- `compare` and `is_finite` are checked at their operands, though the result is `pred`.
 - `dot` accepts them at both operands and at its result.
 - The floats are the `f` and `bf` types; the integers are the `s` and `u` types; every element type is a float, an integer, or `pred`.
 - The start indices of `dynamic_slice`, `dynamic_update_slice`, and `gather` are integers.
-- An element type outside a word's row is undefined (S1.3); the front end does not check it.
+- An element type outside a word's row is an error in the ISA description; a generator rejects it until the front end checks it (plan item L12).
 
 | element types              | operation words                                                                                                                                                                                                                                                                                                                                                     |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

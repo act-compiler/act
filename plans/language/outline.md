@@ -1,6 +1,6 @@
 # TAIDL spec outline
 
-Section ids are stable; other tracks cite them as `S<n>` or `S<n>.<m>`.
+Section ids are stable; other tracks cite them as `S<n>` or `S<n>.<m>`, and S1.3 rows as `S1.3.<n>`.
 Each section lives in the `taidl/docs/` page named beside it.
 
 | id | title | file |
@@ -8,7 +8,7 @@ Each section lives in the `taidl/docs/` page named beside it.
 | S1 | Scope, conformance, and notation | `overview.md` |
 | S1.1 | Conforming front end | `overview.md` |
 | S1.2 | Conforming generator and unsupported features | `overview.md` |
-| S1.3 | Undefined and implementation-defined behavior | `overview.md` |
+| S1.3 | Faults and defined behavior | `overview.md` |
 | S2 | Lexical structure | `grammar.md` |
 | S2.1 | Semantics tokens | `grammar.md` |
 | S2.2 | Expression tokens | `grammar.md` |
@@ -18,15 +18,17 @@ Each section lives in the `taidl/docs/` page named beside it.
 | S4 | Declarations | `declarations.md` |
 | S4.1 | Names | `declarations.md` |
 | S4.2 | Accelerator | `declarations.md` |
-| S4.3 | Data models and the off-chip memory `d0` | `declarations.md` |
-| S4.4 | State variables | `declarations.md` |
+| S4.3 | Buffers and the hbm buffer `d0` | `declarations.md` |
+| S4.4 | State | `declarations.md` |
 | S4.5 | Declaration order | `declarations.md` |
+| S4.6 | Object model | `object_model.md` |
 | S5 | Instructions | `instructions.md` |
 | S5.1 | Instruction attributes | `instructions.md` |
 | S5.2 | Regions: inputs and outputs | `instructions.md` |
 | S5.3 | Constraints | `instructions.md` |
-| S5.4 | State updates and execution order | `instructions.md` |
+| S5.4 | State updates | `instructions.md` |
 | S5.5 | In-place and placement marks | `instructions.md` |
+| S5.6 | Programs and issues | `execution.md` |
 | S6 | Expressions | `expressions.md` |
 | S6.1 | References `@a.`, `@c.`, `@s.` and where each may appear | `expressions.md` |
 | S6.2 | Integer arithmetic | `expressions.md` |

@@ -1,8 +1,8 @@
 # Grammar
 
 This page is S2 and S3 of the spec.
-The ANTLR4 grammars `taidl/antlr4/IDLV2.g4` (semantics) and `taidl/antlr4/IDLV2Expr.g4` (expressions) are normative.
-The rules below are copied from them; where the two disagree, the `.g4` file holds.
+The ANTLR4 grammars are normative and are not copied here: `taidl/antlr4/IDLV2.g4` (semantics) and `taidl/antlr4/IDLV2Expr.g4` (expressions), in the `taidl` repo at the release this spec describes.
+This page states what the rules do not show at a glance: token precedence, entry rules, and operator binding.
 
 ## S2 Lexical structure
 
@@ -19,13 +19,16 @@ The rules below are copied from them; where the two disagree, the `.g4` file hol
 | `TYPE` | one of the 19 element type words of S7.3 | |
 | `OPERATION` | one of the operation words of S8.1 | |
 | symbols | `= ( ) { } [ ] : ; ,` | |
-| `INT` | `[0-9]+` | unsigned; leading zeros allowed |
-| `NUMBER` | `-?` then digits with optional `.digits` and exponent, or `inf` or `nan` | a bare unsigned integer is `INT`, not `NUMBER` |
-| `EXPRESSION` | a backtick, any characters but a backtick, a backtick | its inside is parsed by S3.2 |
+| `INT` | `[0-9]+` | decimal; leading zeros do not change its value |
+| `NUMBER` | `-?` then digits with optional `.digits` and exponent, or `-?` then `inf` or `nan` | a bare unsigned integer is `INT`, not `NUMBER` |
+| `EXPRESSION` | a backtick, any characters but a backtick, a backtick | its inside is parsed by the expression grammar |
 | `IDENTIFIER` | optional `%`, then `[a-zA-Z_]`, then `[a-zA-Z0-9_.]*` | may contain dots |
+| `COMMENT`, `WS` | `//` to end of line; whitespace | skipped |
 | `ERROR_CHAR` | any other single character | no rule accepts it, so the text is rejected |
 
 ### S2.2 Expression tokens
+
+- Tokens are matched longest first; at equal length, the earlier rule in the table wins.
 
 | token | form | note |
 | --- | --- | --- |
@@ -34,10 +37,11 @@ The rules below are copied from them; where the two disagree, the `.g4` file hol
 | `COMPUTATIONAL` | `@c.` then a name | a reference to a computational attribute |
 | `STATE` | `@s.` then a name | a reference to a state variable |
 | `ASSIGN` | `=` | only in a state update |
-| comparisons | `== != < <= > >=` | |
+| comparisons | `== != < <= > >=` | grammar rule `compare` |
 | arithmetic | `+ - * / %` and `( )` | |
-| `INT` | `0` or `[1-9][0-9]*` | unsigned; no leading zero |
+| `INT` | `0` or `[1-9][0-9]*` | decimal, unsigned; no leading zero |
 | `WORD` | a name | no rule accepts it, so the text is rejected |
+| `WS` | whitespace | skipped |
 | `ERROR_CHAR` | any other single character | rejected |
 
 - A name in an expression is `[a-zA-Z_][a-zA-Z0-9_]*`: unlike a semantics `IDENTIFIER`, it has no dot.
@@ -46,37 +50,13 @@ The rules below are copied from them; where the two disagree, the `.g4` file hol
 
 ### S3.1 Semantics grammar
 
-The entry rule is `module`.
-The rule `instruction` is one line of a semantics (S7.1), not an instruction of S5.
-
-```antlr
-module          : ENTRY LBRACE instruction+ RBRACE EOF ;
-
-instruction     : ROOT? IDENTIFIER EQUAL result_type OPERATION LPAREN operands? RPAREN attributes? SEMICOLON? ;
-
-result_type     : TYPE LBRACKET shape? RBRACKET ;
-
-operands        : operand (COMMA operand)* ;
-operand         : value ;
-
-attributes      : COMMA attribute (COMMA attribute)* ;
-attribute       : name EQUAL attribute_value ;
-
-attribute_value : brace_list | slice_list | value ;
-brace_list      : LBRACE (value (COMMA value)*)? RBRACE ;
-slice_list      : LBRACE LBRACKET value COLON value (COLON value)? RBRACKET (COMMA LBRACKET value COLON value (COLON value)? RBRACKET)* RBRACE ;
-
-shape           : dim (COMMA dim)* ;
-dim             : INT | EXPRESSION ;
-
-value           : INT | NUMBER | IDENTIFIER | EXPRESSION ;
-
-name            : IDENTIFIER | OPERATION ;
-```
+- The entry rule of `IDLV2.g4` is `module`.
+- The rule `instruction` is one line of a semantics (S7.1), not an instruction of S5.
+- The rule `name` accepts `IDENTIFIER` or `OPERATION`, so an attribute name such as `slice` is read by its text.
 
 ### S3.2 Expression grammar
 
-The front end parses each text by the entry rule of its place:
+The front end parses each text by the entry rule of its place in `IDLV2Expr.g4`:
 
 | place | entry rule |
 | --- | --- |
@@ -85,29 +65,7 @@ The front end parses each text by the entry rule of its place:
 | a constraint | `constraint_text` |
 | a state update | `update_text` |
 
-```antlr
-// One entry per place: a value, a constraint, an update
-expression_text : expression EOF ;
-constraint_text : condition EOF ;
-update_text     : update EOF ;
-
-// A state variable takes a value
-update          : STATE ASSIGN expression ;
-
-// A value: an integer, by rising precedence
-expression      : additive ;
-additive        : multiplicative ((PLUS | MINUS) multiplicative)* ;
-multiplicative  : unary ((STAR | SLASH | PERCENT) unary)* ;
-unary           : MINUS unary | atom ;
-atom            : INT | reference | LPAREN expression RPAREN ;
-reference       : ADDRESSING | COMPUTATIONAL | STATE ;
-
-// A condition: true or false, by rising precedence
-condition       : conjunction (OR conjunction)* ;
-conjunction     : comparison (AND comparison)* ;
-comparison      : additive compare additive | LPAREN condition RPAREN ;
-```
-
 - `*`, `/`, and `%` bind tighter than `+` and `-`; each binary operator groups from the left.
+- Unary `-` binds tighter than every binary operator.
 - `and` binds tighter than `or`.
 - A comparison takes exactly two operands, so `0 <= @c.n < 8` is rejected.
