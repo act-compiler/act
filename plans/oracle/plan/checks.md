@@ -2,14 +2,17 @@
 
 `taidl_to/generic/shapes.py` (543 lines) and the checks in `oracle_visitor.py` and `semantic_generator.py` restate language rules that every generator needs.
 Under owner decision 16 every run-time violation must be detected and reported, and today several are not.
-This plan deletes dead code, fixes error classes, moves static rules to the front end, and closes the call-time gaps.
+Under owner decision 40 the oracle stops only on invalid assembly code or binary input, with an error naming the instruction and the clause, and otherwise runs correctly.
+This plan deletes dead code, fixes error classes, moves static rules to the front end through shared item U4, closes the call-time gaps, and audits every raise site against decision 40.
 
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
 | O5 | Delete the dead branch and the dead `sh_copy` check | none | S | Q1 |
 | O6 | Spec errors raise `ValueError`; S8.3 table from the front end | L3 | S | Q1 |
-| O7 | Move static checks to the front end: shapes, region values, constant ranges, `compare` type | L12, B23, O6 | M | Q2 |
-| O24 | Call-time errors: checked 64-bit values, overlapping outputs, constraint overflow | L5, L6, O20 | S | Q1 |
+| O7 | Delete the oracle's static checks; run the front end's; copy its shape module | U4, O6 | M | Q2 |
+| O24 | Call-time errors: checked 64-bit values, constraint overflow, initial state | L5, L6, O20 | S | Q1 |
+| O26 | Unwritten on-chip reads raise at the call; zero fill goes | L5, O20 | M | Q2 |
+| O31 | Failure policy: errors only on invalid input, naming instruction and clause; audit every raise site | O6, O20 | M | Q1 |
 
 ## O5 Dead code
 
@@ -26,38 +29,75 @@ This plan deletes dead code, fixes error classes, moves static rules to the fron
 ## O6 Error classes and the S8.3 table
 
 - Breaking: yes.
-- Changes: `taidl_to/oracle_visitor.py`, `README.md`, `tests/test_refusals.py`; preserves which ISA descriptions are rejected.
-- What: a word at a type outside its S8.3 row and a non-integer start index are spec errors; raise `ValueError`, not `NotImplementedError` (`oracle_visitor.py:254-264`).
-- What: when the front end exports the S8.3 table, import it and delete `TYPES` (`oracle_visitor.py:19-97`), equal to it row by row today.
-- Benefits: `NotImplementedError` then means only an oracle gap, which `docs/coverage.md` lists.
+- Changes: `taidl_to/oracle_visitor.py`, `README.md`, `tests/test_refusals.py`; preserves which ISA specifications are rejected.
+- What: a spec error raises `ValueError`; `NotImplementedError` means only a coverage gap (Q5.8); this part lands now.
+- What: a reserved name raises `ValueError` naming the name and the reserved list (D30); the architect can rename it.
+- What: a word at a type outside its S8.3 row and a non-integer start index are spec errors (`oracle_visitor.py:254-264`).
+- What: once U4 generates the S8.3 table, import it and delete `TYPES` (`oracle_visitor.py:19-97`); this part is a named exit test of U4's taidl step (Q8.4).
 - Caveats: the exception class is public contract (`README.md:54-71`); tests assert it.
 - Fail points: a test expecting `NotImplementedError` fails loudly; update it with the README.
 - Order and dependencies: L3 states the table; the class change lands first.
 - Verification: `grep -n NotImplementedError taidl_to` lists only coverage gaps.
 
-## O7 Static checks to the front end
+## O7 Static checks from the front end
 
 - Breaking: yes.
-- Changes: `taidl_to/generic/shapes.py`, `taidl_to/semantic_generator.py`, `taidl_to/oracle_visitor.py`; preserves each rule and the call-time entry point `disagreement`.
-- What: move to the front end the literal-shape rules of `shapes.py` (`RULES` at `shapes.py:450`), the region value type and count check (`semantic_generator.py:41-56`), the `compare` type fit (`oracle_visitor.py:276-283`), literal shape rules (`oracle_visitor.py:285-289`) and the constant range check (`oracle_visitor.py:373-389`).
-- What: the oracle keeps only call-time evaluation of shapes given by expressions, calling the front end's rule functions.
-- Benefits: every generator rejects the same ISA descriptions; `semantic_generator.py` shrinks to the visitor call.
-- Caveats: the generated oracle needs the rules at run time, so it imports or vendors the front end's module at a pinned taidl version.
-- Fail points: verdicts differ between the two copies during migration; run both on every test ISA description and diff verdicts.
-- Order and dependencies: L12 builds the checker; B23 consumes it; after O6.
-- Verification: same verdict per test ISA description, old and new.
+- Changes: `taidl_to/generic/shapes.py`, `taidl_to/semantic_generator.py`, `taidl_to/oracle_visitor.py`, `taidl_to/generator.py`; preserves each verdict and the call-time entry `disagreement`.
+- What: a consumer deletion under U4: U4 moves the rules into taidl; this item deletes the oracle's copies (Q3.1, Q8.4).
+- What: the region, type, compare-fit, literal-shape, and constant-range checks run in the front end at generation (Q5.8).
+- What: the copies deleted are `RULES` (`shapes.py:450`), `semantic_generator.py:41-56`, `oracle_visitor.py:276-289` and `oracle_visitor.py:373-389`.
+- What: the generator copies the front end's shape module into each generated oracle, stamped with its taidl version (owner decision 25, Q3.7).
+- What: the oracle keeps call-time evaluation of shapes given by expressions, through the copied module, and faults at the call (Q3.6).
+- Benefits: every generator rejects the same ISA specifications; `semantic_generator.py` shrinks to the visitor call.
+- Caveats: the copied module imports nothing from `taidl` or ANTLR; a test imports it alone and asserts `antlr4` is not loaded.
+- Fail points: verdicts differ between the two copies during migration; run both on every test ISA specification and diff verdicts.
+- Order and dependencies: after U4's taidl step and O6; U4 owns the size of the move.
+- Verification: same verdict per test ISA specification, old and new; a drift test compares the copy with the source at the stamped version.
 
 ## O24 Call-time errors
 
 - Breaking: yes.
 - Changes: `runtime/` checks, `runtime/decorator.py`, `tests/`.
-- What: every addressing value past signed 64 bits raises at the call, replacing `warn_width`'s `UserWarning` (`generic/utils.py:268-271`); today state-update results (`templates.txt:363`) and constraint arithmetic (`templates.txt:353-360`) are not checked at all.
-- What: two output regions of one call that overlap raise at the call, from their concrete regions; today nothing checks it.
-- What: a constraint whose arithmetic leaves 64 bits does not hold, as S6.2 says; today it is evaluated exactly and can hold.
+- What: every intermediate of an addressing value, state update or constraint is a checked signed 64-bit integer on concrete values (Q5.3, Q1.2).
+- What: the check walks the expression tree as parsed, never the canonical sum of products of `utils.py:54-65`.
+- What: an overflow raises at the call; `warn_width`'s `UserWarning` (`generic/utils.py:268-271`) goes; state-update results (`templates.txt:363`) and constraints (`templates.txt:353-360`) are not checked today.
+- What: an overflowing constraint raises the same error class as a broken constraint, with the overflow named (Q5.3, Q1.12).
 - What: an initial state value outside signed 64 bits is rejected (`api_generator.py:43-44` stores it exactly).
+- What: two output regions of one call that overlap violate an implicit constraint of the list that O10 checks.
 - What: one test per S1.3 case, each naming its row.
+- What: a test calls an instruction with a negative addressing attribute and a start `1024 - @a.addr_out`, and expects only the evaluated address to be checked (owner decision 34).
 - Benefits: every addressing violation is detected and reported, as decision 16 requires.
-- Caveats: without O20 the checks run on the symbolic loop values per iteration.
-- Fail points: a false rejection of a value that never overflows; property-test against exact arithmetic.
-- Order and dependencies: L5 and L6 state the rules; after O20 when it lands.
+- Fail points: a false rejection of a value that never overflows; property-test against exact arithmetic with `hypothesis`.
+- Order and dependencies: L5 and L6 state the rules; after O20.
 - Verification: the S1.3 test set green; `grep -n UserWarning runtime` empty.
+
+## O26 Unwritten on-chip reads
+
+- Breaking: yes.
+- Changes: `runtime/` checks, `taidl_to/templates/templates.txt`, `tests/`.
+- What: a read of an on-chip element that no earlier instruction of the kernel wrote raises at the call; `d0` holds the caller's `hbm` in full (Q1.4).
+- What: the oracle tracks the written set on the host with a boolean mask per buffer, from the concrete regions after O20.
+- What: the zero-fill prologue (`templates.txt:469-470`, `sh_zeros`) goes.
+- Benefits: an oracle pass no longer certifies a kernel that reads stale storage.
+- Caveats: a stale read of a buffer reused across kernels is not caught, since "written" means written during the kernel.
+- Caveats: decision 40 stops the oracle only on invalid assembly code; the item stands only if L5 states an unwritten read as a violation, and real hardware may allow it (decision 31); the owner confirms.
+- Fail points: example kernels that read before writing now fail; each needs a zeroing first instruction.
+- Order and dependencies: L5 states the rule; after O20, so every region is concrete.
+- Verification: a test reads one unwritten element and expects the error; the examples pass.
+
+## O31 Failure policy
+
+- Breaking: yes.
+- Changes: `taidl_to/oracle_visitor.py`, `taidl_to/generic/`, `runtime/`, `README.md`, `tests/`; preserves every error on invalid input.
+- What: the oracle's errors are of two kinds, and no third path exists.
+- What: a generation error rejects a problem the architect can correct, such as a typo, a reserved name or an invalid ISA specification, with a clear message (O6, O7).
+- What: a call-time error rejects invalid assembly code, and later invalid binary input; its first line names the instruction and the clause id (S1.3.x), with the iteration when a loop is unrolled.
+- What: audit every `raise`, `assert`, warning and jax or MLIR exception that can reach a caller (grep `raise`, `assert`, `NotImplementedError`, `TypeError`); give each a row: kind, input class, clause.
+- What: a path that raises on valid input is a bug, fixed or listed in `bugs.md`: D28 and D29 today; a path that computes a wrong result on valid input is the same class (D11, D19, D21).
+- What: an exception from jax or MLIR is never the user-facing error: wrap it, name the instruction, and treat it as a bug unless the input was invalid (D20).
+- What: the README lists the error classes and states the policy in one place (`README.md:54-71`).
+- Benefits: an oracle pass or stop always means something about the kernel.
+- Caveats: the exception class is public contract (O6); changes land with the README and the migration note.
+- Fail points: an input class missing from the audit; generate valid kernels with `hypothesis` and assert no exception outside the table.
+- Order and dependencies: after O6 and O20, since unrolling deletes D11, D19, D20, D28 and D29 at the source.
+- Verification: the audit table has no row of kind "valid input"; the property test is green; each invalid-input test asserts instruction and clause in the message.

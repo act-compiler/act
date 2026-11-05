@@ -41,7 +41,7 @@ The weak parts are duplicated language rules, a string-template layer, a hand-wr
 | `template.py` | 156 | reshape | Keep `generate_code`, `indent_code`, `dict_text`; drop `layout` and its splitter (O18). |
 | `templates/templates.txt` | 470 | reshape | Runtime code moves to `runtime/` (O1); per-word templates become emitter calls (O3); `while` emission goes (O20). |
 | `generic/utils.py` | 989 | reshape | Loop algebra deleted (O20); the rest split by role (O1). |
-| `generic/shapes.py` | 543 | reshape | Rules are correct and needed; literal-shape rules move to the front end (O7), call-time entry stays. |
-| `generic/decorator.py` | 217 | keep, reshape | Kernel API and checks stay; jax configuration dropped (O12); excess precision off (O21). |
-| `xla-debug/` | 170 | keep | Small FFI print handler, built per generation. |
+| `generic/shapes.py` | 543 | reshape | Rules are correct and needed; they move to the front end through U4 and come back as a copy at generation (O7); call-time entry stays. |
+| `generic/decorator.py` | 217 | keep, reshape | Kernel API and checks stay; jax configuration dropped (O12); XLA flags per compile (O21). |
+| `xla-debug/` | 170 | keep | Small FFI print handler, built per generation today; built once per install and jax version (O28). |
 | `docs/` and `README.md` | 325 | reshape | `docs/coverage.md` added; `docs/operations.md` folded into it (O14). |

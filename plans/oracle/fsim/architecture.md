@@ -112,6 +112,6 @@ Not in the repo:
 - A failed submit or execute becomes the pipeline's sticky error, rethrown by the next submit or sync (`fsim/src/pipeline.cc:443-447`, `fsim/src/pipeline.cc:461-467`).
 - A module whose results differ from the state is refused at compile (`fsim/src/pipeline.cc:337-356`).
 - A bad knob refuses the command line and exits 1 (`fsim/src/pipeline.cc:411-421`).
-- Data-dependent faults are the driver's job; the library has no error-flag channel.
+- Tensor data never faults, so no error-flag channel is needed; addressing faults are the driver's job.
 - The NKI driver checks memory limits per allocation and per `nc_matmul` at trace time, naming the record's line (`drivers/nki/design.md:303-316`).
 - It refuses an unknown kind, a bad record or a refused view loudly (`drivers/nki/design.md:47`).

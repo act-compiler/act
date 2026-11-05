@@ -68,7 +68,7 @@ On fsim the same kernel would run as follows:
 | Declaration and call-time checks | a driver's job; NKI does its own in `Limits.cpp` | `act-oracle/taidl_to/generic/decorator.py:64-139`, `drivers/nki/design.md:303-316` |
 | Shape module (decision 25) | fsim checks only result shapes against state | `fsim/src/pipeline.cc:337-356` |
 | Debug print handler | fsim registers no FFI target, so a `print_handler` custom call has no target | `act-oracle/taidl_to/templates/templates.txt:290`, `act-oracle/taidl_to/generic/decorator.py:49-52` |
-| Numerics norms and error flags | emitted in the module by the generator | `plans/oracle/plan/lowering.md`, `plans/oracle/plan/fidelity.md` |
+| Numerics norms and fixed data values | emitted in the module by the generator | `plans/oracle/plan/lowering.md`, `plans/oracle/plan/fidelity.md` |
 | Sub-byte and `pred` element types | fsim's `ElementType` lacks `u2`, `u4`, `s2`, `s4`, `pred` | `act-oracle/taidl_to/generic/utils.py:851-871`, `fsim/include/fsim/tensor.h:11-26` |
 
 - Sub-byte types matter only for a state tensor; inside a module any StableHLO type is legal.
@@ -81,11 +81,11 @@ On fsim the same kernel would run as follows:
 | Malformed module, failed pass, failed compile | throw with PJRT or pass diagnostics (`fsim/src/runtime.cc:87-101`, `fsim/README.md:121`) | map the module back to the instructions it holds |
 | Result not matching state | refused at compile (`fsim/src/pipeline.cc:337-356`) | nothing |
 | Addressing or region violation | none in the library | trace-time checks on concrete values, as O24 plans and NKI does (`drivers/nki/design.md:303-316`) |
-| Data-dependent element fault | none in the library | an error-flag state tensor written in the module and read after `sync` |
+| Data-dependent element fault | none in the library | nothing: tensor data never faults, and the norm table's fixed values (O23) cover the cases |
 | Value StableHLO leaves open | none; XLA's value | the norm table's guards in the emitted module |
 
 - Library errors name a PJRT call, never an instruction, so the driver owns the instruction-level message.
-- `@main` must return exactly the state, so an O23 flag cannot be an extra result; it has to be a state tensor.
+- `@main` must return exactly the state, and the module needs no error flag, since tensor data never faults.
 - A sticky error stops the pipeline, so no later module runs after a fault (`fsim/src/pipeline.cc:461-467`).
 - No race is modelled: execution is one program order (`drivers/nki/design.md:379`).
 
@@ -95,8 +95,8 @@ On fsim the same kernel would run as follows:
 - That aliasing is a performance property of the whole state and does not express an instruction's mark.
 - Under `xla-` compilers there is no aliasing attribute; the old buffers are destroyed after execute instead (`fsim/src/pipeline.cc:391-394`).
 - In a byte-arena state, decision 17 is a write of the output into the marked input's region of the same buffer.
-- Decision 22 holds in the module: a semantics function that reads every input before its write gives one defined value for `r0 = r1 + r0`.
+- The pre-state rule holds in the module: a semantics function that reads every input before its write gives one defined value for `r0 = r1 + r0` (panel 9).
 - The NKI driver reads its views, computes, then writes, the same order act-oracle uses (`drivers/nki/design.md:249`).
 - Decision 24 is a static check in the generator or front end, since a cross-buffer pair names two state tensors; fsim needs no change.
-- Panel 5's overlap rules stay call-time checks on concrete windows, which a driver computes before emitting (`plans/meeting/panel-5/decision.md:86-106`).
+- The overlap constraints stay call-time checks on concrete windows, which a driver computes before emitting any load (`plans/meeting/panel-9/decision.md`).
 - In fsim two allocations at the same address alias by construction (`drivers/nki/design.md:294`), so overlap is real storage, not an emission accident.

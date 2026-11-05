@@ -1,6 +1,6 @@
 # Response to the round-1 reviews
 
-Dispositions: accepted, partly, rejected, or pending panel (depends only on a tech-lead ruling, which the panels settle).
+Dispositions: accepted, partly, or rejected.
 Evidence is the review's own `file:line`, re-read where the response rests on it.
 `V` is the verification review, `C` the critic, `A` the architect.
 
@@ -26,7 +26,7 @@ Evidence is the review's own `file:line`, re-read where the response rests on it
 | V `bitcast_convert` byte order missing | accepted | Not stated anywhere. | coverage-table.md, O22 |
 | V float `convert` overflow missing | accepted | XLA's value today. | coverage-table.md, O22 |
 | V initial state outside 64 bits | accepted | `api_generator.py:43-44` stores it exactly. | coverage-table.md, D23, O24 |
-| V overlapping output regions | accepted | No check under `taidl_to/`. | coverage-table.md, D22, O24 |
+| V overlapping output regions | accepted | No check under `taidl_to/`; Q9.1 makes it an implicit constraint. | coverage-table.md, D22, O10 |
 | V `@a.` outside a start or constraint | accepted | `expression_writer.py:100` reads it anywhere; L10 rejects it. | coverage-table.md |
 | V constraint arithmetic overflow | accepted | Exact evaluation at `T:353-360` contradicts S6.2. | coverage-table.md, O24 |
 | V computed divisor of 0 | accepted | `U:78-80`, `T:359-360`. | coverage-table.md |
@@ -47,7 +47,7 @@ Evidence is the review's own `file:line`, re-read where the response rests on it
 | C O3 conditional on O2, one function per instruction | accepted | Plan's own debugging argument. | O3 |
 | C O8 emit decimal verbatim if MLIR reads it exactly | partly | Pinned jaxlib not checked; hex bits from `Fraction` work regardless. | O8 |
 | C O9 decide norm first, CPU is reference | accepted | `README.md:163` holds CPU bit-exact. | O9, O14 |
-| C O10 settled by decision 17 | accepted | Owner decision 17. | O10 |
+| C O10 settled by decision 17 | partly | Decision 17 gives the tie; Q9.2 and Q9.3 add the constraint list, the default and the pre-state value. | O10 |
 | C O11 fold D19, D20 | accepted | Same code `U:214-252`. | O11 |
 | C O12 test whether x64 is needed | accepted | x64 serves only `decorator.py:188`. | O12 |
 | C O13 smaller, NumPy from tests, `Fraction` literals | accepted | Existing references in tests. | O13 |
@@ -56,8 +56,8 @@ Evidence is the review's own `file:line`, re-read where the response rests on it
 | C lowering and enumeration rulings keep | partly | Lowering kept; enumeration replaced by unrolling on A's evidence. | decisions.md |
 | C `xla_allow_excess_precision` | accepted | No XLA flag set; softmax chains at `bf16` (`mini_trn.py:101-104`). | D24, O21 |
 | C numerics norm table owned by L | accepted | Decision 16 needs each case defined. | O22; L needs an item |
-| C `dot` relies on XLA upcast; test asserts single rounding | partly | Fact accepted (`tests/test_mini_trn.py:91-92`); widening waits on the norm. | O22 |
-| C in-module detection of data-dependent errors | accepted | Checks run before tracing (`U:651-806`). | O23 |
+| C `dot` relies on XLA upcast; test asserts single rounding | accepted | Q5.2: the module widens to `f32`; the test holds a bound (`tests/test_mini_trn.py:51-55,91-92`). | O27, O22 |
+| C in-module detection of data-dependent errors | rejected | Tensor data never faults (joint decision of panels 1 and 5); fixed values. | O23 |
 | C normative-platform statement | accepted | No such statement exists. | O14 |
 | C version pin as fidelity contract | accepted | `pyproject.toml:18-19` pins jax. | O13 |
 | C placement marks over every iteration | rejected | Already done: marks append constraints, checked per iteration (`IC:36`, C12). | none |
@@ -72,7 +72,7 @@ Evidence is the review's own `file:line`, re-read where the response rests on it
 | A one thin function per instruction, one record | accepted | Matches the debugging argument. | O2, O3 |
 | A generic form for all words | accepted | `U:477-571` restate one pattern. | O3 |
 | A language columns of the word table to the front end | accepted | `TYPES` equals S8.3 (D7). | O3, O6, O7 |
-| A StableHLO interpreter over NumPy | partly | NumPy references exist in tests; the interpreter is a new dependency needing owner approval. | O13 |
+| A StableHLO interpreter over NumPy | rejected | Q5.7 and owner decision 28: NumPy references and module-text goldens; no interpreter. | O13 |
 | A split `utils.py` after deleting loop algebra | accepted | Avoids moving deleted code. | O1 after O20 |
 | A O3 earlier, size M | accepted | Generic form shrinks it. | O3 |
 | A O4 fold into O3 | accepted | `PRETTY`, `op_to_template` go with O3. | O4 |
@@ -80,15 +80,15 @@ Evidence is the review's own `file:line`, re-read where the response rests on it
 | A O6 pair with front-end S8.3 export | accepted | Already its dependency. | O6 |
 | A O7 widen: region, ranges, compare, literal shapes | accepted | `semantic_generator.py:41-56`, `OV:276-289,373-389`. | O7 |
 | A O8, O9 keep | accepted | | O8, O9 |
-| A O10 alias check at the call | partly | Storage reuse per decision 17; error only on count or type mismatch; pairing is L5's. | O10 |
+| A O10 alias check at the call | partly | Decision 24 rejects a cross-buffer pair at declaration; same-buffer pairs are constraints checked at the call (Q9.2). | O10 |
 | A O11 replaced by unrolling plus checked i64 | accepted | Contingent on O19. | O11, O20, O24 |
 | A S1.3 case audit | accepted | Decision 16. | O24, coverage-table.md |
 | A O12 over-engineered | accepted | `decorator.py:23` moot given `U:604`. | O12 |
 | A O14-O17 later, O16 early | accepted | Avoids renaming deleted code. | overhaul.md |
 | A O18 keep early | accepted | | overhaul.md |
 | A element norms guarded in the emitter | accepted | | O22 |
-| A addressing errors at the call, elements always defined | partly | Element cases may also be errors, detected in the module. | O23 |
-| A per-generation C++ build | partly | `generator.py:72-84` confirmed; not on the v3 path, left open. | none |
+| A addressing errors at the call, elements always defined | accepted | Addressing errors at the call (Q5.3); element cases take fixed values. | O24, O23 |
+| A per-generation C++ build | accepted | Q5.9: built once per install and jax version; `generator.py:72-84` takes no ISA input. | O28 |
 
 ## Rulings
 
@@ -96,16 +96,19 @@ Evidence is the review's own `file:line`, re-read where the response rests on it
 | --- | --- | --- | --- |
 | R28, R30, R31, R32, R33, R35, R37 | accepted | Applied on the A and C evidence above, not on the ruling. | as above |
 | R38 i64 overflow at the call | accepted | A's S1.3 row and decision 16. | O24 |
-| R29 differential reference choice | pending panel | NumPy first on C's evidence; interpreter optional. | O13 |
-| R36 keep `kernel` | pending panel | No change planned either way. | none |
-| R3, R4, R10, R12 | pending panel | The oracle already behaves so; no change made. | none |
-| R5 alias by identical region text, drop `set_inplace` | pending panel | Plan follows decision 17 only. | none |
-| R8, R56, R57 numerics and literal norms | pending panel | O22 and O8 enforce whatever norm L states. | none |
-| R39, R44, R55, R58, R62, R6 | pending panel | Import form, clause ids, the word "fault", mark removal, item merge, pin. | none |
+| R29 differential reference choice | accepted | Q5.7 and owner decision 28: NumPy references and goldens, no interpreter. | O13 |
+| R36 keep `kernel` | accepted | No change planned. | none |
+| R3, R4, R10, R12 | accepted | The oracle already behaves so. | none |
+| R5 alias by identical region text, drop `set_inplace` | rejected | Q5.6 and owner decision 22 keep the mark; Q9.3 rejects identical text without it. | O10 |
+| R8 accumulation norm | partly | Q5.2: a bound, with `f32` widening in the module; its first clause is dropped. | O27, O22 |
+| R56 constraint overflow | accepted | Q5.3 and Q1.12: one error class, overflow named. | O24 |
+| R57 literal norm | accepted | Q5.5 and Q1.10: exact parse, one rounding, hex bits. | O8 |
+| R39 shape-module delivery | accepted | Owner decision 25 and Q3.7: copied at generation, stamped. | O7 |
+| R62 item sizing | accepted | Q3.1 and Q8.4: U4 carries the move; O6 an exit test, O7 a consumer deletion. | O6, O7 |
+| R55 atomicity | accepted | Q1.12; faults depend on attributes, state and region text, so the check precedes any load and needs no in-module flag. | O10, O23 |
+| R58 mark removal | rejected | Owner decision 30 keeps markers as shorthand; Q9.2 defines their expansions. | O10 |
+| R44, R6 | accepted | Clause id on line 1; releases pin released versions (owner decision 33). | none |
 
-## Objections for the panels
+## Open for the owner
 
-- R8: a per-word tolerance makes the oracle a band, while the CPU goldens are bit-exact today (`README.md:163`); an oracle-side widening that rounds once would keep it exact.
-- R56: "a final value outside 64 bits faults" conflicts with S6.2's "an overflowing constraint does not hold"; one rule must win.
-- R62: one M item for O6, O7, L3 and L12 undercounts the widened O7, which alone touches `shapes.py` (543 lines) and three visitor checks.
-- R55: "writes no region and no state" needs a commit-after-check run for data-dependent errors (O23), a cost the ruling does not size.
+- Q5.1: the stress kernel's trip count, instruction count, compile-time limit and op-count cap, set before O19 runs.

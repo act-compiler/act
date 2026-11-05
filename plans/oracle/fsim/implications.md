@@ -22,9 +22,9 @@ Paths start at the fsim-lib repo root; `act-oracle/` and `plans/` name the other
 | O9 `f16` `triangular_solve` | carries, reworked | Same XLA 0.11.2, but fsim's CPU compile forces `xla_backend_optimization_level=1` (`fsim/src/compile_options.cc:54-63`); remeasure there. |
 | O21 no excess precision | carries, reworked | The per-op test carries; on fsim the flag is one more row in `kCompilerFlags` (`fsim/src/compile_options.cc:54-63`). |
 | O22 norm table | carries | Guards are emitted ops; fsim adds no rounding of its own. |
-| O23 in-module error flags | carries, reworked | `@main` must return exactly the state (`fsim/src/pipeline.cc:325-358`), so the flag becomes a state tensor. |
+| O23 fixed values for data cases | carries | Guards are emitted ops; no error flag exists, so `@main` returning exactly the state (`fsim/src/pipeline.cc:325-358`) is no constraint. |
 | O24 call-time errors | carries | Concrete trace-time checks; the NKI driver does the same (`drivers/nki/design.md:303-316`). |
-| O10 in-place marks | carries | Decisions 17, 22 and 24 are lowering and check rules; fsim's own aliasing is buffer-level (`fsim/passes/passes.cc:101-110`). |
+| O10 overlap constraints and in-place marks | carries | Decisions 17, 24 and 31 and panel 9 are lowering and check rules; fsim's own aliasing is buffer-level (`fsim/passes/passes.cc:101-110`). |
 | O11 wrapping starts | moot | Only if O20 fails, as today. |
 | O12 drop jax configuration | interim | No jax runs in an fsim process; the globals and `device_put` vanish (`act-oracle/taidl_to/generic/decorator.py:22-23`, `act-oracle/taidl_to/generic/decorator.py:188`). |
 | O13 differential reference | carries | Compares results over the record; it can also compare the two engines. |
@@ -47,7 +47,7 @@ Paths start at the fsim-lib repo root; `act-oracle/` and `plans/` name the other
 | Q5.3 checked i64 addressing | carries | Trace-time arithmetic; a C++ driver needs checked builtins for the same rule. |
 | Q5.4 norm table | carries | As O22 and O23. |
 | Q5.5 `Fraction` literals | carries | Generation-time work; the emitted hex bits are engine-independent. |
-| Q5.6 in-place and overlap | carries | Decision 24 settles the cross-buffer pairing: rejected statically. |
+| Q5.6 in-place and overlap | carries | Decision 24 settles the cross-buffer pairing: rejected statically; same-buffer pairs are constraints (panel 9). |
 | Q5.7 NumPy reference | carries | Engine-independent. |
 | Q5.8 shape module, decision 25 | carries, reworked | The copy lands in a Python oracle; a C++ path needs the shapes checked at generation or ported. |
 | Q5.9 order B, C, A | carries | The order holds; its C++ debug handler is interim. |

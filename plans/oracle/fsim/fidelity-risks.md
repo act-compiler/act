@@ -32,11 +32,12 @@ Paths under `fsim/` are the upload; paths under `taidl_to/` are the current orac
 | XLA options | `xla_backend_optimization_level=1` and the GPU options are per compiler, so CPU and GPU results may differ in rounding, as the oracle already documents for `sqrt` and `triangular_solve` | float rounding | `fsim/src/compile_options.cc:55-62`, `taidl_to/README.md:87-88`, `:151` |
 | integer semantics | the passes never change integer ops, so wrap stays XLA's; `power` reads the low six bits of the exponent and loop steps wrap at i64 | integer overflow | `taidl_to/docs/operations.md:105`, `taidl_to/README.md:141` |
 
-## Read-before-write within an instruction
+## Load and store order within an instruction
 
-- The oracle emits a store as `dynamic_update_slice` of the buffer value after its loads are `dynamic_slice`s of the same value (`taidl_to/generic/utils.py:813-843`), so SSA order already encodes read-before-write.
+- TAIDL assumes no hazard model (decision 31): a permitted input-output overlap gets the semantics on the pre-issue state, and a failed constraint is a fault before any load (panel 9).
+- The oracle emits a store as `dynamic_update_slice` of the buffer value after its loads are `dynamic_slice`s of the same value (`taidl_to/generic/utils.py:813-843`), so SSA order fixes loads before stores.
 - `fsim-order-reads` preserves that order and adds a barrier so XLA does too (`fsim/passes/order_reads.cc:86-143`).
-- The risk is a read emitted after the store in SSA, which the pass hoists above it (`order_reads.cc:100-116`); decision 22 says that case is the instruction's own choice, so the emitter must not rely on the pass to pick.
+- The risk is a read emitted after the store in SSA, which the pass hoists above it (`order_reads.cc:100-116`); every read sees the pre-issue state, so the emitter puts every load before the store itself and does not rely on the pass.
 - A second update of the same buffer in one block makes the pass leave the buffer as is (`order_reads.cc:31-34`), so XLA's own analysis decides, which is the public behavior today.
 
 ## Faults and decision 16
@@ -55,7 +56,7 @@ Paths under `fsim/` are the upload; paths under `taidl_to/` are the current orac
 | disjoint hop | store A, store B over part of A's bytes, load A's window; compare with jax |
 | dead update erased | store A, load A, store B covering A; the load must see A |
 | dead faulting update | store past the region then overwrite it fully; expect the fault |
-| order-reads hoist | `r0 = r1 + r0` style instruction with the read after the write in SSA; compare both orders with the TAIDL semantics |
+| order-reads hoist | `r0 = r1 + r0` style instruction with the read after the write in SSA; expect the semantics on the pre-issue state |
 | cross-buffer alias | a module returning state tensor 1 in result slot 0; expect `check_outputs` to fail |
 | batch accumulation | the same kernel at `--batch 1` and `--batch 16` with `sets = 1`; the agreement check must pass bitwise, and f32 sums compare to jax within the `operations.md` bounds |
 | scalar select | a per-member predicate kernel at `--batch 2` with two differing sets; outputs must differ |
