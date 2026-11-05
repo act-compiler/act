@@ -9,6 +9,7 @@ Paths are relative to /home/user.
 - One operation table drives the form checks of every word (taidl/taidl/operations.py:41-165), and the backend already reads it rather than copying it (act-backend/act_backend/isel_ir2isa_rewrites_rs_generator.py:253).
 - Reference checks resolve `@a.`, `@c.`, `@s.` against declarations at parse time (taidl/taidl/instruction.py:340-358), so neither generator re-checks names.
 - Placement marks are compiled into ordinary constraints with their trees (taidl/taidl/instruction.py:190-231), so generators see one constraint form.
+- Markers stay as shorthand for the constraints they stand for; the expansion is `same` plus a recorded tie, and the front end emits one constraint list and one pair-relation record (Q9.2).
 - The data model rejects bad dims and types at the edge (taidl/taidl/accelerator.py:37-43).
 
 ## Generators
@@ -28,4 +29,4 @@ Paths are relative to /home/user.
 - The umbrella checks that every version it names agrees (act/tests/check_versions.py:31-60).
 - The ANTLR tool and runtime are pinned together (taidl/taidl/antlr4/generate.sh:7-8; taidl/pyproject.toml:15).
 - The four repos share one image tag and one runner pattern (taidl/docker/act.env:3; act/docker/act-env.env:2).
-- An end-to-end test runs both generators on one ISA description (act/tests/test_end_to_end.py:69-78).
+- An end-to-end test runs both generators on one ISA specification (act/tests/test_end_to_end.py:69-78).

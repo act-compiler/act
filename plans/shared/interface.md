@@ -1,7 +1,8 @@
 # Interface: what the generators consume from taidl
 
 Both generators take an `Accelerator` and read the parsed `Instruction` objects directly.
-There is no serialized intermediate form: the contract is the Python attribute set of three classes plus the ANTLR parse trees.
+There is no serialized intermediate form: the contract today is the Python attribute set of three classes plus the ANTLR parse trees.
+The tables below are the current surface; U2 replaces it with a typed model under the L15 member names.
 
 ## Accelerator and data model
 
@@ -48,7 +49,21 @@ There is no serialized intermediate form: the contract is the Python attribute s
 | Lazy umbrella entry points | act/act/generators/__init__.py:4-15 | act/act/generators/__init__.py:4-15 |
 | Re-exported classes | act/act/taidl/__init__.py:3 | act/act/taidl/__init__.py:3 |
 
-## Documentation of the contract
+## Target contract (U2, U3)
+
+- A documented typed model of the classes above, plus a typed node model for lines, operands, attributes, and integer expressions.
+- ANTLR trees stay reachable and are marked unstable.
+- `CONTRACT_VERSION` names the member list; a removed member is deprecated for one minor release.
+- `validate()` attaches per-line result type and dims, folded sizes, the value-to-region map, and the call site as typed members.
+- Each of those members raises when read before `validate()` has run.
+- `fold` and `literal_fits` are listed contract functions; the shape-rule functions are not.
+- A serialized form is added at the second non-Python consumer.
+- `inplace` and `placed` carry the markers `set_inplace`, `set_apart`, and `set_no_partial_overlap`; `set_may_overlap` is added; each expands to the constraints it stands for (Q9.2).
+- Layer members: a declared type per attribute, the encoding block per instruction, and the derived-attribute links; each is absent when its layer is absent, and the oracle and backend read types as implicit constraints.
+- Generator metadata: a read-only namespace-keyed mapping on the accelerator, each buffer, and each instruction; a generator reads its own namespace and ignores the others.
+- The front end also records per input-output pair its relation and the tie; the backend reads that record.
+
+## Documentation of the contract today
 
 - Only the tree attributes are documented: taidl/docs/expressions.md:42-47 names `constraint_asts`, `update_asts`, `instr_input_asts`, `instr_output_asts`, `instr_expression_asts`.
 - `comp_attr`, `parameters`, `inplace`, `placed`, `array_dim_str`, the magic `d0`, and the attribute order of `OPERATIONS` are undocumented.

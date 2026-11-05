@@ -21,7 +21,8 @@ The classes agree with act-oracle's `TYPES` table (oracle_visitor.py:13-97).
 parameter(k)              see T-PARAM in typing.md
 constant(lit) : t[d*]     lit a number and t in F + I, or lit in {true,false} and t = pred,
                           or lit = `e` and t in I + B; every element is lit at t (operation_meaning.md:95)
-                          a number outside t's range is ill-typed (spec_checks.py:286-299 agrees)
+                          a number outside t's range is ill-typed (spec_checks.py:286-299 agrees);
+                          a float literal is rounded once from its exact decimal, and one that rounds to an infinity is ill-typed
 iota() iota_dimension=j : t[d*]      t in F + I, 0 <= j < |d*|
 ```
 

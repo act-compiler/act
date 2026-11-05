@@ -80,8 +80,9 @@ T-PARAM     %In<k> = t[d*] parameter(k)   requires  t = t_m of In_k and d* ~ sha
 T-OUT       %Out<k> : t[d*]   requires  t = t_m of Out_k and d* ~ shape(Out_k)                        (NEW in FE)
 ```
 
-- Element counts under `~` compare symbolically: equal after evaluating every dim and size for every attribute assignment allowed by the constraints.
-- A front end that cannot decide `~` symbolically checks it when every dim and size is a literal, and a generator checks it at issue (act-oracle `check_tile`, utils.py:733-746).
+- The front end rejects a literal mismatch of `~`, accepts dims equal after `fold` or with identical text, and treats every other dim as compatible; it has no symbolic normalizer.
+- A generator checks dims over `@c.` at issue (act-oracle `check_shapes`, utils.py:771-786), and the backend faults at selection when a declared and a computed dim are bound and differ.
+- `validate()` publishes the derived per-line type and dims as typed members that raise before it runs.
 
 ## Constraints and updates
 
@@ -89,7 +90,9 @@ T-OUT       %Out<k> : t[d*]   requires  t = t_m of Out_k and d* ~ shape(Out_k)  
 WF-CONSTR   each K_j : bool under G_i; Sg                     instruction.py:325-329 (FE), with @a. allowed
 WF-UPDATE   each W_j : upd under G_i; Sg                      instruction.py:80 (FE)
 WF-INPLACE  |ip| = |In|; no input both in place and placement-marked          instruction.py:163-172 (FE)
-WF-INPLACE= ip_k  ==>  In_k and Out_0 name the same model and the same start texts   NEW  (see holes.md H1)
+WF-INPLACE= a mark pairs an input and an output of one buffer; across buffers it is rejected    NEW  (owner decision 24)
+            the mark expands to constraints (owner decision 30): set_inplace is same(In k, Out) plus the tie; set_apart is apart; set_no_partial_overlap is same or apart; set_may_overlap is empty
+            an undeclared same-buffer pair gets set_no_partial_overlap; identical input and output text without set_inplace is rejected
 WF-MARK     a placement mark needs |Out| = 1 and inputs in Out_0's model       instruction.py:190-208 (FE)
 ```
 

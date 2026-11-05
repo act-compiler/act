@@ -8,7 +8,7 @@
 - One table drives operand and attribute checks: `OPERATIONS` (`taidl/taidl/operations.py:42-164`), with one row per word and one function per check (`:171-239`).
 - One function checks every name (`taidl/taidl/names.py:7-14`).
 - Placement marks give one message per condition and replace what they appended before (`instruction.py:178-253`).
-- The first fault is reported with its token (`Fault = tuple[CommonToken, str]`, `operations.py:167-168`); a checker can return a list later without a redesign.
+- The first fault is reported with its token (`Fault = tuple[CommonToken, str]` today, renamed `Rejection`; `operations.py:167-168`); a checker can return a list later without a redesign.
 
 ## act-backend
 

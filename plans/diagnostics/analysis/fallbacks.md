@@ -8,7 +8,7 @@
 | `taidl/taidl/instruction.py:103-110` | A second `set_inputs` replaces the regions and drops placement marks | A mark vanishes without a message | Reject the second call, or keep and say so in S5.2 |
 | `taidl/taidl/accelerator.py:40-43` | `base_dir` falls back to `os.getcwd()` | Generated files land in the working directory | Keep; document in S4.2 as implementation-defined |
 | `taidl/taidl/instruction.py:112-129` | Region starts and sizes are checked for length only | Size 0 and negative literals reach generators; S5.2 and S1.3 call them undefined | Reject literal sizes below 1 |
-| `act-backend/act_backend/spec_checks.py:394-415` | A value's element type is never compared with its data model's | The backend emits code for a mismatched description that the oracle rejects (`semantic_generator.py:45`) | Reject in the front end (B22) |
+| `act-backend/act_backend/spec_checks.py:394-415` | A value's element type is never compared with its data model's | The backend emits code for a mismatched description that the oracle rejects (`semantic_generator.py:45`) | Reject in the front end (U3, U10) |
 | `act-backend/act_backend/generic/src/isel/extractor/fast.rs:191` | `debug_assert!(false)` compiled out; the loop `break`s | A search with no progress ends with no error | Return `Err` |
 | `isel/initializer/parser.rs:310-314` | With no ROOT line, the last line is the root | Matches XLA text; defined | Keep; state it in the backend's input rules |
 | `isel/initializer/parser.rs:268-306` | A line that is neither `ENTRY` nor a region is skipped | A stray line in the kernel is ignored | Reject a line outside any computation |

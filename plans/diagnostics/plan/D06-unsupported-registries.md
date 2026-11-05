@@ -3,6 +3,7 @@
 - What: give each generator's unsupported rows `U` codes (UB001 to UB018, UO001 to UO003 in `registry-seed.md`) and one exception, `UnsupportedError`.
 - What: each row cites the spec section of S1.2 and carries the status `partial` or `rejected` the spec defines.
 - What: generate the generator's unsupported-feature table (`docs/coverage.md`) from the registry.
+- What: a backend never assumes an unsupported input away; each such input is a coded `U` row.
 - What: use one phrase, `<feature> is unsupported by <generator>`, in place of the seven current phrasings (`analysis/wording.md`).
 - Benefits: a generator states clearly which spec features it does not support; closes E7 and the unsupported part of E13.
 - Caveats: the backend's rejections come from three layers (Python, Rust reader, C++), so the registry feeds all three.

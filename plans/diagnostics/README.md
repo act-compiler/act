@@ -1,7 +1,6 @@
 # Diagnostics track
 
 Catalog of every user-facing diagnostic in `taidl`, `act`, `act-backend` and `act-oracle`, one scheme for all of them, and the plan to adopt it in TAIDL v3.
-The sub-agent spawn tool was not available in this session, so the catalogs were read and written by the track lead directly.
 
 | File | What it holds |
 | --- | --- |
@@ -16,8 +15,9 @@ The sub-agent spawn tool was not available in this session, so the catalogs were
 | [analysis/fallbacks.md](analysis/fallbacks.md) | Silent fallbacks where an error belongs |
 | [review.md](review.md) | What works and should stay |
 | [bugs.md](bugs.md) | Diagnostic bugs E1 to E24 with severity and fix sketch |
-| [scheme.md](scheme.md) | The proposed diagnostic scheme: codes, format, wording, layers, exceptions |
-| [registry-seed.md](registry-seed.md) | First codes mapped from the catalog to spec sections |
+| [scheme.md](scheme.md) | The diagnostic scheme: classes (Reject, Unsupported, Fault, Input, Internal, Environment), codes, two-line format, wording, layers, exceptions, removed names |
+| [failure-policy.md](failure-policy.md) | Decision 40 mapped onto the classes: allowed stops per tool, candidate drops, the input kernel class |
+| [registry-seed.md](registry-seed.md) | First codes mapped from the catalog to TAIDL language specification sections |
 | [plan/README.md](plan/README.md) | Plan index table, staffing and critical path |
 | [plan/D01-registry-and-format.md](plan/D01-registry-and-format.md) | D1 registry, classes and message format |
 | [plan/D02-call-site-and-exceptions.md](plan/D02-call-site-and-exceptions.md) | D2 call sites and exception classes |
@@ -32,4 +32,6 @@ The sub-agent spawn tool was not available in this session, so the catalogs were
 | [plan/D11-generated-docs.md](plan/D11-generated-docs.md) | D11 generate S9 and unsupported tables |
 | [plan/D12-act-scripts.md](plan/D12-act-scripts.md) | D12 act umbrella scripts and entry points |
 | [plan/D13-json-and-explain.md](plan/D13-json-and-explain.md) | D13 machine-readable output and code explanations |
-| [plan/D14-run-time-norm.md](plan/D14-run-time-norm.md) | D14 run-time violation table and norm |
+| [plan/D14-run-time-norm.md](plan/D14-run-time-norm.md) | D14 fault table and run-time norm |
+| [plan/D15-removed-names.md](plan/D15-removed-names.md) | D15 removed-names rejection |
+| [plan/D16-failure-policy.md](plan/D16-failure-policy.md) | D16 failure policy |

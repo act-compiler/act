@@ -21,4 +21,4 @@ S-ids are those of the spec draft in `taidl/docs` (S1.3 lists undefined and impl
 
 - Same condition, up to three wordings and three exception types (`SyntaxError`, `ValueError`, `ZeroDivisionError` then `ValueError`).
 - Where a generator re-checks a condition the front end already checks, the generator copy is dead or order-dependent; see `late.md`.
-- A condition that S1.3 calls undefined is checked by one generator and not the other, so the same ISA description is accepted by one and rejected by the other.
+- A condition that S1.3 calls undefined is checked by one generator and not the other, so the same ISA specification is accepted by one and rejected by the other.

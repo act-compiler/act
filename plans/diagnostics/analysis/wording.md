@@ -56,4 +56,4 @@ One condition, "this generator does not implement this feature", has seven phras
 
 - One verb in prose: "reject".
 - One phrase in a message for an unsupported feature: `{feature} is unsupported by {generator}` with a spec section.
-- One phrase for a run-time violation: `{condition} violates {rule} (S<id>)`, raised as class `V`; v3 has no undefined behavior (owner ruling 16).
+- One phrase for a fault: `{condition} violates {rule} [S<id>]`, raised as class `V` (Fault); v3 has no undefined behavior (owner decision 16).

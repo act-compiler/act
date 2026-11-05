@@ -49,18 +49,18 @@ Messages are verbatim and shortened; `{x}` marks an interpolated value.
 | `taidl/taidl/instruction.py:338` | SyntaxError | `{instr}: {place} '{text}' line L, column C: {ANTLR message}` | A syntax error in a start, size, constraint, update or backtick expression | invalid spec |
 | `taidl/taidl/instruction.py:358` | SyntaxError | `'@a.x' names no addressing attribute` (also computational attribute, state variable) | A reference to an undeclared name | invalid spec |
 | `taidl/taidl/instruction.py:363` | SyntaxError | `'{literal}' is past 64 bits` or `'/' divides by zero` | A literal outside signed 64 bits, or a division whose next sibling is the text `0` (`:406`, `:415`) | invalid spec |
-| `taidl/taidl/instruction.py:436` | Fault tuple, raised at `:286` | `'{text}' is past 64 bits` | An integer literal in a dimension or attribute of a semantics line | invalid spec |
-| `taidl/taidl/operations.py:186` | Fault tuple, raised at `taidl/taidl/instruction.py:286` | `'{name}' is defined twice` | A value defined by two lines | invalid spec |
-| `taidl/taidl/operations.py:196` | Fault tuple | `{word} takes 1 operand, found {n}` | `parameter` or `constant` with other than one operand | invalid spec |
-| `taidl/taidl/operations.py:203` | Fault tuple | `{word} takes {form}, found '{x}'` | `parameter` without an input number, `constant` without a literal | invalid spec |
-| `taidl/taidl/operations.py:207` | Fault tuple | `{word} takes {n} or more operands, found {m}` | Too few operands for a variadic word | invalid spec |
-| `taidl/taidl/operations.py:210` | Fault tuple | `{word} takes {n} operand{s}, found {m}` | Wrong operand count | invalid spec |
-| `taidl/taidl/operations.py:214` | Fault tuple | `{word} takes values as operands, found '{x}'` | A literal where a value is required | invalid spec |
-| `taidl/taidl/operations.py:216` | Fault tuple | `'{name}' is defined by no earlier line` | A use before definition | invalid spec |
-| `taidl/taidl/operations.py:227` | Fault tuple | `{word} has no attribute '{name}': it takes {known}` | An operation attribute the word lacks | invalid spec |
-| `taidl/taidl/operations.py:229` | Fault tuple | `{word} is given '{name}' twice` | A repeated operation attribute | invalid spec |
-| `taidl/taidl/operations.py:235` | Fault tuple | `'{name}' of {word} takes {form}, found '{x}'` | An attribute value of the wrong form | invalid spec |
-| `taidl/taidl/operations.py:238` | Fault tuple | `{word} needs the attribute '{name}'` | A required attribute missing | invalid spec |
+| `taidl/taidl/instruction.py:436` | Rejection tuple, raised at `:286` | `'{text}' is past 64 bits` | An integer literal in a dimension or attribute of a semantics line | invalid spec |
+| `taidl/taidl/operations.py:186` | Rejection tuple, raised at `taidl/taidl/instruction.py:286` | `'{name}' is defined twice` | A value defined by two lines | invalid spec |
+| `taidl/taidl/operations.py:196` | Rejection tuple | `{word} takes 1 operand, found {n}` | `parameter` or `constant` with other than one operand | invalid spec |
+| `taidl/taidl/operations.py:203` | Rejection tuple | `{word} takes {form}, found '{x}'` | `parameter` without an input number, `constant` without a literal | invalid spec |
+| `taidl/taidl/operations.py:207` | Rejection tuple | `{word} takes {n} or more operands, found {m}` | Too few operands for a variadic word | invalid spec |
+| `taidl/taidl/operations.py:210` | Rejection tuple | `{word} takes {n} operand{s}, found {m}` | Wrong operand count | invalid spec |
+| `taidl/taidl/operations.py:214` | Rejection tuple | `{word} takes values as operands, found '{x}'` | A literal where a value is required | invalid spec |
+| `taidl/taidl/operations.py:216` | Rejection tuple | `'{name}' is defined by no earlier line` | A use before definition | invalid spec |
+| `taidl/taidl/operations.py:227` | Rejection tuple | `{word} has no attribute '{name}': it takes {known}` | An operation attribute the word lacks | invalid spec |
+| `taidl/taidl/operations.py:229` | Rejection tuple | `{word} is given '{name}' twice` | A repeated operation attribute | invalid spec |
+| `taidl/taidl/operations.py:235` | Rejection tuple | `'{name}' of {word} takes {form}, found '{x}'` | An attribute value of the wrong form | invalid spec |
+| `taidl/taidl/operations.py:238` | Rejection tuple | `{word} needs the attribute '{name}'` | A required attribute missing | invalid spec |
 
 ## Front end: silent paths (no diagnostic where one may belong)
 

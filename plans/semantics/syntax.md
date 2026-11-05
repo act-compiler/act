@@ -1,6 +1,6 @@
 # Abstract syntax
 
-The abstract syntax of a TAIDL ISA description, as the front end builds it.
+The abstract syntax of a TAIDL ISA specification, as the front end builds it.
 Each production names the front-end field or grammar rule it abstracts.
 
 ## Declarations
@@ -16,7 +16,7 @@ I     ::= instr(i, C*, P*, K*, W*, In*, Out*, B?, ip*, marks)
           K constraints, W updates              instruction.py:77-80
           In, Out regions                       instruction.py:42-43
           B semantics block                     instruction.py:44
-          ip in-place flags, one per input      instruction.py:51
+          ip in-place flags, one per input      instruction.py:51 (a marker; expands per typing.md)
 ```
 
 ## Regions and expressions

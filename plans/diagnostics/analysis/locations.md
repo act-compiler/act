@@ -2,8 +2,8 @@
 
 ## Front end
 
-- No message names the ISA description file and line; only the Python traceback does, and only for errors raised directly in a user call.
-- A rejection raised in a generator (`spec_checks.py`) has no traceback into the ISA description at all, since the instruction object keeps no call site.
+- No message names the ISA specification file and line; only the Python traceback does, and only for errors raised directly in a user call.
+- A rejection raised in a generator (`spec_checks.py`) has no traceback into the ISA specification at all, since the instruction object keeps no call site.
 - `taidl/taidl/names.py:10, :12, :14` name the kind and the name, not the owner: an attribute name error names the instruction only through `kind` (`instruction.py:67`).
 - `taidl/taidl/accelerator.py:41, :43, :56` name the data model or state variable; `:50` names the state variable and not the instruction that came first.
 - `taidl/taidl/instruction.py:166, :169` name the instruction but not which input.
@@ -11,7 +11,7 @@
 
 ## act-backend
 
-- Python rows name the instruction (`spec_checks.py:26-415`) but not the ISA description location.
+- Python rows name the instruction (`spec_checks.py:26-415`) but not the ISA specification location.
 - `spec_checks.py:302` names the data model; `:292, :294` name `{name}: its operand on '{buffer}'` with no region index.
 - Rust kernel errors name the value (`%x`) but not the kernel line number: `isel/initializer/lib.rs:154-187`, `nodes.rs:39-431`, `expression.rs:106-464`, `line.rs:96`.
 - `pipeline.rs:59-60` reports one aggregated reason for a whole search (`every candidate was dropped, the first because ...`); the other dropped candidates are only on stdout at `:266`.
