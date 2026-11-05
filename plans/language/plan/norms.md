@@ -7,13 +7,17 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 | --- | --- | --- | --- | --- |
 | L32 | Defined-behavior norms: pre-state issue, unwritten reads, numerics, fault guarantees | L1, L2 | M | Q1 |
 | L33 | Remove rare words and redundant spellings, with one coded rejection | L1 | S | Q1 |
+| L46 | Declared initial value per buffer: `initial_value` on `acc.buffer` | L32, L16 | S | Q1 |
+
+- L46 feeds O26 and B36: the oracle's declared-value fill and the backend's exemption read `initial_value` from the checked model.
 
 ## L32 Defined-behavior norms
 
 - What: S1.3, S5.4, S5.6, S7.5, and S8.4 state the panel 1 norms, one sentence each.
   - Every expression of an issue reads the pre-state; updates and outputs commit together, and updates are a parallel assignment (Q1.1).
-  - A read of an on-chip element no earlier issue wrote is a fault; `d0` holds the caller's `hbm` (Q1.4).
+  - A read of an on-chip element no earlier issue wrote is a fault, unless its buffer declares an initial value (L46); `d0` holds the caller's `hbm` (Q1.4, joint decision on unwritten reads).
   - One rounding per float operation, denormals kept, NaN and signed zero per IEEE 754-2019, `bitcast_convert` of NaN gives the canonical quiet NaN (Q1.6, Q1.7).
+  - A finite result of an approximate word lies within `k_t` ulps of the exact value: 16 at `f32` and `f64`, 8 at `f16` and `bf16`, 1 at 8- and 4-bit floats (S8.4, S1.3.19, D44).
   - `convert` out of range per conversion class (Q1.8); tensor data never faults, and indices clamp (Q1.9).
   - A float literal rounds once from its exact decimal, and one rounding to an infinity is rejected (Q1.10); a float sum starts from +0.0 (Q1.11).
   - A fault writes nothing, the program stops at the first fault, every REQUIRE failure is a fault, and B never emits a faulting issue (Q1.12).
@@ -25,7 +29,7 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - Caveats: the denormal sentence is final only after a per-word test on the pinned jaxlib passes on both platforms; a stale value in a reused buffer is not detected.
 - Fail points: an oracle compile option reverts; notice by T tests of a bf16 chain, `maximum(-0, +0)` in both orders, and `f32` to `f8e4m3fn` overflow.
 - Order and dependencies: after L1 and L2; O and B own their code changes.
-- Verification: each norm has a T test; S1.3 has no open row.
+- Verification: each norm has a T test, including one per approximate word and float type against the S8.4 ulp bound; S1.3 has no open row.
 
 ## L33 Remove rare words and redundant spellings
 
@@ -34,7 +38,19 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - Changes: `taidl/operations.py`, `instruction.py`, and the removed-names table that raises one coded `RF` rejection naming the construct, its replacement, and the section id (Q3.12).
 - Breaking: yes, one release with a migration note.
 - Benefits: the `BOOL`, `TRANSPOSES`, and `NUMBER` attribute forms go with the words; one spelling per construct.
-- Caveats: the marks stay (owner decision 30) and are not in the table; the table is seeded once the v3 API is fixed and holds the string-surface calls of L45, which name the L44 converter.
+- Caveats: the marks stay (owner decision 30) and are not in the table; the table is seeded once the v3 API is fixed and holds the string-surface calls of U14, which name the U13 converter.
 - Fail points: a removed construct raises a bare `AttributeError`; notice by a test per table row.
 - Order and dependencies: after L1; L30's renames feed the same table.
 - Verification: each table row has a test asserting `code` and `object`.
+
+## L46 Declared initial value per buffer
+
+- What: `acc.buffer(name, access_dims, base_element_dims, element_type, initial_value=None, meta=None)`; every element of the buffer holds `initial_value` before the first issue (S4.3, S5.6, S1.3.11).
+- What: the value is one plain literal of the element type under the S7.5 rules; `d0` has none and holds the caller's `hbm`; a buffer without one keeps the unwritten-read fault (joint decision on unwritten reads).
+- Changes: `taidl/accelerator.py` `buffer`, the `Model` buffer record (S4.6), the S9 rejection row of S4.3, and the U13 converter, which emits no `initial_value`.
+- Breaking: no, additive; a buffer without the keyword keeps the L32 fault.
+- Benefits: an AMX tile zeroed by `ldtilecfg` or SME ZA zeroed on entry is legal to accumulate into, as decision 31 requires.
+- Caveats: the ISA author declares a value only where the architecture defines it; NKI PSUM, which the vendor names undefined, takes none.
+- Fail points: a generator ignores the value and faults on a declared buffer; notice by an O26 test that accumulates into a declared buffer.
+- Order and dependencies: after L32 and L16; O26 and B36 read it.
+- Verification: a T test per element class reads a declared buffer before any write and gets the value; a plain value the type cannot hold is rejected with the S4.3 clause.

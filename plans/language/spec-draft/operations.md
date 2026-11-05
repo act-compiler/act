@@ -30,10 +30,15 @@ This section is S8.2, operands and operation attributes per operation.
 - Each tensor operator takes the operands and operation attributes its row below gives.
 - A row gives the operand count, or the one value of `parameter` and `constant` (S7.5).
 - A row gives each operation attribute's name, its form, and whether a call must give it, as a keyword argument (S7.5).
-- The forms: an integer is a plain `int` or an integer expression; a list is a Python list, possibly empty; a number is any plain number; a word is a `str`.
+- The forms: an integer is a plain `int` or an integer expression; a list is a Python list or tuple, possibly empty; a word is a `str`.
+- An attribute that names an axis is a plain `int`, never an integer expression:
+  - `dimensions`, in every row that takes it, the `transpose` permutation and the `concatenate` and `reverse` dimensions included;
+  - `iota_dimension` and `index_vector_dim`;
+  - the `dot` dimension lists and the `gather` dimension lists.
+- A size, a bound, a padding, or a bit count may be an integer expression.
 - A row holds what XLA-HLO's text parser checks without shapes; `check` holds the shape rules (S8.4).
 - Where XLA-HLO's text leaves a rule open, StableHLO's rule applies: `dot` takes 2 operands, and `pad` takes three attributes.
-- TAIDL's own rule: `dot` requires both contracting lists, either of which may be empty; a batch list it leaves out is empty.
+- TAIDL's own rule: `dot` requires both contracting lists, either of which may be empty; a batch list it leaves out is empty; its target `element_type` is optional (S8.4).
 - An operation attribute in no row is rejected, such as `result_accuracy`, `operand_precision`, or `indices_are_sorted`.
 
 | operation                | operands                               | attributes                                                                                                                                                                                                                                                                                                  |
@@ -120,13 +125,15 @@ This section is S8.2, operands and operation attributes per operation.
 - `select` is checked at its second operand, since its first is `pred`; `clamp` at its second, the operand it bounds.
 - `compare` and `is_finite` are checked at their operands, though the result is `pred`.
 - `dot` accepts them at both operands and at its result.
-- The floats are the `f` and `bf` types; the integers are the `s` and `u` types; every element type is a float, an integer, or `pred`.
+- The floats are the `f` and `bf` types but `f8e8m0fnu`; the integers are the `s` and `u` types; every element type is a float, an integer, `pred`, or `f8e8m0fnu`.
+- `f8e8m0fnu` is accepted only by the words of the row "every type, `f8e8m0fnu` included"; a scale takes part in arithmetic after a `convert` to a float.
 - The start indices of `dynamic_slice`, `dynamic_update_slice`, and `gather` are integers.
-- An element type outside a word's row is an error in the ISA specification; a generator rejects it until the front end checks it (shared plan item U4).
+- An element type outside a word's row is rejected by `check` (S9).
 
 | element types              | tensor operators                                                                                                                                                                                                                                                                                                                                                     |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| every type                 | `parameter`, `constant`, `add`, `multiply`, `maximum`, `minimum`, `compare`, `select`, `clamp`, `convert`, `bitcast_convert`, `reshape`, `transpose`, `broadcast`, `concatenate`, `pad`, `reverse`, `slice`, `dynamic_slice`, `dynamic_update_slice`, `gather`, `copy`, `dot`, `reduce_add`, `reduce_multiply`, `reduce_max`, `reduce_min`                          |
+| every type, `f8e8m0fnu` included | `parameter`, `constant`, `compare`, `select`, `convert`, `bitcast_convert`, `reshape`, `transpose`, `broadcast`, `concatenate`, `pad`, `reverse`, `slice`, `dynamic_slice`, `dynamic_update_slice`, `gather`, `copy` |
+| every type but `f8e8m0fnu` | `add`, `multiply`, `maximum`, `minimum`, `clamp`, `dot`, `reduce_add`, `reduce_multiply`, `reduce_max`, `reduce_min` |
 | floats and integers        | `iota`, `negate`, `subtract`, `divide`, `remainder`, `power`                                                                                                                                                                                                                                                                                                        |
 | floats and signed integers | `abs`, `sign`                                                                                                                                                                                                                                                                                                                                                       |
 | integers and `pred`        | `and`, `or`, `xor`, `not`, `reduce_and`, `reduce_or`, `reduce_xor`                                                                                                                                                                                                                                                                                                  |

@@ -35,8 +35,8 @@ Most weaknesses are unstated meaning, not wrong design.
 
 | component | verdict | reason |
 | --- | --- | --- |
-| `IDLV2.g4` | remove in v3 | The Python surface replaces the string form (L42, L45) |
-| `IDLV2Expr.g4` | remove in v3 | Integer expressions are traced Python operators (L42, L45) |
+| `IDLV2.g4` | remove in v3 | The Python surface replaces the string form (U12, U14) |
+| `IDLV2Expr.g4` | remove in v3 | Integer expressions are traced Python operators (U12, U14) |
 | `taidl/operations.py` | keep, extend | The table becomes the source of L3 shape rules |
 | `taidl/instruction.py` | reshape | Add the place check (L10) and split shape checking into the shared shape module (U4) |
 | `taidl/accelerator.py` | keep | Add the order and range checks (L11, L16) |

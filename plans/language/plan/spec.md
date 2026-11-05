@@ -126,7 +126,7 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - Changes: `tests/` gains one test; each member is documented in the `taidl` README; the typed contract model is U2.
 - Breaking: no.
 - Benefits: generators read a documented contract; a rename breaks the test, not a generator.
-- Caveats: no tree is part of the contract; ANTLR trees leave with L45.
+- Caveats: no tree is part of the contract; ANTLR trees leave with U14.
 - Fail points: a fixed name renamed without the page; notice by the test.
 - Order and dependencies: after L1 and L43; L15 and L30 update it.
 - Verification: the test fails on a deliberate attribute rename.

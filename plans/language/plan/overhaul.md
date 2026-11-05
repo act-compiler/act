@@ -7,8 +7,8 @@ Steps run in order; each names the plan items it carries.
 
 | piece | action | target | preserved |
 | --- | --- | --- | --- |
-| `IDLV2.g4`, `IDLV2Expr.g4`, `IDLV2*.py` | remove in v3 (L45) | none; the tracer records the surface (L42) | the language they accept, through the L44 converter |
-| tracer | new (L42) | `@acc.instruction`, `read`, `write`, `require`, `update`, `ops` | |
+| `IDLV2.g4`, `IDLV2Expr.g4`, `IDLV2*.py` | remove in v3 (U14) | none; the tracer records the surface (U12) | the language they accept, through the U13 converter |
+| tracer | new (U12) | `@acc.instruction`, `read`, `write`, `require`, `update`, `ops` | |
 | `taidl.check` and `Model` | new (L43) | one `Rejection` or a frozen `Model` | every S9 rule |
 | `taidl/operations.py` | keep, extend | adds per-word shape and type rules beside `OPERATIONS` | the table and its checks |
 | `taidl/instruction.py` | reshape | place check for references; pair relations, `set_may_overlap`, and the `same` size term (L35, L36); shape checking in the shape module of U4 | every public method and its checks |
@@ -31,7 +31,7 @@ Steps run in order; each names the plan items it carries.
 4. Add the front-end checks (L10, L11, L16).
 5. Build `check` and the `Model` from the string front end, and port every generator to it (L43).
 6. Add the shape checks (U4, which absorbs L12) on the L3 rules.
-7. Trace the Python surface into the same `Model`, with the API renames (L42, L14, L15, L30).
-8. Convert the corpus and test `Model` equivalence per file (L44); then remove the string surface and ANTLR (L45).
+7. Trace the Python surface into the same `Model`, with the API renames (U12, L14, L15, L30).
+8. Convert the corpus and test `Model` equivalence per file (U13); then remove the string surface and ANTLR (U14).
 9. Settle the float accuracy norm (L31).
 10. Add extensions in rank order (L17, then L23).

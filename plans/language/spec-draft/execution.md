@@ -11,12 +11,15 @@ A test oracle or a simulator runs programs; a compiler backend emits programs th
 - Program order is the only order: TAIDL has no concurrency, and a constraint used as a wait faults when false (S1.3.5).
 - An issue names one instruction and gives a value to each of its attributes, by name, in any order.
 - An attribute value is an integer; one outside signed 64 bits is a fault (S1.3.10).
+- An issue that names no instruction, omits an attribute, names one the instruction lacks, or gives a value that is not an `int` is invalid assembly code: the test oracle stops with an error naming the issue (owner decision 40), and it is not a fault of S1.3.
 - A program is run with `hbm` contents: a sequence of bytes that `d0` holds before the first issue.
+- A run yields the `hbm` contents after the last issue, or the fault report; the final state and on-chip buffers are observable only through a generator's own interface.
 
 ### Storage before the first issue
 
 - `d0` holds the caller's `hbm` contents in full; its size is their byte count.
-- No element of another buffer holds a value yet: a read of an element that no earlier issue of the program wrote is a fault (S1.3.11).
+- Every element of a buffer with a declared initial value holds that value (S4.3).
+- No element of any other buffer holds a value yet: a read of an element that holds no value and that no earlier issue of the program wrote is a fault (S1.3.11).
 - "Written" means written by an issue of this program, so a stale value left in a reused buffer by an earlier program is not detected.
 - Every state variable holds its value from `acc.state` (S4.4).
 - An element no output region writes keeps its value from one issue to the next.
@@ -33,13 +36,13 @@ Every expression of an issue reads the state before the issue; its updates and i
 - When an input and an output region overlap as their declared relation permits (S5.5), the outputs are the semantics on the state before the issue; no read and write order is assumed.
 - Every recorded value of a semantics is computed; there is no lazy or dead value.
 - Every comparison of a condition is evaluated, left to right; a fault in any of them is a fault of the issue.
-- A fault depends only on attributes, state, and the recorded expressions; every tensor value gives a fixed result (S1.3.12).
+- A fault depends only on attributes, state, the recorded expressions, the size of `hbm`, and which elements earlier issues of the program wrote; every tensor value gives a fixed result (S1.3.12).
 
 ### Faults
 
 - A fault writes no region and no state.
 - The program stops at the first fault, and every earlier issue has committed.
-- The generator reports the lowest faulting issue index, the instruction, and a section id of a clause that applies.
+- The test oracle reports the faulting issue's index, counting from 0, the instruction, and a section id of a clause that applies.
 - A compiler backend is a producer: it never emits an issue that faults, and lists in its coverage table each fault case it cannot see, such as state before the kernel or the size of `d0`.
 
 ### Region values

@@ -9,12 +9,12 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
 | L10 | Reject `@a.` outside starts and constraints | L1 | S | Q1 |
-| L11 | Reject late buffers and partial instructions | L1 | S | Q1 |
+| L11 | `check` reports a late buffer, a late state variable, and a partial instruction at the declaring call's site | L1 | S | Q1 |
 | L12 | Shape and element type checker: merged into U4 | U4 | - | - |
-| L13 | Integer literal lexing: no target after L45 | L45 | - | - |
-| L14 | Test the plain-zero divisor rule | L42 | S | Q1 |
+| L13 | Integer literal lexing: no target after U14 | U14 | - | - |
+| L14 | Test the plain-zero divisor rule | U12 | S | Q1 |
 | L15 | Rename confusing internal names | L25 | S | Q1 |
-| L16 | Range and type checks at the declaring call | L3 | S | Q1 |
+| L16 | `check` reports a range or type error at the declaring call's site | L3 | S | Q1 |
 | L30 | v3 rename table: public API and `d0` as a one-dimension buffer | L1 | M | Q1 |
 | L34 | Rename "refus" to "reject" in messages, docstrings, READMEs, and identifiers | L30 | S | Q1 |
 | L35 | Add `set_may_overlap` and the pair-relation record | L36 | S | Q1 |
@@ -32,9 +32,9 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - Order and dependencies: after L1.
 - Verification: new tests per place; the S9 row leaves the "not yet checked" table.
 
-## L11 Reject late buffers and partial instructions
+## L11 `check` reports late declarations and partial instructions
 
-- What: `add_buffer` raises `ValueError` once an instruction exists; an instruction with regions but no semantics, or the reverse, is rejected.
+- What: `check` reports a late buffer, a late state variable, and a partial instruction at the declaring call's site, collected with every other problem (S4.5, S9).
 - Changes: `Accelerator.add_data_model` in `taidl/accelerator.py`; a completeness check where generators take the accelerator, since `check_values` runs only when both are given (`instruction.py:99-100`, `254-257`).
 - Breaking: yes.
 - Benefits: matches S4.5 and S5.2; the data model list is no longer shared with later declarations (`accelerator.py:47-58`, `instruction.py:81`).
@@ -49,7 +49,7 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 
 ## L13 Align integer literal lexing
 
-- No target: both grammars leave with L45, and plain integers in the Python surface follow S6.2.
+- No target: both grammars leave with U14, and plain integers in the Python surface follow S6.2.
 
 ## L14 Test the plain-zero divisor rule
 
@@ -73,13 +73,13 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - Order and dependencies: Q1, after L25 and before U2 (Q3.3); B and O update together.
 - Verification: grep for the old names in all four repos is empty.
 
-## L16 Range and type checks at the declaring call
+## L16 Range and type checks reported at the declaring call's site
 
-- What: reject a `constant` literal its element type cannot hold, an initial value outside signed 64 bits or of type `bool`, a literal shape dimension 0, a non-`str` list entry, and a non-`bool` flag.
+- What: `check` reports, at the declaring call's site, a `constant` literal its element type cannot hold, an initial value outside signed 64 bits or of type `bool`, a literal shape dimension 0, a non-`str` list entry, a non-`bool` flag, a plain start below 0 or size below 1, a plain start plus size past a plain access dimension, and an axis attribute that is not a plain integer.
 - Changes: `add_state`, `semantics_literal_fault`, `strings` (`instruction.py:452-456`), and the flag setters (`instruction.py:168`, `203`).
 - Breaking: yes.
 - Benefits: rejection at the call, the same for every generator; B and O disagree on literals today (`spec_checks.py:94-107`, `utils.py:398-426`).
-- Caveats: a float literal rounds once from its exact decimal (`Fraction` or hex bits, never via f64), and one that rounds to an infinity, or NaN at `f8e4m3fn`, is rejected (Q1.10).
+- Caveats: a plain number rounds once from the exact value received, a `float` as its binary64 value and an `int` or `Fraction` exactly, never through `float()`; one that rounds to an infinity, or NaN at `f8e4m3fn`, is rejected (Q1.10, Q13b.9).
 - Fail points: drift from O's literal check; notice by sharing `literal_fits`, a listed contract function (Q3.5).
 - Order and dependencies: after L3.
 - Verification: tests per element type and per S9 row.
@@ -89,16 +89,17 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - What: one grep-generated per-repo table of old name, new name, and consumer files (Q7.10), citing symbols, not line numbers.
   - `add_data_model` to `acc.buffer(name, access_dims, base_element_dims, element_type)`, `add_initial_state` to `acc.state(name, value)`, `DataModel` to `Buffer`.
   - `add_instruction` and its attribute lists to `@acc.instruction` with `Comp` and `Addr` parameters (S5.1).
-  - `set_inputs`, `set_outputs`, `add_semantics`, and the marks to `read`, `write`, `ops`, and `write` markers (S5.2, S5.5, L45).
+  - `set_inputs`, `set_outputs`, `add_semantics`, and the marks to `read`, `write`, `ops`, and `write` markers (S5.2, S5.5, U14).
   - `targets/<Name>/` to `accelerators/<name>/` (Q7.11).
 - Also: `d0` is declared with one access dimension, so the special case in `instruction.py` goes (Q2.9).
+- Also: the findings of the outside architect's ISA specification on the traced surface (A24, by M3) enter the table, beside the removed-names table (D15).
 - Kept: `update`, `Region`, and the markers as `write` keywords (owner decision 30).
 - Changes: `taidl/accelerator.py`, `instruction.py`, and the call sites of `.instruction()`.
 - Breaking: yes, every ISA specification changes its declaring calls.
 - Benefits: the API speaks the owner's vocabulary; regions of `d0` follow the general rule.
-- Caveats: no working alias; the L44 converter moves the corpus; each removed name leaves a stub that only raises a coded rejection naming the replacement and the section id (Q7.12, L33).
+- Caveats: no working alias; the U13 converter moves the corpus; each removed name leaves a stub that only raises a coded rejection naming the replacement and the section id (Q7.12, L33).
 - Fail points: a tutorial still uses an old name; notice by the CI grep that every old name returns nothing after v3.
-- Order and dependencies: after L1; lands with L42; B and O update together; the table feeds L33, L34, L44, and the migration note.
+- Order and dependencies: after L1; lands with U12; B and O update together; the table feeds L33, L34, U13, and the migration note.
 - Verification: the CI grep of old names is empty in all four repos.
 
 ## L34 Rename "refus" to "reject"
@@ -121,14 +122,15 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - Caveats: no in-scope tensor site yet; panel 7 may rename the mark without changing its meaning.
 - Fail points: B ignores the record and allocates by constraint text alone; notice by the backend rows of Q9.4.
 - Order and dependencies: after L36; B reads the record in its touch exception.
-- Verification: T rows: RVV narrowing (equal start, smaller output) legal under `set_may_overlap` and a fault unmarked; a written positional constraint beside it.
+- Verification: T rows: RVV narrowing (one start text, smaller output) legal under `set_may_overlap`; unmarked, a fault with a symbolic size and rejected with plain sizes; a written positional constraint beside it.
 
 ## L36 Expand each pair's relation with the size term and the default
 
 - What: each same-buffer input-output pair expands to exactly one relation's constraint, from its mark or the exact-or-apart default (S5.5, Q9.2).
 - Changes: `taidl/instruction.py`: `set_inplace` appends `same(In k, Out)`; `keep_off` compares sizes as well as starts, so `same` holds only on equal starts and equal sizes (LB29); unmarked pairs get the default expansion.
 - Changes: reject `set_apart` on identical text, unequal size text on a tie, and identical input and output text without `set_inplace`; a lint warns on an unmarked non-elementwise pair.
-- Breaking: yes, an unmarked partial overlap, or equal starts with unequal sizes, now faults.
+- Changes: reject two outputs of one buffer with equal start text, an exact-or-apart pair with equal start text and unequal plain sizes, and an input tied to more than one output (S5.5, Q13b.3).
+- Breaking: yes, an unmarked partial overlap, or equal starts with unequal sizes, now faults, or is rejected where the text decides it.
 - Benefits: one constraint list for O and B; a forgotten `set_apart` faults loudly instead of giving a corrupt kernel the oracle passes.
 - Caveats: terms are evaluated expressions (OD34); a dimension with identical start and size text is skipped.
 - Fail points: a mark and its hand-written expansion disagree; notice by the cross-check row over a swept attribute range.

@@ -5,7 +5,7 @@ Each row names its plan item; no surface change is made yet.
 
 | rank | proposal | motivating accelerators | minimal syntax sketch | cost |
 | --- | --- | --- | --- | --- |
-| 1 | Low-precision and block-scaled types, `scaled_dot` (L17) | NVIDIA Blackwell, AMD XDNA2, Trainium2, Gaudi3, MTIA | `element_type=f4e2m1fn`; `ops.scaled_dot(a, a_scale, b, b_scale, lhs_contracting_dims=[1], rhs_contracting_dims=[0])` | M: `taidl.types`, `TYPES`, B and O type tables |
+| 1 | Block-scaled element types `f4e2m1fn` and `f8e8m0fnu` (L17); a scaled matmul stays the L24 idiom, and `scaled_dot` is outside the language (S8.5) | NVIDIA Blackwell, NeuronCore-v4 (Trainium3) | `element_type=f4e2m1fn`, `element_type=f8e8m0fnu` | S: `taidl.types`, `TYPES`, B and O type tables |
 | 2 | Rounding and saturation on `convert` (L21) | Trainium, Gaudi, Ascend, int8 NPUs | `ops.convert(x, s8, rounding='TOWARD_ZERO', saturate=True)` | S: two attributes |
 | 3 | Multi-core and async DMA idioms (L24) | Tenstorrent, AMD AIE, Cerebras, NKI DMA | none: core grid as an addressed dimension, DMA token as a state variable, masked write by `select` and in place | S: docs and one tutorial |
 | 4 | Strided regions (L19) | NVIDIA TMA, Gemmini, NVDLA, Tenstorrent | `d1.region(starts, size=sizes, stride=strides)` | M: regions, placement marks |

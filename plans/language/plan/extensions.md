@@ -25,13 +25,17 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 ## L17 Element types `f4e2m1fn` and `f8e8m0fnu`
 
 - What: add `f4e2m1fn` and `f8e8m0fnu` (Q2.4); no `tf32` storage type; `scaled_dot` stays an idiom in L24 (convert, broadcast the scale, multiply, `dot`), exact for power-of-two scales.
+- What: their edge cases are in the spec: the S7.3 type table, the S7.5 literal rules, the S8.3 rows, and the S8.4 reducer, `convert`, and accuracy rows.
+  - `f4e2m1fn` has no infinity and no NaN: overflow saturates to 6 or -6, and NaN converts to +0.
+  - `f8e8m0fnu` has no zero, sign, or infinity: only data-movement words, `compare`, `select`, and `convert` take it; zero, negatives, and overflow convert to NaN.
 - Changes: `taidl.types` and `TYPES` in `taidl/data_model.py`; existing types kept.
 - Breaking: no, additive.
 - Benefits: covers the MX formats of the two public sites, NVIDIA Blackwell and NeuronCore-v4 (Trainium3).
 - Caveats: JAX support for each type varies; O may list some as unsupported (L7).
 - Fail points: XLA type spellings change; notice by L2's pinned version.
 - Order and dependencies: after L2, L3; `taidl.types`, `data_model.TYPES`, B and O type tables.
-- Verification: a block-scaled matmul written with the L24 idiom runs in O.
+- Verification: a block-scaled matmul written with the L24 idiom runs in O; a T test per S8.4 row of the two types checks the pinned stack, the sign of zero included; `ml_dtypes` 0.6.0 matches the rows except NaN to `f4e2m1fn`, which O lowers with a `select` to +0.
+- Verification: T tests single rounding of a plain number (S7.5): `1 + 2**-8 + 2**-40` at `bf16` and `2**53 + 2**29 + 1` at `f32`.
 
 ## L18 Write masks on output regions
 
