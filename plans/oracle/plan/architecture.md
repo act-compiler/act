@@ -7,7 +7,7 @@ The oracle stays on its Python and jax path; the later move to fsim-lib (owner d
 
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
-| O19 | Spike: unroll every loop on a synthetic stress kernel against an owner-set bound | O21 | S | Q1 |
+| O19 | Spike: unroll every loop on a synthetic stress kernel against the Q5.1 bound | O21 | S | Q1 |
 | O20 | Unroll every loop; delete loop algebra, `Unroll`, `while` emission, `held`, `fixed` | O19, O8 | M | Q1 |
 | O1 | Runtime code out of `API_FILE` into `runtime/`; split what remains of `utils.py` | O20 | M | Q1 |
 | O2 | One instruction record from the visitor, consumed by checks and emission | O1, O5 | M | Q1 |
@@ -22,12 +22,16 @@ The oracle stays on its Python and jax path; the later move to fsim-lib (owner d
 - Changes: a branch only; nothing lands.
 - What: force `loop['unrolled'] = True` (`taidl_to/templates/templates.txt:82`) and measure kernel compile time with `k('fsim-compile')`.
 - What: the fail point is a synthetic stress kernel with a stated trip count and instruction count, a compile-time limit on the CI image, and a per-instruction op-count cap.
-- What: the owner sets those four numbers before the spike runs (Q5.1, Q8.10).
+- What: the Q5.1 resolution rows set the four numbers:
+  - stress kernel: two nested loops of 64 by 64 trips around 4 instructions;
+  - trace plus XLA compile of it within 60 s on the CI CPU image;
+  - every existing loop test within 2x its current `while` time;
+  - an op-count cap of 2x the largest current per-instruction count, above which the oracle rejects with a coded coverage limit.
 - What: also run the examples and the attention tests, though no file under `examples/` calls `start_loop`.
 - Benefits: decides O20 on a measurement; unrolling is already the path for any loop around a state update or a varying shape (`templates.txt:101-104`, `templates.txt:137-140`).
 - Caveats: module size grows with the trip count; that is the one real cost.
 - Fail points: a bound agreed after the measurement is no bound.
-- Order and dependencies: after O21, so excess precision is fixed; owner bound first.
+- Order and dependencies: after O21, so excess precision is fixed; the 2x baselines are measured before the spike.
 - Verification: compile time and op count of the stress kernel against the bound; a table per example and attention test.
 
 ## O20 Unroll every loop
@@ -60,12 +64,12 @@ The oracle stays on its Python and jax path; the later move to fsim-lib (owner d
 
 - Breaking: no.
 - Changes: `taidl_to/oracle_visitor.py`, `taidl_to/semantic_generator.py`, `taidl_to/instruction_codegen.py`; preserves the traversal and generated text.
-- What: the visitor builds one record per instruction: regions, constraints, updates, and per line the word, result, type, dims, operands and attributes.
+- What: the visitor builds one record per instruction from the `Model` (U10): regions, constraints, updates, and per line the word, result, type, dims, operands and attributes.
 - What: type checks, shape checks and emission read the record, so attributes are visited once (`oracle_visitor.py:266-274`) and the `holding` flag goes.
 - What: measure kernel compile time before and after; the figure decides O3.
 - Benefits: removes hidden visitor state; the record is what O3's runtime `call` and O13's reference consume.
 - Fail points: a value fixed at generation where a per-call one is needed; loop tests in `tests/test_kernel.py`.
-- Order and dependencies: after O1 and O5; absorbs O5's double-visit part.
+- Order and dependencies: after O1 and O5; absorbs O5's double-visit part; the tree walk it replaces is deleted with the string surface (U14).
 - Verification: generated `api.py` byte-identical for both examples.
 
 ## O3 Emitter calls, generic form, one word table

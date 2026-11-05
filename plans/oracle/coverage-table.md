@@ -9,6 +9,7 @@ On valid input it runs correctly: a path that raises or computes a wrong result 
 
 - `supported`: the oracle computes what the spec says, or detects the violation as a defined error.
 - `rejected`: `generate_oracle` raises a clear error before it writes anything; only a problem the architect can correct (a typo, an invalid ISA specification) may be `rejected`.
+- The oracle reads only the `Model` that `check` returns and adds no check of its own; it excludes no instruction, which the backend alone does for a model limit (Q11.3).
 - `partial`: the notes state the exact gap; a violation the oracle does not detect is always `partial`.
 - "At the call" means while a kernel compiles, before it runs, so an error raised at the call writes no region and no state.
 - The shipped `docs/coverage.md` keeps only `partial` and `rejected` rows, per S1.2 (O17).
@@ -19,7 +20,7 @@ On valid input it runs correctly: a path that raises or computes a wrong result 
 | --- | --- | --- | --- |
 | Accelerator and `base_dir` | S4.2 | supported | Written to `<base_dir>/targets/<name>/oracle`. |
 | Names of the accelerator, data models, instructions, attributes, state | S4.1 | partial | A name the oracle reserves is rejected with `NotImplementedError`; the list is in the oracle's `README.md`; the architect can rename it, so the error must be a `ValueError` naming the name (D30, O6). |
-| Data models: addressed dimensions, unit shape, element type | S4.3 | supported | Every element type of S7.3. |
+| Buffers: access dimensions, base element shape, element type | S4.3 | supported | Every element type of S7.3. |
 | `hbm` data model `d0` | S4.3 | supported | A kernel's `hbm` argument gives its size in bytes. |
 | Buffer contents before the first write | S4.3 | partial | Every on-chip buffer starts zero-filled; a read of an element no earlier instruction of the kernel wrote must be an error, the invalid-assembly kind, if L5 states it as a violation (O26). |
 | State and its initial values | S4.4 | partial | Values are exact Python integers; an initial value outside signed 64 bits is accepted with no error or warning. |
@@ -31,7 +32,7 @@ On valid input it runs correctly: a path that raises or computes a wrong result 
 | Two output regions that overlap | S5.3 | partial | Not checked; the kernel check covers only `hbm` layout of inputs and constants; it must be an implicit constraint checked before any load (O10). |
 | Same-buffer input-output pair, undeclared | S5.3 | partial | No relation is checked; the default is exact-or-apart: equal starts and sizes in every dimension, or apart, on evaluated terms (O10). |
 | Order of loads, stores, and updates within an instruction | S5.4 | partial | Every input loads before any store (`instruction_codegen.py:162-181`); updates run first, so the permitted-overlap value must be the pre-issue semantics (O25, O10). |
-| Region value of another element type or count than its data model | S7.2 | supported | Rejected by the oracle at generation; the check moves to the front end through U4 (O7). |
+| Region value of another element type or count than its data model | S7.2 | supported | Rejected by the oracle at generation; the check moves to the front end's `check` through U3 and U4 (O7). |
 | Constraints, `add_constraints`, `constraints=` | S5.3 | supported | A violated constraint is an error at each call and iteration, read against the state before the call. |
 | Constraint arithmetic past 64 bits | S6.2 | partial | Constraints are evaluated exactly with no 64-bit check, so an overflowing constraint can hold; it must raise the constraint error with the overflow named (O24). |
 | State updates, `update=`, and execution order | S5.4 | partial | Updates run in order before regions and semantics read the state, so starts read the post-state; every expression must read the pre-state, with updates committed with the outputs (O25). |
@@ -64,7 +65,7 @@ On valid input it runs correctly: a path that raises or computes a wrong result 
 | Operation attributes: value, brace list, slice list | S7.5 | partial | An expression in a value attribute such as `iota_dimension` or `epsilon` is rejected with `NotImplementedError`, which is a bug when the ISA specification is valid (D28, O31); lists and slice ranges accept expressions. |
 | `constant` forms `true`, `false`, `inf`, `-inf`, `nan`, backtick expression | S7.5 | supported | Non-finite values are written by their bits; a backtick value the type cannot hold is an error naming the instruction. |
 | Float `constant` literal, and `epsilon` | S8.4 | partial | Read as `f64`, then rounded to its type: two roundings, so a decimal near a tie of a narrower float can round wrong; an integer literal above `2^53` at a float type also rounds twice; it must round once from the exact decimal (O8). |
-| Operation words | S8.1 | supported | All 78. |
+| Tensor operators | S8.1 | supported | All 78. |
 | Operands and attributes per operation | S8.2 | supported | Checked by the front end. |
 | `compare` `type` attribute | S8.2 | supported | The oracle adds the rule that it fits the operand type; the rule moves to the front end through U4 (O7). |
 | Element types per operation | S8.3 | partial | A type outside a word's row is rejected with `NotImplementedError`, the class for an oracle gap; a spec error must raise `ValueError` (O6). |
@@ -78,7 +79,7 @@ On valid input it runs correctly: a path that raises or computes a wrong result 
 | Element `divide` or `remainder` by 0, `INT_MIN / -1` | S8.4 | partial | Whatever XLA on the CPU gives; the norm is fixed: `x / 0` is -1 (signed) or all ones (unsigned), `min / -1` is `min`, `x % 0` is `x`, never a fault (O22, O23). |
 | `triangular_solve` at `f16` | S8.4 | partial | Solved at `f32` and rounded to `f16` on every platform; whether XLA CPU widens is measured first (O9). |
 | Initial value of `reduce_<reducer>` | S8.4 | supported | The reducer's identity at its type; at `f8e4m3fn` max and min start from its largest finite value. |
-| Meaning of the other operation words | S8.4 | partial | XLA on the CPU at the pinned jax; no NumPy reference or module-text golden per word yet (O13). |
+| Meaning of the other tensor operators | S8.4 | partial | XLA on the CPU at the pinned jax; no NumPy reference or module-text golden per word yet (O13). |
 | Operations outside the language | S8.5 | rejected | Rejected by the front end, which does not lex them. |
 
 ## Layers and generator metadata

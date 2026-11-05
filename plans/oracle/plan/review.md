@@ -12,7 +12,7 @@ The weak parts are duplicated language rules, a string-template layer, a hand-wr
 - Exact integer expressions: Python integers, floor `/` mapped to `//` (`taidl_to/expression_writer.py:20-21`), Python `%` taking the divisor's sign as S6.2 requires, and a `UserWarning` past 64 bits (`utils.py:268-271`).
 - Every call-time check covers every loop iteration a value depends on (`utils.py:68-72`).
 - Numerics chosen for fidelity: every dot at `HIGHEST` precision (`utils.py:604`), non-finite literals emitted by their bits (`utils.py:411-420`), reduce identities per type including `f8e4m3fn`'s missing infinity (`utils.py:439-451`).
-- StableHLO text as the target, naming each word's reference operation directly, with CHLO where StableHLO lacks one (`taidl_to/oracle_visitor.py:124`, `oracle_visitor.py:330-333`).
+- StableHLO text as the target, naming each word's reference operator directly, with CHLO where StableHLO lacks one (`taidl_to/oracle_visitor.py:124`, `oracle_visitor.py:330-333`).
 - Kernel declaration checks before tracing (`taidl_to/generic/decorator.py:64-140`).
 - Tests that hold attention kernels bit-exact to goldens on the CPU (`README.md:163`).
 
@@ -34,7 +34,7 @@ The weak parts are duplicated language rules, a string-template layer, a hand-wr
 | --- | --- | --- | --- |
 | `generator.py` | 89 | keep | Atomic, short; only its log lines change (O16). |
 | `api_generator.py` | 86 | keep | Derived reserved names are the right design; `d0` skip at line 22 stays. |
-| `semantic_generator.py` | 63 | reshape | Its region type and element-count checks move to the front end (O7); the visitor call stays. |
+| `semantic_generator.py` | 63 | reshape | Its region type and element-count checks move to the front end's `check` (O7); the visitor call over the `Model` stays. |
 | `instruction_codegen.py` | 224 | keep, reshape | Per-instruction function, constraint and size checks are sound; takes the checks from `semantic_generator.py`. |
 | `oracle_visitor.py` | 459 | reshape | One instruction record (O2), lowering table (O3), S8.3 and static checks from the front end (O6, O7). |
 | `expression_writer.py` | 111 | keep | Small and faithful to S6. |

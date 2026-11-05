@@ -47,7 +47,7 @@ The table below is the todo, none of it applied.
 | `SEMANTIC_INIT`, `SEMANTIC_COUNTER`, `PROLOGUE_INIT`, `generate_semantic_init` | `MODULE_STATE`, `DATA_MODEL_COUNTER`, `DATA_MODEL_PROLOGUE`, `generate_module_state` | `taidl_to/templates/templates.txt:451,466,469`, `taidl_to/api_generator.py:12` | no |
 | `semantic_generator.py`, `generate_semantic_code` | `semantics_codegen.py`, `generate_semantics` | `taidl_to/semantic_generator.py` | no |
 | `sh_*` prefix (16 emitters, most merged by O3) | `emit_*` | `taidl_to/generic/utils.py:459-850` | no |
-| `op_name`, `op_to_template`, `op` | `word`, `word_template` (glossary: operation word) | `taidl_to/oracle_visitor.py:208-449` | no |
+| `op_name`, `op_to_template`, `op` | `word`, `word_template` (glossary: tensor operator) | `taidl_to/oracle_visitor.py:208-449` | no |
 | `buffer`, `buffer_name` (a data model's storage) | keep: owner decision 19 | `taidl_to/generic/utils.py:698-713`, `taidl_to/instruction_codegen.py:63-123` | -- |
 | `rhs_name` (a data model) | `data_model` | `taidl_to/instruction_codegen.py:63-123` | no |
 | `tile` (a region's value) | `region value` (terminology reference) | `taidl_to/generic/utils.py:733-748`, `taidl_to/instruction_codegen.py:22-30,69-76` | no |

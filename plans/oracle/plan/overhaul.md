@@ -10,9 +10,9 @@ Lowering stays StableHLO text; the change is no loop algebra, no runtime code as
 | --- | --- | --- | --- |
 | `generator.py` | `generator.py` | keep | All of it; log lines reworded (O16); shape module copied and stamped (O7); debug handler reused (O28). |
 | `api_generator.py` | `api_generator.py` | keep | All of it, including `reserved_names`. |
-| `semantic_generator.py` | visitor call only | reshape | Region checks run in the front end (O7). |
+| `semantic_generator.py` | visitor call only | reshape | Region checks run in the front end's `check`; the entry reads only the `Model` and adds no check (O7). |
 | `instruction_codegen.py` | `instruction_codegen.py` | reshape | One function per instruction passing its record to `runtime` (O2, O3); updates after outputs (O25); constraint list checked before any load (O10). |
-| `oracle_visitor.py` | `oracle_visitor.py` | reshape | Traversal and attribute forms; one instruction record (O2); S8.3 and static checks from the front end (O6, O7). |
+| `oracle_visitor.py` | `oracle_visitor.py` | reshape | Traversal and attribute forms over the `Model`; one instruction record (O2); S8.3 and static checks from the front end (O6, O7). |
 | `expression_writer.py` | `expression_writer.py` | keep | All but `held` and `fixed` (O20). |
 | `template.py` | `template.py` | reshape | `generate_code`, `indent_code`, `dict_text`; `layout` removed (O18). |
 | `templates/templates.txt` | API function skeleton | reshape | Runtime code to `runtime/trace.py` (O1); per-word templates to emitter calls (O3); `while` emission removed (O20); zero fill removed (O26). |
@@ -29,7 +29,7 @@ Fidelity fixes first, then loop deletion before any split, then structure, then 
 
 1. O18, O5, O6 class change: splitter and dead branches go; output differs only in line breaks.
 2. O8, O21, O27, O22, O23, O25, O10: literals, XLA flags, `f32` widening, norm rows, fixed data values, pre-state reads, overlap constraints; the new behavioral baseline.
-3. O19: unroll spike against the bound the owner sets first.
+3. O19: unroll spike against the Q5.1 bound.
 4. O20 if the spike passes, else O11: one of the two lands.
 5. O1: runtime code into `runtime/`, `utils.py` split; output identical but import lines.
 6. O24, O32, O31, O26, O9: call-time errors, width layer as constraints, failure-policy audit, unwritten reads, `f16` solve.

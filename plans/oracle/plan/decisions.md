@@ -16,7 +16,7 @@ Panel decisions are cited by question, for example Q5.1; owner decisions by numb
 
 ## Loops: unroll every loop
 
-- Decision: unroll every loop and delete the loop algebra (O20), after a spike against a fail point the owner sets first (O19, Q5.1).
+- Decision: unroll every loop and delete the loop algebra (O20), after a spike against the fail point fixed in the Q5.1 resolution rows (O19, Q5.1).
 - Decision: if the spike fails, keep `while` emission with an equivalence test against unrolling (O11).
 - Evidence: unrolling is already the path for any loop around a state update or a varying shape (`templates.txt:101-104`, `templates.txt:137-140`).
 - Evidence: every call-time check already enumerates the iterations a value depends on (`utils.py:68-72`).
@@ -24,7 +24,8 @@ Panel decisions are cited by question, for example Q5.1; owner decisions by numb
 
 ## Static checks: front end, shape module copied
 
-- Decision: static rules run in the front end at generation (O7, Q5.8); the MLIR verifier is never the only check.
+- Decision: static rules run in the front end's `check` at generation (O7, Q5.8); the MLIR verifier is never the only check.
+- Decision: the oracle's entry takes a `Model` or an `Accelerator`, calls `check` once, and reads only the `Model`; the oracle registers no check of its own (O7, Q11.3, owner decision 42).
 - Decision: the generator copies the front end's shape module into each oracle, stamped with its taidl version (owner decision 25, Q3.7).
 - Decision: the move is shared item U4; O6's table import is its exit test, and O7 deletes the oracle's copies (Q3.1, Q8.4).
 - Evidence: the verifier checks StableHLO's rules, not TAIDL's, and its errors name no instruction.
@@ -54,7 +55,7 @@ Panel decisions are cited by question, for example Q5.1; owner decisions by numb
 
 - Decision: every addressing intermediate is a checked signed 64-bit integer, evaluated as parsed, with one error class (O24, Q5.3).
 - Decision: expressions read the pre-state; updates commit with the outputs (O25, Q1.1).
-- Decision: a read of an unwritten on-chip element is an error (O26, Q1.4).
+- Decision: a read of an unwritten on-chip element of a buffer with no declared initial value is an error; a buffer with a declared initial value starts filled with it (O26, Q1.4, joint decision on unwritten reads).
 - Decision: tensor data never faults; integer divide and remainder at zero, `INT_MIN / -1`, and float-to-integer convert out of range or NaN take fixed values (O23, joint decision of panels 1 and 5).
 - Evidence: the backend input is an HLO file with no tensor values, so a data fault would make a correct compile of a legal kernel raise.
 - Decision: the oracle checks every constraint of the front end's list, whether implicit, marker, or written, before any load (O10, Q9.3).
@@ -72,10 +73,11 @@ Panel decisions are cited by question, for example Q5.1; owner decisions by numb
 ## Failure policy (owner decision 40)
 
 - Decision: a generated oracle stops with an error only on invalid assembly code or binary input; the error names the instruction and the clause; otherwise it runs correctly (O31).
-- Decision: generation rejects only what the architect can correct, such as a typo, a reserved name or an invalid ISA specification (O6, O7).
+- Decision: generation rejects only what the architect can correct, such as a typo, a reserved name or an invalid ISA specification (O6, O7); `check` rejects an invalid ISA specification, and the oracle excludes no instruction.
+- Decision: the one rejection of the oracle's own is a user name equal to a name the generated `api.py` defines; it is found while emitting, before any file is written, and is not a check (owner decision 42).
 - Decision: a path that raises or computes wrong on valid input is a bug with a plan item (D28, D29; D11, D19, D21).
 - Evidence: `bugs.md` lists today's paths; O31 audits the remaining raise sites.
-- Open: O26 stands only if the language states an unwritten read as a violation (decision 31 allows hardware that reads it).
+- Decision: the unwritten-read fault is a property of the assembly code, so it meets decision 40; hardware that defines the contents is served by the declared initial value, which meets decision 31 (joint decision on unwritten reads).
 
 ## Layers and generator metadata (panel 10, owner decisions 38 and 39)
 

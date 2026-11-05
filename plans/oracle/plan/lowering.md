@@ -1,6 +1,6 @@
 # act-oracle lowering and numerics
 
-The oracle lowers every operation word to StableHLO or CHLO text, and S8.4 gives each word its StableHLO meaning.
+The oracle lowers every tensor operator to StableHLO or CHLO text, and S8.4 gives each word its StableHLO meaning.
 StableHLO leaves open dot accumulation, reduce order, integer divide at zero, `convert` out of range and numerical accuracy, so under owner decision 16 each needs a norm the oracle enforces.
 The language track owns the norm table; this plan enforces it and sets the XLA flags that let XLA change a rounded result.
 CPU is the normative platform; GPU is held to stated bounds, and each GPU deviation is a row of `docs/coverage.md` (Q5.10).
@@ -24,7 +24,7 @@ CPU is the normative platform; GPU is held to stated bounds, and each GPU deviat
 - What: `sh_triangular_solve` (`generic/utils.py:498-512`) widens `f16` to `f32` on every platform; on jax CPU a direct `f16` solve works and differs by up to `2^-10`.
 - What: measure whether XLA CPU already widens an `f16` solve before keeping or dropping the widening (Q5.10).
 - What: if it does not, widen only on GPU and list it as a GPU deviation in `docs/coverage.md` (O14).
-- Benefits: CPU results match the reference operation.
+- Benefits: CPU results match the reference operator.
 - Caveats: the emitter does not know the platform today; `set_simulation_backend` (`generic/decorator.py:18-36`) passes it down.
 - Fail points: `tests/test_linalg.py` bounds move by an ulp and fail loudly.
 - Order and dependencies: L3 states the meaning; T owns the bound.

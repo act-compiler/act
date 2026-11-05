@@ -109,6 +109,6 @@ Evidence is the review's own `file:line`, re-read where the response rests on it
 | R58 mark removal | rejected | Owner decision 30 keeps markers as shorthand; Q9.2 defines their expansions. | O10 |
 | R44, R6 | accepted | Clause id on line 1; releases pin released versions (owner decision 33). | none |
 
-## Open for the owner
+## Set by the owner's resolutions
 
-- Q5.1: the stress kernel's trip count, instruction count, compile-time limit and op-count cap, set before O19 runs.
+- Q5.1: the stress kernel's trip count, instruction count, compile-time limit, and op-count cap are set in meeting/resolutions.md.

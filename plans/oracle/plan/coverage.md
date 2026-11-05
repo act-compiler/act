@@ -14,7 +14,7 @@ This plan makes the generator's docs state only the oracle's deviations and its 
 - Breaking: yes.
 - Changes: `docs/operations.md`, `docs/coverage.md`, `README.md`; preserves the oracle-only rows and the test bounds.
 - What: `docs/operations.md:14-97` repeats the spec's element-type table (S8.3) row by row, with "lowers to" a direct name in all but a few rows.
-- What: keep only what is the oracle's: the rows whose reference operation is not the same-named StableHLO one (`chlo.*`, `copy` as `reshape`, `parameter` as `dynamic_slice`, `reduce_*`), the `dot` widening of 2-bit integers, the test bounds table (`docs/operations.md:139-156`).
+- What: keep only what is the oracle's: the rows whose reference operator is not the same-named StableHLO one (`chlo.*`, `copy` as `reshape`, `parameter` as `dynamic_slice`, `reduce_*`), the `dot` widening of 2-bit integers, the test bounds table (`docs/operations.md:139-156`).
 - What: move those into `docs/coverage.md` as notes and a "Test bounds" section; delete `docs/operations.md`; point README at the spec for the language and at `coverage.md` for the oracle.
 - What: add a normative-platform statement: the CPU is the reference, the GPU is held to the bound table (`README.md:163`), and every GPU deviation (O9) is listed.
 - What: README sections "What an oracle refuses" and "The names an oracle reserves" (`README.md:54-82`) restate rejections; keep the reserved names, which are the oracle's, and point to `coverage.md` for the rest.
