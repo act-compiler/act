@@ -64,10 +64,12 @@ Each row copies the banned column of `terms.md`; a CI grep checks docs against i
 | test oracle generator | TAIDL-TO (as a prose name), Test Oracle Generator (title case), oracle generator |
 | compiler backend generator | ACT-Backend Generator, Compiler Backend Generator (title case) |
 | test oracle | oracle (in prose), generated oracle, simulator (unqualified), emulator |
-| kernel function (kernel) | program, test program, assembly (for the function), kernel (bare, in prose) |
+| kernel function (kernel) | program (for the function), test program, assembly (for the function), kernel (bare, in prose) |
 | compiler backend | backend (unqualified), codegen |
 | tiled kernel | tensor kernel, input kernel, kernel (unqualified, for the compiler input) |
 | assembly code | machine code, compiled kernel, binary |
+| issue | call (for an instruction), launch, dispatch |
+| program | instruction stream, kernel (for a sequence of issues) |
 | instruction selection | lowering, isel |
 | memory allocation | bufferization, malloc (in prose) |
 | e-graph / e-class / e-node | egraph, eclass, enode |

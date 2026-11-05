@@ -4,6 +4,8 @@ The act repo pins taidl, act-oracle, and act-backend by released git tag (pyproj
 tests/check_versions.py compares those places; it does not check what sits outside this repo.
 The v3 release follows the act 2.x structure: each release pins released versions of its dependencies, with no pre-release tag and no commit or branch pin in public.
 Development happens in private repos, where a pin may name a commit.
+- A non-breaking fix developed before v3 ships publicly as a 2.x patch release with released pins, in the act 2.x structure (owner 47).
+- A breaking change waits for v3.
 
 ## v3 versions
 
@@ -21,8 +23,10 @@ Development happens in private repos, where a pin may name a commit.
 | A16 | Write the release order and a checklist | none | M | Q1 |
 | A17 | Check sibling pins and dependency floors against act | A15 | M | Q2 |
 | A18 | Add a scheduled compatibility build | A16 | M | after v3 |
-| A23 | Release ACT 3.0 | A15, A16, A17, A20, A26, A28 | M | Q2 |
-| A28 | Converter in the last 2.x release and act's own ISA specifications | A16 | M | Q1 |
+| A23 | Release ACT 3.0 | A15, A16, A17, A20, A26, A28, A31, U8 | M | Q2 |
+| A28 | Converter in the last 2.x release and act's own ISA specifications | A16, U13 | M | Q1 |
+| A31 | Release gate: the M4 evidence passes on the private heads | L38, L39, B44, B45, T33, T34, T12, T13, T36, T37, T38, U14 | S | Q2 |
+| A32 | Repo topology, branching, private-to-public sync, private CI owner, and the 2.x maintenance policy | none | S | Q1 |
 
 ## A15 Close gaps in check_versions.py
 
@@ -36,6 +40,8 @@ Development happens in private repos, where a pin may name a commit.
 ## A16 Write the release order and checklist
 
 - What: one doc in this repo listing the order of the act 2.x structure: taidl tag; then act-oracle and act-backend tags pinning that taidl tag; then act pins all three, the README table row, the sentence below the table, and the image push.
+- What: a non-breaking fix before v3 follows the same order as a 2.x patch release; a breaking change is held for v3 (owner 47).
+- What: the checklist records U15's StableHLO pin and each supported torch minor (A29) once those items land (Q12.4).
 - Benefits: a release is a checklist, not a memory.
 - Caveats: the doc describes the procedure and never past releases; it names released tags only.
 - Fail points: a tag pushed before its dependency exists makes `pip install` fail; notice in CI step "Build the ecosystem image" (.github/workflows/test.yml:23-24).
@@ -70,7 +76,8 @@ Development happens in private repos, where a pin may name a commit.
 - Benefits: act is the only repo that pins all three siblings, so the train cannot finish without this item.
 - Caveats: no pre-release tag and no commit or branch pin appears in public; the siblings' private development pins stay private.
 - Fail points: check_versions.py fails when the newest row, the pins, and the sentence disagree; notice in CI step "Check the pinned versions".
-- Order and dependencies: after A15, A16, A17, A20, A26, and A28; U8 and the tutorial (A24) follow it.
+- What: the README and the migration note state the v3 input: XLA HLO text (B42), with the export route from JAX (a jitted function lowered to HLO text) and from PyTorch (the B53 adapter once it lands).
+- Order and dependencies: after U8, and after A15, A16, A17, A20, A26, A28, and A31; the tutorial (A24) follows it.
 - Verification: `python tests/check_versions.py` passes in the v3 image; `pip install` of the tag works in a fresh venv.
 
 ## A28 Converter in the last 2.x release and act's own ISA specifications
@@ -83,5 +90,28 @@ Development happens in private repos, where a pin may name a commit.
 - Benefits: an architect with a v2 ISA specification has one command and a proof of equality, and act's own files move without a hand rewrite.
 - Caveats: no outside owner of a v2 specification is known, so the script carries no support promise beyond the migration note; a release can wrap it later if one appears.
 - Fail points: a converted file that builds a different `Model`; the T37 test fails on that file.
-- Order and dependencies: after A16 (the release order); the script is the shared track's, the `Model` equality is T37, and A23 and A24 wait for it.
+- What: A28 runs T37's per-file `Model` equality check on every file it converts, so the release carries no file that check has not passed.
+- What: the U12 spelling is frozen before this release, so converted files never change spelling again in v3.
+- Order and dependencies: after A16 (the release order) and U13 (the script and its equivalence tests); A23 and A24 wait for it.
 - Verification: the converted `tests/test_end_to_end.py` passes in the v3 image; the migration note names the converter's release tag.
+
+## A31 Release gate
+
+- What: one gate item that passes only when the M4 evidence holds on the private heads: the encoding unit (L38, L39, B44, B45, T33, T34), the expectation runner (T12), the differential tests (T13), the failure policy cases (T36), the equivalence tests (T37), the surface cases (T38), and the string-surface deletion (U14, which absorbs L45).
+- What: U8 and A23 depend on it, so no v3 tag is cut while any of these is open.
+- Benefits: the dependency graph, not a checklist line, holds the release until the evidence exists.
+- Caveats: the gate holds no work of its own; a failing input moves the v3 date (K20, K24).
+- Fail points: a gate input added to M4 without an edge here; noticed by comparing the M4 criteria with this item's dependencies.
+- Order and dependencies: after every item above; before U8 and A23.
+- Verification: the gate job lists each input with its CI result, all green, on the release candidate heads.
+
+## A32 Repo topology, branching, and the 2.x maintenance policy
+
+- What: one doc beside A16 that states the private and public repos per package, the branch that each release is cut from, and how a private head reaches the public repo.
+- What: it names the owner of private CI and the runner it uses.
+- What: it states the 2.x maintenance policy: a non-breaking fix before v3 ships as a 2.x patch release with released pins; a breaking change waits for v3 (owner 47).
+- Benefits: the A16 order has a defined repo and branch to act on before wave 2 starts.
+- Caveats: wave 1 gate; it decides process, not code.
+- Fail points: a fix reaches a public repo without a release; noticed by the A17 pin check.
+- Order and dependencies: none; wave 1 gate, beside A16.
+- Verification: a dry-run 2.x patch release follows the doc from private head to public tag.

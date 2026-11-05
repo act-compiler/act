@@ -103,7 +103,8 @@ Item rows cite file:line from the tree as of this meeting.
 
 ## A27 Document how to add a new generator
 
-- What: one act-level page, linked from README.md, that walks an author through adding a generator such as act-allo (decision 39): take the `Model` that `taidl.check(acc)` returns (U2, U3, U10), expose `generate_<name>(model_or_accelerator, base_dir=None, **options)` (an `Accelerator` is checked once at the entry), read only the `Model` and the generator's own `meta` entry, and touch neither taidl nor another generator.
+- What: one act-level page, linked from README.md, that walks an author through adding a generator such as act-allo (decision 39): take the `Model` that `taidl.check(acc)` returns (U2, U3, U10), expose `generate_<name>(source, /, base_dir=None, **options)` returning the frozen report (an `Accelerator` is checked once at the entry), read only the `Model` and the generator's own `meta` entry, and touch neither taidl nor another generator.
+- What: the page links L41's guide and its worked generator, which is the U11 template, and does not restate their steps.
 - What: the page lists the required parts: an expectations table with one row per corpus case (supported, or unsupported with a coded rejection) and generated coverage, the neutrality test that strips generator metadata and compares oracle and backend output, and the one-name rule of A8.
 - What: the page states the failure policy of decision 40: the generator rejects only problems the architect can correct, with a clear error, and a misspelled key in its own namespace names the node and key.
 - What: the page states the generator check of decision 42: it runs after `check`, rejects an architect-correctable fault, and excludes an instruction it cannot model with a printed reason (code, section id, author line) stored in its output; the oracle adds no check.

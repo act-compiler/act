@@ -49,7 +49,7 @@ Renames land together in the v3 release.
 | Topic | Ruling | Reason |
 | --- | --- | --- |
 | Surface | An ISA specification is a Python file whose instructions are decorated functions, run once by the tracer; the tracer never reads source, and a symbolic value raises on `bool()` instead of taking a silent meaning. | Decision 41; Q11.1. |
-| Buffer keywords | `acc.buffer(name, access_dims, base_element_dims, element_type)` and `ops.constant(value, element_type, shape)`: the keywords are the identifiers of the terms access dimensions, base element shape, and element type; `access`, `unit`, and `dtype` are not keywords. | Q11.2; meeting/resolutions.md. |
+| Buffer keywords | `acc.buffer(name, access_dims, base_element_dims, element_type, initial_value=None)` and `ops.constant(value, element_type, shape)`: the keywords are the identifiers of the terms access dimensions, base element shape, element type, and initial value; `access`, `unit`, and `dtype` are not keywords. | Q11.2; meeting/resolutions.md. |
 | Spelling status | The spellings `any_of` and `Comp[u7]` of the Q11.2 sketch are provisional. | Q11.2 confidence. |
 | Check | `check` runs once before any generator, returns the checked model, and is the only way to build one; a generator entry given an accelerator calls it. | Decision 42; Q11.3. |
 | Reject and exclude | A fault the architect can correct is a rejection; a valid instruction a generator cannot model is an exclusion with a printed, stored reason; an empty usable set is a rejection; the oracle excludes nothing. | Decision 40; Q11.3. |

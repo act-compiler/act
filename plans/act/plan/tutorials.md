@@ -47,6 +47,10 @@ Nothing in tutorials/ has been edited.
 
 - What: one exercise tree on the released v3 pins (act 3.0, image `v3.0`), with the layout chosen inside this item; the default is one tree plus `tutorials/events/<event>.md` for agenda and logistics.
 - What: every exercise and solution is written in the authoring surface: `@acc.instruction` functions, `read` and `write` on `buffer.region(starts, size=sizes)`, `require`, and `ops.<word>`; the first exercise ends with `python -m taidl check` on the ISA specification, then both generators.
+- What: the first lesson is the quickstart's `bitcast_convert`, with one sentence on why `d0` is `u8`: it is byte storage, and each region views it with its own element type.
+- What: a draft runs on the private heads before U8, together with the Claude-driven fresh-container run of the M5 steps; the release only re-pins it.
+- What: the two cold-start trial participants are named by M3.
+- What: by M3, one architect outside the team writes an ISA specification on the traced surface; the findings go to the rename table (L30) and the removed-names table (D15).
 - What: an exercise on mistakes uses the `check` output: the learner introduces a typo, reads the entry with the author's file and line, and fixes it.
 - What: the tutorial's README and setup.md cite each paper under one title, the venue's own title as published (the archived setup.md and README.md word the ACT title differently).
 - Benefits: one place to fix a typo; the exercises teach the glossary terms (buffer, state, hbm, region, ISA specification, check function, checked model).
