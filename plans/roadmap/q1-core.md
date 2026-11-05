@@ -7,7 +7,7 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | ID | Item | Depends on | Size | Rulings |
 | -- | ---- | ---------- | ---- | ------- |
 | L1 | Ship the spec skeleton and section ids | -- | S | -- |
-| L2 | Pin the reference operation version | L1 | S | -- |
+| L2 | Pin the reference operator version | L1 | S | -- |
 | L3 | Normative shape and element type rules per operation | L2 | L | R62 |
 | L4 | Check generators against the stated reduce identities and `constant` fill | L2 | S | -- |
 | L5 | Make the region, in-place, and overlap fault rows hold | L1, L36 | S | R25 |
@@ -15,8 +15,7 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | L7 | ACT-Backend unsupported-feature table against section ids | L1 | S | -- |
 | L10 | Reject `@a.` outside starts and constraints | L1 | S | -- |
 | L11 | Reject late buffers and partial instructions | L1 | S | -- |
-| L13 | Align integer literal lexing between the two grammars | L1 | S | -- |
-| L14 | Test the exact-token zero divisor rule | L1 | S | -- |
+| L14 | Test the plain-zero divisor rule | L42 | S | -- |
 | L15 | Rename confusing internal names | L25 | S | -- |
 | L16 | Range and type checks at the declaring call | L3 | S | -- |
 | L17 | Element types `f4e2m1fn` and `f8e8m0fnu` | L2, L3 | S | -- |
@@ -24,7 +23,7 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | L25 | Reconcile the glossary with the terminology reference | L1 | S | -- |
 | L26 | Apply the glossary to the taidl docs and error messages | L25 | M | -- |
 | L29 | Object model contract test for the five fixed names | L1 | S | -- |
-| L30 | v3 rename table: public API, token, grammar rule, and `d0` as a one-dimension buffer | L1 | M | -- |
+| L30 | v3 rename table: public API and `d0` as a one-dimension buffer | L1 | M | -- |
 | L31 | Float accuracy bounds for `dot`, `reduce_add`, `reduce_multiply` | L2 | S | -- |
 | L32 | Defined-behavior norms: pre-state issue, unwritten reads, numerics, fault guarantees | L1, L2 | M | -- |
 | L33 | Remove rare words and redundant spellings, with one coded rejection | L1 | S | -- |
@@ -33,6 +32,8 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | L36 | Expand each pair's relation with the size term and the exact-or-apart default | L1 | S | -- |
 | L37 | Width layer: a type per attribute, `s64` by default | L1, U2 | M | -- |
 | L40 | Generator metadata in the typed contract | U2, U3 | S | -- |
+| L42 | Python surface by tracing | L43 | L | -- |
+| L43 | Check function `taidl.check` returning a frozen `Model`, and generator checks | U2, U3 | M | -- |
 
 ## backend
 
@@ -46,11 +47,11 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | B7 | Shape and element type inferred in `Analysis::make` | B31 | L | R18 |
 | B8 | Name and test each IR-to-IR rewrite rule | B6 | S | -- |
 | B9 | Extraction without cloning or mutating the e-graph | B7 | S | R18 |
-| B13 | One selectable-instruction model built from the front end's objects | B1, U2 | M | -- |
-| B14 | Checks as one pass producing that model | B13, B21 | M | -- |
+| B13 | One selectable-instruction model built from the front end's `Model` | B1, U2 | M | -- |
+| B14 | Backend checks after `check`: reject or exclude, producing that model | B13, B21 | M | -- |
 | B15 | Keep `docs/coverage.md` in sync by a test; document S1.3 cases | B14, L7 | S | -- |
-| B21 | Call `Accelerator.validate()` first and delete the backend's region count check (D1, D2) | U3 | S | -- |
-| B24 | Reject, or report, instructions with no semantics (D4) | L5 | S | -- |
+| B21 | Entry takes a `Model` or calls `check` once; delete the backend's region count check (D1, D2) | U3 | S | -- |
+| B24 | Reject instructions with no semantics, exclude state-only ones (D4) | L5 | S | -- |
 | B25 | C++ errors returned, never `assert` (D5) | -- | S | -- |
 | B26 | Extraction errors as dropped candidates, unset shape as `Option`, shape disagreement as a coded fault (D7, D8) | B7 | S | -- |
 | B27 | Glossary and owner vocabulary in messages, docs and Python names | L25, L27 | S | -- |
@@ -64,6 +65,7 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | B39 | Pair-relation record in the typed handoff | B2, L35 | S | -- |
 | B40 | Allocation rows per relation | B30 | S | -- |
 | B41 | Every candidate-level failure is a dropped candidate with a recorded reason (D5, D7, D8, D17 to D21) | B25, B26 | M | -- |
+| B46 | Exclusion report: printed, stored in the crate, named at kernel compile | B14 | S | -- |
 
 ## oracle
 
@@ -82,7 +84,7 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | O16 | Generation log lines that state what happens | -- | S | -- |
 | O17 | Keep `docs/coverage.md` true by test | O14 | S | -- |
 | O18 | Drop the hand-written line splitter for generated code | -- | S | R35 |
-| O19 | Spike: unroll every loop on a synthetic stress kernel against an owner-set bound | O21 | S | -- |
+| O19 | Spike: unroll every loop on a synthetic stress kernel against the Q5.1 bound | O21 | S | -- |
 | O20 | Unroll every loop; delete loop algebra, `Unroll`, `while` emission, `held`, `fixed` | O19, O8 | M | -- |
 | O21 | XLA flags per compile: no excess precision, no flush to zero, IEEE min and max | -- | S | -- |
 | O22 | Enforce the numerics norm table: a guard per row and a golden per row | L6 | M | -- |
@@ -102,7 +104,7 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | T2 | Remove hidden fixture coupling in the two conftest.py files | -- | M | -- |
 | T3 | One shared test kit for helpers duplicated across repos | T2 | M | -- |
 | T5 | Corpus format, location, and naming | L1 | S | -- |
-| T6 | Front-end verdict runner in taidl | D3, T5 | M | -- |
+| T6 | Check verdict runner in taidl | D3, T5, U3 | M | -- |
 | T7 | Seed the corpus from existing front-end tests (S2 to S7) | T1, T5, T6 | L | -- |
 | T8 | Operations corpus with reference values (S8) | L3, T5 | L | -- |
 | T10 | Real ISA specifications as the end-to-end list | T5 | S | -- |
@@ -121,6 +123,8 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | T29 | Program runner over an oracle interface | D8, T5, T6 | M | -- |
 | T30 | Overlap matrix, rejection, and cross-check cases | D8, T29, T5, T6 | M | -- |
 | T35 | Generator metadata cases (neutrality, namespaces) | L40, T12, T5, T6, U2 | M | -- |
+| T37 | Converter equivalence tests per ISA specification file | T38, T6, U3 | M | -- |
+| T38 | Surface, `check`, and exclusion cases | T12, T5, T6, U10, U3 | M | -- |
 
 ## act
 
@@ -139,3 +143,4 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | A16 | Write the release order and a checklist | -- | M | -- |
 | A20 | Run the quickstart in the image | A25 | S | -- |
 | A25 | Write the quickstart | A1 | S | -- |
+| A28 | Converter in the last 2.x release and act's own ISA specifications | A16 | M | -- |

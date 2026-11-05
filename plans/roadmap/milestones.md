@@ -9,13 +9,13 @@ Each milestone holds one negative criterion that a test checks.
 
 | Milestone | Outcome | Ends with wave | Items | Weight |
 | --------- | ------- | -------------- | ----- | ------ |
-| M1 | The specification and the typed contract are in force | 2 | 97 | 166 |
-| M2 | One front end validates for every generator | 3 | 60 | 132 |
-| M3 | Generators read the front end's checks and codes | 4 | 42 | 105 |
-| M4 | v3 is released on released pins | 5 | 23 | 66 |
-| M5 | Usable by anyone | 6 | 7 | 16 |
+| M1 | The specification and the typed contract are in force | 2 | 95 | 164 |
+| M2 | One check function serves every generator | 3 | 59 | 128 |
+| M3 | Generators read the checked model and the front end's codes | 4 | 50 | 130 |
+| M4 | v3 is released on released pins | 5 | 27 | 74 |
+| M5 | Usable by anyone | 6 | 5 | 14 |
 
-Wave 7 (10 items, weight 30) follows M5 as listed follow-ons, U9, L19, L20, and L23 among them.
+Wave 7 (11 items, weight 31) follows M5 as listed follow-ons, U9, L19, L20, L23, and D13 among them.
 
 ## Standing criteria
 
@@ -39,29 +39,36 @@ Wave 7 (10 items, weight 30) follows M5 as listed follow-ons, U9, L19, L20, and 
 - The case-study sketches C1 to C4, C9 to C11, and C13 run as an executable corpus (C11).
 - Every wave 1 gate has its named outcome (waves.md gate row).
 - Assisted weeks are recorded per wave 1 item, and dates are set from them (Q8.9).
+- The three tutorials sit on their tags, none remains on master, and README.md, pyproject.toml, and the workflow state one tutorial lint scope (A11 with A22).
 - Negative: the ASCII and one-sentence-per-line gate finds no violation in tracked text files (A7).
 
-## M2: one front end validates for every generator
+## M2: one check function serves every generator
 
-- Every generator calls `validate()` first, checked by a test in each generator (U10, B21 with B22).
-- The conformance corpus job passes with expected verdicts (U7).
+- `taidl.check` returns a frozen `Model` and raises one `Rejection` listing every problem; `python -m taidl check spec.py` runs it standalone (L43, U3).
+- Every generator entry takes a `Model` or calls `check` once, and its body reads only the `Model`, checked by a test in each generator (U10, B21 with B22).
+- The traced Python surface builds a `Model`, and each rejection names the author's file and line (L42, U12, D17).
 - The front end holds the shape and per-word element-type rules, and the S8.3 table is generated from them (U4, Q8.4 step b).
 - The agreement test compares B7's Rust shape table with the taidl shape module and passes (Q8.2).
 - The spec consistency job runs on every push (L8).
-- Every loop is unrolled within the owner-set bound on the O19 stress kernel (O20).
+- Every loop is unrolled within the Q5.1 bound on the O19 stress kernel: 60 s trace plus compile, 2x per existing loop test (O20).
 - Backend runtime diagnostics carry codes, and C++ errors return instead of asserting (D7, B25).
 - The allocator places each pair under its relation, with one allocation row per relation (B30, B40).
 - Generator metadata reaches each generator through the typed contract, and the guides for adding a generator exist (L40, L41, A27).
-- The failure policy is in force: a failing candidate is dropped with a recorded reason, and the oracle raises only on invalid input, naming instruction and clause (D16, B41, O31).
-- The backend validates its input against a documented input specification and detects formats other than XLA HLO text (B42, B43).
+- A failing candidate is dropped with a recorded reason, and the oracle raises only on invalid input, naming instruction and clause (B41, O31).
 - Integer `divide`, `remainder`, and float-to-integer `convert` take fixed values, with no data fault (O23).
 - Negative: no `set_shapes_` in the generated crate and no C++ candidate parser in act-backend (B6, B4; backend/plan/isel.md:35).
 
-## M3: generators read the front end's checks and codes
+## M3: generators read the checked model and the front end's codes
 
-- Run-time-independent checks live in the front end, and the duplicates are deleted from each generator (D4, D5 with B23).
-- The oracle runs the front end's checks and carries the copied shape module stamped with its taidl version (O7, owner 25).
-- The front-end verdict runner passes on the seeded corpus (T6, T7).
+- Run-time-independent checks live in the front end, and the duplicates are deleted from each generator (D4, D5).
+- The conformance corpus job passes with expected verdicts (U7, after T6).
+- The oracle reads only the checked `Model` and carries the copied shape module stamped with its taidl version (O7, owner 25).
+- Backend checks after `check` reject an architect-correctable fault and exclude an unsupported instruction with a reason (B14).
+- The exclusion report is printed at generation, stored in the crate, and named when a kernel needs an excluded instruction (B46, D18).
+- The failure policy is in force for every generator (D16).
+- The backend validates its input against a documented input specification and detects formats other than XLA HLO text (B42, B43).
+- The converter script runs on the corpus under taidl 2.x and ships in the last 2.x release with act's own ISA specifications converted (L44, U13, A28).
+- The check verdict runner passes on the seeded corpus (T6, T7).
 - The registry coverage test and wording lint pass (D10).
 - Every message carries its clause id on line 1 (D3).
 - Every IR-to-IR rewrite rule has a name and a test (B8, P3).
@@ -84,13 +91,16 @@ Wave 7 (10 items, weight 30) follows M5 as listed follow-ons, U9, L19, L20, and 
 - The encoding unit lands whole before taidl 3.0: `decode(encode(x)) == x` holds on the corpus ISA specification, and the derived attribute cases pass (L38, L39, B44, B45, T33, T34; Q10.4).
 - The backend overlap rows pass: allocation per relation, and a copy for a tied shared input (T31, B11).
 - The generator metadata cases pass, and the template generator ships with its expectations table (T35, U11).
+- The surface, `check`, and exclusion cases pass (T38).
+- Each corpus file's `Model` from the v2 string form equals the `Model` traced from its converted file, up to call sites (T37).
+- taidl 3.0 holds no string surface, no `taidl/antlr4/`, no grammar tests, and no ANTLR dependency (L45, U14).
 - The failure policy cases pass for every generator (T36).
 - Negative: no public repo holds a pre-release tag, a commit pin, or a branch pin (named check over tags and manifests, A17).
 
 ## M5: usable by anyone
 
-- One tutorial is written on the released v3, and every exercise has a runnable solution (A24, A13).
+- One tutorial is written on the released v3, its paper titles and setup text match the papers, and every exercise has a runnable solution (A24 with A14, A13).
 - The tutorial solutions run in CI against the released pins (A21).
-- A cold-start trial passes: two people outside the team, a fresh environment, the released act 3.0, the README and tutorial, one small ISA specification, no maintainer help, within a stated time limit (Q8.8 panel default; the owner sets the parameters).
+- A cold-start trial passes: two people outside the team, a fresh environment, the released act 3.0, the README and tutorial, a change to the Q7.5 example ISA specification, no maintainer help, within 4 hours each (Q8.8 resolution rows).
 - A Claude-driven fresh-container run of the same steps passes as a separate CI job; it does not replace the trial (Q8.8).
 - Negative: the README holds no news, roadmap, or release-history lines (A3).

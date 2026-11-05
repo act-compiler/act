@@ -15,7 +15,7 @@ Wave 2 ends at M1.
 | L32 | Defined-behavior norms: pre-state issue, unwritten reads, numerics, fault guarantees | L1, L2 | M | -- |
 | L34 | Rename "refus" to "reject" in messages, docstrings, READMEs, and identifiers | L30 | S | -- |
 | L27 | Apply the glossary to B, O, and A docs | L25 | M | later item; scheduled because B27 and O15 depend on it (Q8.1) |
-| B24 | Reject, or report, instructions with no semantics (D4) | L5 | S | -- |
+| B24 | Reject instructions with no semantics, exclude state-only ones (D4) | L5 | S | -- |
 | B27 | Glossary and owner vocabulary in messages, docs and Python names | L25, L27 | S | -- |
 | B28 | Rust and C++ identifier and log renames | B1 | S | -- |
 | B31 | Typed payloads in `TensorOp` | B1 | M | -- |

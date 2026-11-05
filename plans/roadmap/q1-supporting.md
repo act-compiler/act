@@ -33,9 +33,9 @@ Plan items scheduled for quarter 1 in the supporting tracks, by track.
 | ID | Item | Depends on | Size | Rulings |
 | -- | ---- | ---------- | ---- | ------- |
 | U2 | Typed front-end contract with a version | L15 | M | -- |
-| U3 | One final validation that publishes derived facts | L5, U2 | M | -- |
+| U3 | The check function | L5, U2 | M | -- |
 | U5 | Element-type table and literal check | L16, O8, U2 | M | -- |
-| U10 | Generators call `validate()` first | U3 | S | -- |
+| U10 | Generators read only the checked model | U3 | S | -- |
 
 ## diagnostics
 
@@ -59,4 +59,3 @@ Plan items scheduled for quarter 1 in the supporting tracks, by track.
 | F3 | Total integer arithmetic: overflow and zero divisors fault | -- | S | -- |
 | F6 | Byte order, sub-byte packing, size of d0 | -- | S | -- |
 | F8 | Front-end rejections the spec already implies | -- | S | -- |
-| F9 | Executable reference interpreter of the exact classes | F1, F3 | M | -- |

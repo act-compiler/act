@@ -6,7 +6,7 @@ Plan items carry a track prefix and are referenced by ID only.
 
 ## Goals
 
-- One unambiguous, generic TAIDL specification with no undefined behavior.
+- One unambiguous, generic TAIDL language specification in which every run-time violation is a fault or a defined behavior.
 - Generators that follow the specification, each with a table of what it supports.
 - One vocabulary across all repos, grounded in the ACT and TAIDL papers, then StableHLO and MLIR.
 - Simpler front end, backend, and oracle, built from the current code rather than rewritten.
@@ -30,7 +30,8 @@ Plan items carry a track prefix and are referenced by ID only.
 | [priorart/](priorart/README.md) | What to borrow from Sail, ILA, Exo, TableGen, ISLE, egg, StableHLO, NKI | P |
 | [terminology/](terminology/README.md) | Terms from the papers, MLIR, StableHLO, PyTorch, and NKI | -- |
 | [glossary/](glossary/README.md) | Reconciled glossary | -- |
-| [reviews/](reviews/README.md) | Independent reviews of the backend, oracle, and spec plans | -- |
+| [reviews/](reviews/README.md) | Independent reviews of the track plans and the issue log | -- |
+| [meeting/](meeting/README.md) | Debate panels, roles, and resolutions of owner items | Q |
 
 ## Plan item shape
 

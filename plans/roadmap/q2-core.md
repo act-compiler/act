@@ -10,6 +10,8 @@ Plan items scheduled for quarter 2 in the core tracks, by track.
 | L38 | Encoding layer: one encoding block per instruction | L37 | M | -- |
 | L39 | Derived-attribute rule and the encode-decode round trip | L38 | M | -- |
 | L41 | Guide: adding a generator | L40 | S | -- |
+| L44 | Converter script on the 2.x line and per-file `Model` equivalence | L42 | M | -- |
+| L45 | Remove the string surface, `taidl/antlr4/`, grammar tests, and the ANTLR dependency | L44 | S | -- |
 
 ## backend
 
@@ -28,7 +30,7 @@ Plan items scheduled for quarter 2 in the core tracks, by track.
 | B33 | Target constants out of IR-to-IR rewrite 0 | B6 | S | -- |
 | B34 | Search budget measurement and candidate deduplication | B10, B29 | S | -- |
 | B36 | Drop a candidate that reads unwritten on-chip storage | B10 | S | -- |
-| B42 | Input validation and a documented input specification | B5 | M | -- |
+| B42 | Input validation and a documented input specification | B46, B5 | M | -- |
 | B43 | Input formats other than XLA HLO text: detection now, readers staged | B42 | L | -- |
 | B44 | Derived attributes solved in closed form in the allocator | B30, B38 | M | -- |
 | B45 | Assembler and disassembler generated from the encoding layer, landing last as one unit | B44 | L | -- |
@@ -38,10 +40,10 @@ Plan items scheduled for quarter 2 in the core tracks, by track.
 | ID | Item | Depends on | Size | Rulings |
 | -- | ---- | ---------- | ---- | ------- |
 | O3 | Emitter calls in generic form instead of string templates; one word table | O2 | M | R30 |
-| O7 | Delete the oracle's static checks; run the front end's; copy its shape module | O6, U4 | M | R31, R62 |
+| O7 | Delete the oracle's static checks; read only the checked `Model`; copy the front end's shape module | O6, U10, U4 | M | R31, R62 |
 | O12 | Drop the matmul-precision flag; drop x64 after a feed test | -- | S | R32 |
 | O13 | Differential reference: NumPy over the instruction record, module-text goldens | O2 | M | -- |
-| O26 | Unwritten on-chip reads raise at the call; zero fill goes | L5, O20 | M | -- |
+| O26 | Unwritten on-chip reads raise at the call; zero fill becomes the declared-value fill | L5, O20 | M | -- |
 | O28 | Build the C++ debug handler once per install and jax version | -- | S | -- |
 | O29 | Study: migration plan of the oracle onto fsim-lib | -- | M | -- |
 | O33 | Encoding layer, derived attributes, generator metadata: ignored; neutrality test; binary input later | O32 | S | -- |
@@ -56,7 +58,7 @@ Plan items scheduled for quarter 2 in the core tracks, by track.
 | T15 | Golden policy: one regenerate, one record, one tolerance | B29, T14 | S | -- |
 | T18 | Final deletion pass of PR-defense tests | T13, T14, T20, T4 | M | -- |
 | T23 | Check the shape module copied into each generated oracle | T12, U4 | S | -- |
-| T24 | Nightly grammar fuzzer | T6, T9 | M | -- |
+| T24 | Nightly surface fuzzer | T6, T9 | M | -- |
 | T25 | Mutation pilot over front-end and oracle fault checks | T12, T6 | S | -- |
 | T31 | Backend overlap rows: allocation per relation, copy for a tied shared input | B29, T13, T30 | M | -- |
 | T32 | Width layer cases (range faults, `u64` rejection) | D16, L37, T29, T5, T6 | M | -- |
@@ -69,16 +71,11 @@ Plan items scheduled for quarter 2 in the core tracks, by track.
 | ID | Item | Depends on | Size | Rulings |
 | -- | ---- | ---------- | ---- | ------- |
 | A3 | Remove news, roadmap, and release-history lines from README | A23 | S | -- |
-| A6 | Comment pass on docker/ scripts | -- | S | -- |
 | A12 | Glossary and ASCII pass on the new tutorial | A24 | M | -- |
-| A13 | Give every exercise of the new tutorial a runnable solution | A24 | S | -- |
-| A14 | Align paper titles and setup text in the new tutorial | A24 | S | -- |
 | A17 | Check sibling pins and dependency floors against act | A15 | M | -- |
-| A18 | Add a scheduled compatibility build | A16 | M | -- |
 | A19 | Cover state variables and constraints in the end-to-end test | -- | M | -- |
 | A21 | Run the new tutorial's solutions in CI | A24 | M | -- |
-| A22 | Decide the tutorial lint scope | A24 | S | -- |
-| A23 | Release ACT 3.0 | A15, A16, A17, A20, A26 | M | -- |
-| A24 | Write one tutorial on the v3 release | A10, A11, A23, A25 | L | -- |
+| A23 | Release ACT 3.0 | A15, A16, A17, A20, A26, A28 | M | -- |
+| A24 | Write one tutorial on the v3 release | A10, A11, A23, A25, A28 | L | -- |
 | A26 | Gate the tag with a fresh-venv install | A25 | S | -- |
 | A27 | Document how to add a new generator | A25, A8, U10, U2, U3 | M | -- |

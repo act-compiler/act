@@ -1,23 +1,21 @@
 # Wave 1
 
-Foundations and every wave 1 gate; 55 items, weight 83.
+Foundations and every wave 1 gate; 53 items, weight 81.
 Items with no dependency start here, except later-quarter items that nothing early needs.
 The assisted weeks per item are recorded in this wave, and the M1 rebaseline sets dates from them (Q8.9).
 
 | ID | Item | Depends on | Size | Note |
 | -- | ---- | ---------- | ---- | ---- |
 | L1 | Ship the spec skeleton and section ids | -- | S | -- |
-| L2 | Pin the reference operation version | L1 | S | -- |
+| L2 | Pin the reference operator version | L1 | S | -- |
 | L6 | 64-bit integer arithmetic per operator with a fault | L1 | S | -- |
 | L7 | ACT-Backend unsupported-feature table against section ids | L1 | S | -- |
 | L10 | Reject `@a.` outside starts and constraints | L1 | S | -- |
 | L11 | Reject late buffers and partial instructions | L1 | S | -- |
-| L13 | Align integer literal lexing between the two grammars | L1 | S | -- |
-| L14 | Test the exact-token zero divisor rule | L1 | S | -- |
 | L24 | Multi-core, async DMA, mask, stride, saturation, and `scaled_dot` idioms, documented without syntax | L1 | S | -- |
 | L25 | Reconcile the glossary with the terminology reference | L1 | S | -- |
 | L29 | Object model contract test for the five fixed names | L1 | S | -- |
-| L30 | v3 rename table: public API, token, grammar rule, and `d0` as a one-dimension buffer | L1 | M | -- |
+| L30 | v3 rename table: public API and `d0` as a one-dimension buffer | L1 | M | -- |
 | L33 | Remove rare words and redundant spellings, with one coded rejection | L1 | S | -- |
 | L36 | Expand each pair's relation with the size term and the exact-or-apart default | L1 | S | -- |
 | L5 | Make the region, in-place, and overlap fault rows hold | L1, L36 | S | -- |
@@ -31,7 +29,7 @@ The assisted weeks per item are recorded in this wave, and the M1 rebaseline set
 | O16 | Generation log lines that state what happens | -- | S | -- |
 | O18 | Drop the hand-written line splitter for generated code | -- | S | -- |
 | O21 | XLA flags per compile: no excess precision, no flush to zero, IEEE min and max | -- | S | -- |
-| O19 | Spike: unroll every loop on a synthetic stress kernel against an owner-set bound | O21 | S | gate: owner sets the R28 bound before the spike (Q8.10) |
+| O19 | Spike: unroll every loop on a synthetic stress kernel against the Q5.1 bound | O21 | S | gate: the R28 bound is the Q5.1 resolution; baselines measured before the spike (Q8.10) |
 | T1 | Tag every surviving test with its language specification section | L1 | M | -- |
 | T2 | Remove hidden fixture coupling in the two conftest.py files | -- | M | -- |
 | T3 | One shared test kit for helpers duplicated across repos | T2 | M | -- |
@@ -44,7 +42,7 @@ The assisted weeks per item are recorded in this wave, and the M1 rebaseline set
 | A5 | Fix act/ docstrings and the distribution name | A8 | S | -- |
 | A9 | Retire the "current tutorial" label | -- | S | -- |
 | A10 | List the tutorial syntax that fails on the v3 API | -- | M | gate: failing tutorial syntax listed (Q8.10) |
-| A11 | Archive all three tutorials on their tags and remove them from master | A10 | M | -- |
+| A11 | Archive all three tutorials on their tags and remove them from master | A10 | M | absorbs A22: one tutorial lint scope (Q7.1) |
 | A15 | Close gaps in check_versions.py | -- | S | -- |
 | A16 | Write the release order and a checklist | -- | M | gate: release order and checklist before taidl 3.0 (Q8.5) |
 | C10 | Modeling cookbook and scope notes | -- | S | -- |

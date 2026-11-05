@@ -5,17 +5,17 @@ The plan assumes Claude-assisted development, so weights rank work and do not ca
 
 | Track | Q1 items | Q1 weight | Q2 items | Q2 weight | Later |
 | ----- | -------- | --------- | -------- | --------- | ----- |
-| language | 27 | 40 | 4 | 8 | 10 |
-| backend | 26 | 51 | 17 | 46 | 2 |
+| language | 28 | 48 | 6 | 12 | 11 |
+| backend | 27 | 52 | 17 | 46 | 2 |
 | oracle | 24 | 36 | 8 | 18 | 1 |
-| tests | 23 | 59 | 13 | 37 | 0 |
-| act | 13 | 21 | 14 | 33 | 0 |
+| tests | 25 | 65 | 13 | 37 | 0 |
+| act | 14 | 24 | 9 | 26 | 3 |
 | casestudies | 9 | 11 | 4 | 6 | 0 |
 | priorart | 7 | 15 | 4 | 8 | 1 |
-| shared | 4 | 10 | 7 | 18 | 0 |
-| diagnostics | 8 | 20 | 8 | 22 | 0 |
-| semantics | 6 | 12 | 3 | 12 | 0 |
-| total | 147 | 275 | 82 | 208 | 14 |
+| shared | 4 | 10 | 9 | 27 | 1 |
+| diagnostics | 8 | 20 | 9 | 23 | 1 |
+| semantics | 5 | 9 | 2 | 9 | 2 |
+| total | 151 | 290 | 81 | 212 | 22 |
 
 ## Longest dependency chain
 

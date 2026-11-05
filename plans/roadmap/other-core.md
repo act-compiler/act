@@ -8,6 +8,7 @@ Plan items scheduled for later in the core tracks, by track.
 | -- | ---- | ---------- | ---- | ------- |
 | L9 | Worked examples per section | L3 | M | -- |
 | L12 | Shape and element type checker: merged into U4 | U4 | - | R62 |
+| L13 | Integer literal lexing: no target after L45 | L45 | - | -- |
 | L18 | Write masks on output regions: an idiom in L24 | L24, L3 | M | -- |
 | L19 | Strided regions, first in line after v3 | L5 | M | -- |
 | L20 | `convolution` with window attributes: an idiom in L24 | L3 | M | -- |
@@ -29,3 +30,11 @@ Plan items scheduled for later in the core tracks, by track.
 | ID | Item | Depends on | Size | Rulings |
 | -- | ---- | ---------- | ---- | ------- |
 | O4 | One word table: folded into O3 | O3 | - | R30 |
+
+## act
+
+| ID | Item | Depends on | Size | Rulings |
+| -- | ---- | ---------- | ---- | ------- |
+| A6 | Comment pass on docker/ scripts | -- | S | -- |
+| A13 | Give every exercise of the new tutorial a runnable solution | A24 | S | -- |
+| A18 | Add a scheduled compatibility build | A16 | M | -- |
