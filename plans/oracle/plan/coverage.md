@@ -1,6 +1,6 @@
 # act-oracle coverage and docs
 
-`act-oracle/docs/coverage.md` now lists each language feature with its status, citing the language spec's section ids.
+`act-oracle/docs/coverage.md` lists each language feature with its status, citing the language spec's section ids.
 `act-oracle/docs/operations.md` and `README.md` still restate parts of the language, such as the S8.3 element-type table and the operand rules, which the spec owns.
 This plan makes the generator's docs state only the oracle's deviations and its own API.
 
@@ -16,6 +16,7 @@ This plan makes the generator's docs state only the oracle's deviations and its 
 - What: `docs/operations.md:14-97` repeats the spec's element-type table (S8.3) row by row, with "lowers to" a direct name in all but a few rows.
 - What: keep only what is the oracle's: the rows whose reference operation is not the same-named StableHLO one (`chlo.*`, `copy` as `reshape`, `parameter` as `dynamic_slice`, `reduce_*`), the `dot` widening of 2-bit integers, the test bounds table (`docs/operations.md:139-156`).
 - What: move those into `docs/coverage.md` as notes and a "Test bounds" section; delete `docs/operations.md`; point README at the spec for the language and at `coverage.md` for the oracle.
+- What: add a normative-platform statement: the CPU is the reference, the GPU is held to the bound table (`README.md:163`), and every GPU deviation (O9) is listed.
 - What: README sections "What an oracle refuses" and "The names an oracle reserves" (`README.md:54-82`) restate rejections; keep the reserved names, which are the oracle's, and point to `coverage.md` for the rest.
 - Benefits: one place per fact; the spec can change S8.3 without a stale copy here.
 - Caveats: the reserved-name table also appears in S4.1; L27 should replace it with a pointer to the oracle's README.
@@ -27,6 +28,7 @@ This plan makes the generator's docs state only the oracle's deviations and its 
 
 - Breaking: no.
 - Changes: `tests/`; preserves `docs/coverage.md` as written.
+- What: the shipped table keeps only `partial` and `rejected` rows, the S1.2 status vocabulary.
 - What: a test reads the `partial` and `rejected` rows of `docs/coverage.md` and, for each `rejected` row, generates a spec that uses the feature and asserts the documented exception class.
 - Benefits: the doc cannot drift from the code silently.
 - Caveats: `partial` rows need one hand-written case each.
