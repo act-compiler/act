@@ -25,7 +25,7 @@ The full hole table is `holes.md`; these rows expand H1, H7, and H8.
 ## Out-of-bounds regions (H8)
 
 - Ruling: a region whose start is below 0, whose size is below 1, or whose start plus size passes the access dimension of its buffer is a fault, at every loop iteration, with an error naming the instruction, the buffer, the dimension, and the iteration; the fault writes no region and no state.
-- For `d0` the bound is the size of the off-chip memory, which is an issue-time parameter of the program (act-oracle's `hbm`, coverage.md:13); the spec names it `|d0|` and makes it a declared kernel parameter rather than leaving it to each generator.
+- For `d0` the bound is the size of hbm, which is an issue-time parameter of the program (act-oracle's `hbm`, coverage.md:13); the spec names it `|d0|` and makes it a declared kernel parameter rather than leaving it to each generator.
 - A producer such as act-backend never emits an out-of-bounds region; its allocator already treats bounds as constraints on placement.
 - This is act-oracle's `check_window` and `check_sizes` (utils.py:698-712, 651-665) made normative; the rows leave S1.3's undefined table.
 - Alternative rejected: wraparound or clamping of starts; hardware differs, and a silent value would hide the ISA specification's error.

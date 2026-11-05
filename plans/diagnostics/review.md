@@ -14,7 +14,7 @@
 
 - All Python checks run before anything is written (`generator.py:125-136`), pinned by `tests/test_refusals.py:439`.
 - Each Python message names the instruction and quotes the offending text (`spec_checks.py:26-415`).
-- Every operation word and element type is tested as handled or rejected (`tests/test_refusals.py:149, :185`) and the tables are tested against the e-graph's (`:164, :200`); keep these table-sync tests.
+- Every tensor operator and element type is tested as handled or rejected (`tests/test_refusals.py:149, :185`) and the tables are tested against the e-graph's (`:164, :200`); keep these table-sync tests.
 - Rust reader faults are `Result<_, String>` from the line parser to one exit (`pipeline.rs:449`), not panics.
 - The output is probed for writing before the search starts (`pipeline.rs:405-414`), and a failed compile leaves no output (`pipeline.rs:55-58`).
 - A non-finite cost is rejected (`cost/c.rs:20-22`).

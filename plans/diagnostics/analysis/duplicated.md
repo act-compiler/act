@@ -14,7 +14,7 @@ S-ids are those of the spec draft in `taidl/docs` (S1.3 lists undefined and impl
 | Region value typed unlike its data model | none | none | `semantic_generator.py:45` | S7.2, S1.3 |
 | `constant` literal fits its element type | none | `spec_checks.py:75` | `oracle_visitor.py:387`, `generic/utils.py:397-425` | S8.4 |
 | Element type known | `accelerator.py:43` (19 types) | `spec_checks.py:48` (13 types) | `decorator.py:96` (call time), `oracle_visitor.py:255` | S7.3 |
-| Operation word known | grammar plus `operations.py:OPERATIONS` | `spec_checks.py:58` (18 words) | `oracle_visitor.py:239` (dead, O5) | S8.1 |
+| Tensor operator known | grammar plus `operations.py:OPERATIONS` | `spec_checks.py:58` (18 words) | `oracle_visitor.py:239` (dead, O5) | S8.1 |
 | Dimension of a data model fits 64 bits | none | `spec_checks.py:302` | none | S4.3, S6.2 |
 
 ## Reading

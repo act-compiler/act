@@ -1,8 +1,8 @@
 # D1 Registry, classes and message format
 
-- What: create `taidl/diagnostics.json` and the Python classes of `scheme.md` (`TaidlError` and its eight subclasses, `FaultError` for class Fault) with one formatter that prints the two-line form with the section id ending line 1.
+- What: create `taidl/diagnostics.json` and the Python classes of `scheme.md` (`TaidlError` and its nine subclasses, `FaultError` for class Fault and `Rejection` for the entries `check` collects) with one formatter that prints the two-line form with the section id ending line 1.
 - What: seed the registry from `registry-seed.md` (RF001 to RF034, UB, UO, and `VF` rows); each generator gets its own registry for `U`, `K`, `I`, `X`.
-- What: export the registries as JSON so the build can generate `diagnostics.rs` and `diagnostics.h`.
+- What: export the registries as JSON; the Python generator emits the Rust constants with the generated crate, and a small C++ header of the `I` codes is checked in and tested against the registry.
 - Benefits: one place defines every code, its rule, its template and its spec section; generators stop inventing wording.
 - Caveats: breaking in the v3 release only; S9 keeps `ValueError`, `TypeError`, `SyntaxError` as bases, so callers that catch them still work.
 - Caveats: the registry lives in `taidl`, so generators already depend on it (`act_backend/spec_checks.py:11` imports `taidl.antlr4`).

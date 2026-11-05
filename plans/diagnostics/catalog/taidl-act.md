@@ -67,7 +67,7 @@ Messages are verbatim and shortened; `{x}` marks an interpolated value.
 | Where | Kind | Message | Trigger | Class |
 | --- | --- | --- | --- | --- |
 | `taidl/taidl/accelerator.py:40-43` | silent fallback | none | `base_dir` falls back to `os.getcwd()` when the caller's file is missing | environment/IO |
-| `taidl/taidl/instruction.py:112-129` | no check | none | Region starts and sizes are checked for length only; size 0 or a negative literal passes (F5 in `work/spec/plan/bugs.md`) | invalid spec |
+| `taidl/taidl/instruction.py:112-129` | no check | none | Region starts and sizes are checked for length only; size 0 or a negative literal passes (LB5 in `language/plan/bugs.md`) | invalid spec |
 | `taidl/taidl/instruction.py:103-110` | silent replace | none | A second `set_inputs` replaces the regions and drops the placement marks | invalid spec |
 | `taidl/taidl/instruction.py:89-90, :210-215` | no check | none | `check_values` runs only after both `set_inputs` and `add_semantics` ran; omitting `set_inputs` skips it (`inputs_given` at `:90`) | invalid spec |
 | `taidl/taidl/accelerator.py:41-43` | no check | none | A data model dimension above 2**63-1 passes; the backend rejects it at `act-backend/act_backend/spec_checks.py:302` | invalid spec |

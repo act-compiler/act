@@ -4,7 +4,7 @@
 
 | Where | Mechanism | What reaches it | Fix |
 | --- | --- | --- | --- |
-| `act-backend/act_backend/generic/cpp/malloc/src/parser.cc:316` | `cerr` plus `assert(false && "unreachable")` | An operation word the allocator has no case for; the word comes from the kernel through the rewrite metadata | Return a reason (B25) |
+| `act-backend/act_backend/generic/cpp/malloc/src/parser.cc:316` | `cerr` plus `assert(false && "unreachable")` | A tensor operator the allocator has no case for; the word comes from the kernel through the rewrite metadata | Return a reason (B25) |
 | `src/parser.cc:13-14` | `cerr` plus `assert(false)` | A token that is not an integer in a candidate line | Return a reason |
 | `src/constraint.cc:112-187` | `cerr` plus `assert(false)` in seven branches | A tensor graph built from the kernel with no uses or no defining instruction | Return a reason |
 | C++ build configuration (`CMakeLists.txt`, `generic/build.rs:59`) | `CMakeLists.txt` sets no `CMAKE_BUILD_TYPE`, so asserts are live; a Release build removes every one of them and the helper returns `0`, `{0,0}` or `nullptr` (`parser.cc:15`, `constraint.cc:116`, `parser.cc:189`) | A build type changes behavior | Never rely on `assert` for a check |

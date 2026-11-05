@@ -12,11 +12,16 @@ A code is never reused or renumbered; a retired code stays in the registry marke
 | Class | Letter | Meaning | Raised by | Spec reference | Today's catalog class |
 | --- | --- | --- | --- | --- | --- |
 | Reject | `R` | The ISA specification breaks a rule of the language | front end only (scope `F`) | S9 row and the defining section | invalid spec |
-| Unsupported | `U` | The description is valid; this generator does not implement a feature | a generator (scope `B` backend, `O` oracle) | the generator's unsupported-feature row, which cites a section (S1.2) | unsupported |
-| Fault | `V` | A run-time case breaks a rule; the norm below says it is an error | oracle at a call; a generator at generation or selection where it can decide (scope `F`) | the S1.3 row, which becomes a defined-error row | invalid spec (late) |
+| Unsupported | `U` | The description is valid; this generator does not implement a feature | a generator (scope `B` backend, `O` oracle) | the generator's unsupported-feature row, which cites a section (S1.2) | unsupported || Fault | `V` | A run-time case breaks a rule; the norm below says it is an error | oracle at a call; a generator at generation or selection where it can decide (scope `F`) | the S1.3 row, which becomes a defined-error row | invalid spec (late) |
 | Input | `K` | The input is invalid or outside the input specification: kernel text, `kernel(...)` declaration, call arguments, assembly code or binary given to an oracle | backend reader, oracle API | the generator's input rules | environment/IO (kernel rows) |
 | Internal | `I` | Should never fire; a bug in a tool | any layer | none | internal bug |
 | Environment | `X` | Files, processes, flags, builds, versions | any layer, scripts | none | environment/IO |
+
+A `U` code has two outcomes (S1.2): exclusion and rejection.
+An exclusion leaves one instruction out of the generated tool and is reported at severity `warning`, printed at generation and stored in the generated tool.
+A rejection stops generation.
+A generator excludes an instruction its target cannot model, and rejects a problem the architect can correct (Q11.3).
+The oracle excludes nothing.
 
 Scope letters: `F` front end and the language, `B` act-backend, `O` act-oracle, `A` act umbrella.
 The letter `V` names the violated rule; the class is Fault.
@@ -46,14 +51,18 @@ A generator that finds an `R` condition raises `I` (the front end missed it) aft
 ## Message format
 
 ```
-error[RF025]: instruction 'mac': semantics line 3, column 7: 'add' takes 2 operands, found 3 [S8.2]
-  --> isa/mini.py:41 (add_semantics)
+error[RF025]: instruction 'mac': 'add' takes 2 operands, found 3 [S8.2]
+  --> isa/mini.py:41 (ops.add)
+warning[UB001]: instruction 'sem': two output regions are unsupported by act-backend [S5.2]
+  --> isa/mini.py:58 (instruction)
 ```
 
 - Line 1: `<severity>[<code>]: <object>: <position>: <sentence> [S<id>[, S<id>]]`; severity is `error` or `warning`.
+- The position is the line and column inside a text, which only the 2.x string front end has; in v3 it is omitted and line 2 is the author's line.
 - The suffix is a TAIDL language specification section id (`S9.4` for a numbered S9 row); it ends line 1 so CI logs, `grep`, and the first line of `str(error)` carry it; omitted for `X` and `I`.
 - A generator's `coverage.md` id never appears in a message; `TaidlError.spec` carries the section id as a field.
 - Line 2: the ISA specification file and line of the call (`file:line (call)`); for a kernel, the kernel file and line; omitted for `X` and `I`.
+- An exclusion line has the same two lines at severity `warning`; its object is the instruction and its line 2 is the first line of the instruction's function.
 - A tool prefixes line 1 with its name when it is a program (`act-backend: error[UB002]: ...`); a Python exception carries the same two lines in `str(error)`.
 - Machine form (`--diagnostics=json`, D13): one JSON object per diagnostic with `code`, `severity`, `object`, `message`, `file`, `line`, `column`, `spec`.
 
@@ -62,18 +71,22 @@ error[RF025]: instruction 'mac': semantics line 3, column 7: 'add' takes 2 opera
 - One sentence, no final period, at most 160 characters including the suffix, ASCII only.
 - Order: object first (`instruction 'mac'`, `data model 'sbuf'`, `state variable 'pc'`, `value '%t'`), then position, then the fact.
 - Quote the offending text verbatim in single quotes; never a Python `repr`.
-- Use glossary terms (S10): ISA specification, data model, region, region value, addressing attribute, computational attribute, state variable, operation word, kernel; never the terms `work/terminology/words-to-avoid.md` lists.
+- Use glossary terms (S10): ISA specification, data model, region, region value, addressing attribute, computational attribute, state variable, tensor operator, kernel function; never the terms `glossary/words-to-avoid.md` lists.
 - The verb "reject" appears in docs and code names; a message states the fact: `'add' takes 2 operands, found 3`.
 - An `R` message states the rule it breaks in the glossary's words and the found value: `<subject> <verb> <expected>, found <found>`.
 - A `U` message is `<feature> is unsupported by <generator>`; it names the feature in the words of the spec section and gives no reason about internals.
 - A `V` message is `<subject> violates <rule>`, then the values and the iteration; `V` names the violated rule.
 - Fixed phrases: `divides by zero`, `is outside the signed 64-bit range`, `is defined by no earlier line`, `is given twice`, `takes N operands, found M`.
 - A removed v2 construct is one `R` message naming the construct, its replacement, and the section id (see Removed names).
+- A rejected spelling is one `R` message naming the spelling found and the spelling to use: `instruction 'mac': '/' applies to an integer expression only as '//', found '/' [S6.2]`.
 - Never: refuse, honor, respect, "cannot", "does not model", "is reserved by the oracle" (use `U`: `name 'x' is unsupported by the oracle`).
 
 ## Location
 
-- Front end: each `add_*` and `set_*` call stores its call site (file, line) on the object it builds; an `R` error reads it.
+- Front end: every node of the model records its call site, the first frame outside `taidl`; an `R` error reads it, so it names the line the architect wrote.
+- A whole-instruction problem names the first line of the instruction's function.
+- A trace-time error, such as `if` on a symbolic value, is raised in the architect's own frame, so the Python traceback and line 2 agree.
+- `check` collects the problems that are not trace-time errors and raises them as one `Rejection`; the 2.x string front end stores the call site on each `add_*` and `set_*` call instead.
 - Texts keep line and column counted from 1 in the text (S9 preamble); a backtick expression adds the semantics offset (`instruction.py:345-368`).
 - Kernel: the reader keeps the 1-based line number of each kernel line and reports `kernel.hlo:12`.
 - Oracle: a call-time error names the instruction and, inside a loop, the iteration environment (model: `generic/utils.py:662-783`).
@@ -84,7 +97,7 @@ error[RF025]: instruction 'mac': semantics line 3, column 7: 'add' takes 2 opera
 | Layer | Raises | Never raises | Exit status |
 | --- | --- | --- | --- |
 | Front end (`taidl`) | `R`, `X` (its own I/O), `I` | `U`, `V` | Python exception |
-| Generator Python (`act_backend`, `taidl_to`) | `U`, `V` (decidable, scope `F`), `X`, `I` | `R` | Python exception |
+| Generator Python (`act_backend`, `taidl_to`) | `U` (a warning for an exclusion, an error for a rejection), `V` (decidable, scope `F`), `X`, `I` | `R` | Python exception |
 | Backend Rust and C++ | `U`, `K`, `X`, `I`; `V` at selection (shared shape fault) | `R` | 1 for `K`, `V`, and `X`; 2 for `U`; 3 for `I` |
 | Generated oracle at a call | `V`, `K`, `X` | `R`, `U` | Python exception |
 | Scripts in `act` | `X` | all others | 1 |
@@ -93,13 +106,15 @@ error[RF025]: instruction 'mac': semantics line 3, column 7: 'add' takes 2 opera
 
 S9 fixes the built-in bases (`ValueError`, `TypeError`, `SyntaxError`); each class keeps its base so S9 stays true.
 The front-end alias `Fault = tuple[CommonToken, str]` (taidl/taidl/operations.py:167-168) is renamed `Rejection`, so `Fault` means only the run-time class.
+`Rejection` is the exception `check` raises: it holds one entry per problem, each with code, section id, instruction, and the author's file and line, and `str` prints each entry in the two-line form.
 
 | Class | Bases | Used for |
 | --- | --- | --- |
 | `TaidlError` | `Exception` | Carries `code`, `object`, `position`, `call_site`, `spec` |
 | `DeclarationError` | `TaidlError`, `ValueError` | `R` on declarations, regions and marks |
 | `ArgumentError` | `TaidlError`, `TypeError` | `R` for a wrong argument type |
-| `TextError` | `TaidlError`, `SyntaxError` | `R` on a text or a semantics |
+| `TextError` | `TaidlError`, `SyntaxError` | `R` on a spelling in an instruction body (raised at trace time) or on a text (2.x) |
+| `Rejection` | `TaidlError`, `ValueError` | The collected `R` entries `check` raises |
 | `UnsupportedError` | `TaidlError`, `NotImplementedError` | `U` |
 | `FaultError` | `TaidlError`, `ValueError` | `V` |
 | `InputError` | `TaidlError`, `ValueError` | `K` |
@@ -113,20 +128,22 @@ Rust and C++ build a `Diagnostic { code, object, line, message }` and print it i
 
 - One file `taidl/diagnostics.json` lists every `R` code and every `V` code (scope `F`): `code`, `class`, `object kind`, `template`, `spec`, `status` (active or retired).
 - The route of the registry into a generated oracle is open; the shape module's copy stamped with the taidl version is the model.
-- Each generator keeps `U`, `K`, `I`, `X` codes in its own `diagnostics.json`; the build script generates `diagnostics.rs` and `diagnostics.h` for the Rust and C++ code.
+- Each generator keeps `U`, `K`, `I`, `X` codes in its own `diagnostics.json`; the Python generator emits the Rust constants with the generated crate, and a small C++ header of the `I` codes is checked in and tested against the registry.
 - S9 and each generator's unsupported-feature table are generated from the registries (D11); a test fails when a code lacks a row, a spec reference, or a triggering test (D10).
 - `registry-seed.md` proposes the first codes from the current catalog.
 
 ## Warnings
 
-- A warning is a diagnostic that lets generation or the run continue; v3 emits none for a spec condition (ruling 16).
+- A warning is a diagnostic that lets generation or the run continue; v3 emits none for a spec condition (owner decision 16).
 - `warn_width` (`generic/utils.py:268-271`) becomes a `VF005` error.
-- A generator may warn about its own limits (`W` is a severity, not a class): `warning[UB030]: ...`.
+- A generator warns about its own limits (`W` is a severity, not a class): an exclusion is `warning[UB001]: ...`.
+- A warning of this kind is also stored in the generated tool, so it is not lost with the terminal.
 
 ## Removed names
 
 - A removed v2 construct raises one coded `RF` rejection (`RF051`) naming the construct, its replacement, and the section id.
 - One removed-names table feeds one lookup: a class-level `__getattr__` for members and the `OPERATIONS` lookup for words.
-- There is no stub per member and no converter of v2 programs.
+- There is no stub per member and no converter in `taidl` 3.
+- The row for `add_semantics` names the converter script on the 2.x line (U13).
 - The table is a tested feature, not a placeholder; it is seeded after the v3 API is fixed (D15).
 - Markers stay (owner decision 30), so `set_inplace` does not enter the table.

@@ -15,8 +15,8 @@ Catalog of every user-facing diagnostic in `taidl`, `act`, `act-backend` and `ac
 | [analysis/fallbacks.md](analysis/fallbacks.md) | Silent fallbacks where an error belongs |
 | [review.md](review.md) | What works and should stay |
 | [bugs.md](bugs.md) | Diagnostic bugs E1 to E24 with severity and fix sketch |
-| [scheme.md](scheme.md) | The diagnostic scheme: classes (Reject, Unsupported, Fault, Input, Internal, Environment), codes, two-line format, wording, layers, exceptions, removed names |
-| [failure-policy.md](failure-policy.md) | Decision 40 mapped onto the classes: allowed stops per tool, candidate drops, the input kernel class |
+| [scheme.md](scheme.md) | The diagnostic scheme: classes (Reject, Unsupported, Fault, Input, Internal, Environment), codes, exclusion and rejection, two-line format, author's line, wording, layers, exceptions, removed names |
+| [failure-policy.md](failure-policy.md) | Decision 40 mapped onto the classes: allowed stops per tool, exclusions, candidate drops, the input kernel class |
 | [registry-seed.md](registry-seed.md) | First codes mapped from the catalog to TAIDL language specification sections |
 | [plan/README.md](plan/README.md) | Plan index table, staffing and critical path |
 | [plan/D01-registry-and-format.md](plan/D01-registry-and-format.md) | D1 registry, classes and message format |
@@ -35,3 +35,5 @@ Catalog of every user-facing diagnostic in `taidl`, `act`, `act-backend` and `ac
 | [plan/D14-run-time-norm.md](plan/D14-run-time-norm.md) | D14 fault table and run-time norm |
 | [plan/D15-removed-names.md](plan/D15-removed-names.md) | D15 removed-names rejection |
 | [plan/D16-failure-policy.md](plan/D16-failure-policy.md) | D16 failure policy |
+| [plan/D17-author-line-rejections.md](plan/D17-author-line-rejections.md) | D17 rejections at the author's line |
+| [plan/D18-exclusion-report.md](plan/D18-exclusion-report.md) | D18 exclusion report |

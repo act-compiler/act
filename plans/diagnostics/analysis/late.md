@@ -9,11 +9,11 @@ The `Move` column says what happens in v3: the front end rejects it (a row in S9
 | Semantics read without `set_inputs` | `act_backend/spec_checks.py:195`, `semantic_generator.py:40` | `taidl/taidl/instruction.py:90, :210-215` skips `check_values` until both calls ran | Check at the end of the description, S9 Semantics row |
 | Region value element count differs from its region | `spec_checks.py:415`, `semantic_generator.py:53` | S7.2 and S1.3 call it undefined and unchecked | Reject for literal sizes (U3), keep call-time check in the oracle |
 | Region value element type differs from its data model | `semantic_generator.py:45` only | Same | Reject (U3, U10) |
-| `constant` literal outside its element type | `spec_checks.py:75`, `oracle_visitor.py:387` | Depends on S7.3 only | Reject (L16, F12) |
+| `constant` literal outside its element type | `spec_checks.py:75`, `oracle_visitor.py:387` | Depends on S7.3 only | Reject (L16, LB12) |
 | Computed divisor `0` over literals | `spec_checks.py:210, :292` | A pure integer fold (S6.2) | Reject; the front end folds integers (L14) |
 | Computed value outside signed 64 bits | `spec_checks.py:218, :294` | v3 has no implementation-defined width: overflow is a defined run-time error | Front end rejects literal overflow (`R`); a value computed from attributes is a `V` row the oracle raises and the backend rejects as `U` where it cannot check |
 | Data model dimension above 2**63-1 | `spec_checks.py:302` | A property of the declaration | Reject in `add_data_model` (`taidl/taidl/accelerator.py:41`) |
-| Initial state value outside signed 64 bits | none; S4.4 calls it undefined | A property of the declaration | Reject in `add_initial_state` (`accelerator.py:56`, F11) |
+| Initial state value outside signed 64 bits | none; S4.4 calls it undefined | A property of the declaration | Reject in `add_initial_state` (`accelerator.py:56`, LB11) |
 | `@a.` inside a semantics or a size | `spec_checks.py:203, :287` | S6.1 calls it undefined and unrejected | Reject outside a start or a constraint (L10) |
 | Size or dimension of 0 or less | `generic/utils.py:662` at a call | S5.2 calls it undefined | Reject literals in the front end; keep the call-time check for expressions |
 | Shape and element-type agreement per word | `generic/shapes.py` (oracle only) | S8.4 calls it undefined and unchecked | Move (U4) |

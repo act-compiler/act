@@ -2,7 +2,7 @@
 
 Both generators take an `Accelerator` and read the parsed `Instruction` objects directly.
 There is no serialized intermediate form: the contract today is the Python attribute set of three classes plus the ANTLR parse trees.
-The tables below are the current surface; U2 replaces it with a typed model under the L15 member names.
+The tables below are the current surface; U2 and U3 replace it with the `Model` that `check` returns, under the L15 member names.
 
 ## Accelerator and data model
 
@@ -51,16 +51,23 @@ The tables below are the current surface; U2 replaces it with a typed model unde
 
 ## Target contract (U2, U3)
 
-- A documented typed model of the classes above, plus a typed node model for lines, operands, attributes, and integer expressions.
-- ANTLR trees stay reachable and are marked unstable.
+- `taidl.check(acc)` runs every front-end rule, freezes the accelerator, and returns a frozen `Model`; only `check` constructs one.
+- The `Model` is a documented typed model of the classes above, plus a typed node model for lines, operands, attributes, and integer expressions.
+- The `Model` holds no ANTLR type; the trees are internal to the string front end and go with it (U14).
+- `check` collects every problem and raises one `Rejection`; each entry carries code, section id, instruction, and the author's file and line.
+- A generator entry takes a `Model` or an `Accelerator`, calls `check` once for an `Accelerator`, and reads only the `Model` in its body.
+- A generator's own checks are plain functions run after `check`; there is no registry and no checker subclass.
+- A generator rejects a problem the architect can correct, and excludes an instruction its target cannot model, with a reason (code, section id, author line) that it prints and stores.
+- The oracle adds no check.
 - `CONTRACT_VERSION` names the member list; a removed member is deprecated for one minor release.
-- `validate()` attaches per-line result type and dims, folded sizes, the value-to-region map, and the call site as typed members.
-- Each of those members raises when read before `validate()` has run.
+- The `Model` carries per-line result type and dims, folded sizes, the value-to-region map, and the call site of each node as typed fields; none exists before `check` has run.
+- Every node records the first frame outside `taidl` as its call site; a whole-instruction problem uses the first line of the instruction's function.
 - `fold` and `literal_fits` are listed contract functions; the shape-rule functions are not.
 - A serialized form is added at the second non-Python consumer.
 - `inplace` and `placed` carry the markers `set_inplace`, `set_apart`, and `set_no_partial_overlap`; `set_may_overlap` is added; each expands to the constraints it stands for (Q9.2).
 - Layer members: a declared type per attribute, the encoding block per instruction, and the derived-attribute links; each is absent when its layer is absent, and the oracle and backend read types as implicit constraints.
 - Generator metadata: a read-only namespace-keyed mapping on the accelerator, each buffer, and each instruction; a generator reads its own namespace and ignores the others.
+- The metadata check of a namespace belongs to its generator and runs after `check`; `check` lists the namespaces present and checks none.
 - The front end also records per input-output pair its relation and the tie; the backend reads that record.
 
 ## Documentation of the contract today

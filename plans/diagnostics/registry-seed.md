@@ -12,14 +12,14 @@ First codes from the current catalog.
 | RF002 | A name is not a Python keyword | S4.1 | `names.py:12` |
 | RF003 | A name is given once | S4.1 | `names.py:14` |
 | RF004 | An instruction attribute is named once across both lists | S5.1 | `names.py:14` via `instruction.py:67` |
-| RF005 | Addressed dimensions and unit shape are positive integers | S4.3 | `accelerator.py:41` |
+| RF005 | Access dimensions and base element shape are positive integers | S4.3 | `accelerator.py:41` |
 | RF006 | An element type is one of S7.3 | S4.3, S7.3 | `accelerator.py:43` |
 | RF007 | State is declared before instructions | S4.5 | `accelerator.py:50` |
 | RF008 | An initial value is an `int` | S4.4 | `accelerator.py:56` |
 | RF009 | A list of strings, not one string | S5.1 | `instruction.py:455` |
 | RF010 | A region is `[data model, starts, sizes]` | S5.2 | `instruction.py:119` |
 | RF011 | A region names a declared data model | S5.2 | `instruction.py:94` |
-| RF012 | Starts and sizes count equals the addressed dimensions | S5.2 | `instruction.py:126` |
+| RF012 | Starts and sizes count equals the access dimensions | S5.2 | `instruction.py:126` |
 | RF013 | A marker list has one flag per input; a placement mark needs one output | S5.5 | `instruction.py:163-172, :190-208` |
 | RF014 | A tie pairs an input and an output of one buffer (new) | S5.5 | none today |
 | RF015 | A tie has equal size text on input and output (new) | S5.5 | none today |
@@ -54,6 +54,11 @@ First codes from the current catalog.
 | RF049 | Shapes and element types agree per operation (new) | S7.4, S8.4 | `generic/shapes.py` |
 | RF050 | An operation is used at an element type of its S8.3 row (new) | S8.3 | `oracle_visitor.py:255` |
 | RF051 | A v2 construct is removed; the message names its replacement (new) | the section of the replacement | the removed-names table (D15) |
+| RF058 | An integer expression uses only the operators of S6.2; the message names the spelling to use (`/` -> `//`; `**`, `not`, `and`, `or`, `&`, `\|`, chained comparison, `min`, `max`, `bool()`, `if` on a symbolic value) (new) | S6.2, S6.3 | the tracer (D17) |
+| RF059 | A tensor value uses `+`, `-`, `*`, unary `-`; `/`, `//`, `%` name `ops.divide` and `ops.remainder` (new) | S8.2 | the tracer (D17) |
+| RF060 | A region is `buffer.region(starts, size=sizes)`; a slice is rejected (new) | S5.2 | the tracer (D17) |
+| RF061 | A state variable is updated at most once per instruction (new) | S5.4 | none today |
+| RF062 | A marker names a read value of the same buffer; an encoding field key names a parameter of its instruction (new) | S5.5, S11.3 | none today |
 
 ## U codes (generators)
 
@@ -61,7 +66,7 @@ First codes from the current catalog.
 | --- | --- | --- |
 | UB001 | An instruction with other than one output region | `spec_checks.py:26` |
 | UB002 | An element type outside the backend's 13 | `spec_checks.py:48`, `ir/dtype.rs:145` |
-| UB003 | An operation word outside the backend's 18 | `spec_checks.py:58`, `expression.rs:463` |
+| UB003 | A tensor operator outside the backend's 18 | `spec_checks.py:58`, `expression.rs:463` |
 | UB004 | An operand count the selector's rewrite does not take | `spec_checks.py:66`, `nodes.rs:398`, `expression.rs:432` |
 | UB005 | A `slice` stride other than 1 | `spec_checks.py:85`, `nodes.rs:345` |
 | UB006 | A value no later line reads, or `ROOT` above the last line | `spec_checks.py:188, :192` |
@@ -77,9 +82,15 @@ First codes from the current catalog.
 | UB016 | A kernel constant the allocator cannot write | `emitter.cc:30, :76, :104, :130, :284` |
 | UB017 | A tensor larger than its data model | `parser.cc:152, :162, :226-232, :295` |
 | UB018 | No placement within the solver's time limit | `act_malloc.cc:179-182` |
+| UB019 | An ISA specification with no instruction left after exclusion (rejection) | none today |
+| UB020 | An unknown key in the backend's `meta` namespace (rejection) | none today |
 | UO001 | A data model, instruction, attribute or value name the oracle reserves | `generator.py:41`, `api_generator.py:59`, `instruction_codegen.py:202`, `semantic_generator.py:29` |
 | UO002 | A backtick expression in a scalar operation attribute | `oracle_visitor.py:416` |
 | UO003 | A dtype outside the oracle's map | `decorator.py:92, :96` |
+
+- Exclusions (severity `warning`, the instruction is left out): UB001 to UB005 and UB007 to UB010.
+- Rejections: UB006, UB019, UB020, and every `UO` row.
+- A kernel-level or candidate-level row (UB011 to UB018) is neither; it follows `failure-policy.md`.
 
 ## V codes (faults, scope F)
 
@@ -108,6 +119,7 @@ First codes from the current catalog.
 | KB001 to KB040 | Kernel text: header, line split, types, shapes, operands | the 24 kernel-reader rows of `catalog/act-backend.md` |
 | KO001 to KO020 | Kernel declaration and call arguments | `generic/decorator.py:71-185`, `generic/utils.py:278-281, :675-692` |
 | KB041 | A valid kernel no candidate implements; lists the drop reasons | `pipeline.rs:59-60` |
+| KB042 | A kernel needs an instruction the backend excluded at generation; names it and its stored reason | none today |
 | KO021 to KO040 | Assembly code and binary input of an oracle, including a word matching no instruction | none today |
 | IB001 to IB099, IO001 to IO019, IF001 to IF019 | Internal rows | the 34 backend, 3 oracle internal rows |
 | XB001 to XB040, XO001 to XO009, XA001 to XA059 | Flags, files, builds, scripts | `pipeline.rs:295-427`, `generator.py:104-193`, `act/docker/*.sh` |
