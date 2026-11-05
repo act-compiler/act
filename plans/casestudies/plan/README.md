@@ -17,5 +17,5 @@ Dependency prefixes: L language, F semantics, B backend, O oracle, T tests, U sh
 | C9 | [Float attributes and bit operators: idiom](c09_scalar_extensions.md) | C10 | S | Q1 |
 | C10 | [Modeling cookbook and scope notes](c10_modeling_cookbook.md) | L, T | S | Q1 |
 | C11 | [Case studies as an executable corpus](c11_executable_corpus.md) | T, O | M | Q1 |
-| C12 | [Re-run the case studies on v3, add NVDLA](c12_rerun_on_v3.md) | C1, C8, C10, C11 | S | Q2 |
+| C12 | [Re-run the case studies on v3, add NVDLA](c12_rerun_on_v3.md) | C1, C8, C10, C11, L17 | S | Q2 |
 | C13 | [Defined-behavior audit of the case studies](c13_defined_behavior_audit.md) | L, F, O, T, C11 | S | Q1 |
