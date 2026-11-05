@@ -1,0 +1,53 @@
+# Audit of the tech-lead rulings
+
+Principal-engineer review of `minutes/rulings.md` (R1-R63) against `minutes/owner-decisions.md`, the track plans, the reviews, and the code.
+
+## Verdict
+
+The rulings are mostly sound, and 43 of 62 stand as written.
+Sixteen need a change before they bind the tracks, and three are wrong.
+The wrong ones contradict an owner decision (R26), the semantics track and the backend's arithmetic (R56), or the backend's own design and fixtures (R22).
+The recurring fault is a ruling taken from one reviewer or one generator without reconciling it with `semantics/holes.md` and `semantics/rulings.md`, which rule the same holes differently (R5, R7, R28, R56).
+R34 is missing from the numbering, and several holes the semantics track found have no ruling at all; see the second table.
+
+## Questionable and wrong rulings
+
+| Ruling | Verdict | Reason and evidence | Proposed change |
+| ------ | ------- | ------------------- | --------------- |
+| R2 | questionable | "Per the reconciled glossary" points at `glossary/rulings.md:11,14`, which still renames to `add_tensor_buffer` and `add_control_register`; owner decision 19 forbids both terms. | Name `glossary/README.md:7` as the source and strike the two renames from `glossary/rulings.md`. |
+| R4 | questionable | "The backend may assume it never happens" is undefined-behavior wording; owner decision 16 and `semantics/holes.md` (ruling conventions) say a producer never emits such an issue. | Reword: the backend never emits an out-of-bounds region, and its allocator enforces the bound. |
+| R5 | questionable | Text identity is a sound derivation for today's examples (`act-backend/examples/mini_trn/mini_trn.py:97-99`). It reverses `semantics/rulings.md:8-13`, which keeps `set_inplace`, without saying so. It is silent on equal regions spelled differently and on partial overlap. It also breaks `act-backend/tests/test_extraction.py:507`, which marks a `d0` input in place for a `d2` output. | Keep the derivation; state that any other overlap of an input and an output at issue is a fault (H1); update `semantics/rulings.md` and list the fixtures to migrate. |
+| R7 | questionable | It contradicts the spec draft (`language/spec-draft/instructions.md:36-37`), H3 and F4 (`semantics/plan/F4.md:5`), and the oracle's pre-state `CHECK_CONSTRAINT` (`act-oracle/taidl_to/templates/templates.txt:353`). The cited `taidl/taidl/instruction.py:216-218` builds placement-mark constraint text; it does not show how starts are evaluated. Post-state constraints cannot guard an instruction's own state precondition (SME `@s.sm`, `casestudies/sme.md:20-30`), and R55 then needs update rollback. R58 deletes the marks that motivated the change. | Keep the spec draft's rule: user constraints read the pre-state, placement-mark constraints the post-state; after R58, only user constraints remain, all on the pre-state. |
+| R8 | questionable | "Accumulate in the result element type" and "within a per-word tolerance of the exact result rounded" conflict: a bf16 accumulation over K=64 (`mini_trn.py:91`) drifts past a fixed per-word bound. XLA CPU does not accumulate bf16 in bf16, so the oracle does not follow the first clause either. | Drop the accumulation clause; the norm is the tolerance alone (H6), with the bound stated in the spec as a function of K. |
+| R10 | questionable | Same "may assume" wording as R4; H11 states one contract: an executor faults, a producer never emits. | Reword as for R4. |
+| R12 | questionable | "Every buffer starts zero-filled" includes `d0`, which holds the caller's inputs (the oracle's `hbm`). For on-chip buffers it binds the backend to emit zeroing or prove no read-before-write; no backend item plans either. The oracle zero-fills today (`act-oracle/taidl_to/templates/templates.txt:470`). | Limit to on-chip buffers; add a backend item (zero, or reject a kernel that reads unwritten storage). |
+| R14 | questionable | Async groups model concurrency, which R13 puts outside v3 and `language/spec-draft/overview.md:10` treats as timing. The case studies' real gap is data-dependent addressing (`casestudies/gaps.md:16`), which typed state kinds do not cover. Under R59, async groups lack two users. | Keep descriptor state kinds; defer async groups to the R13 study; rule on data-dependent addressing (RA9). |
+| R15 | questionable | The reason ("ten studies already cover the gap matrix") argues against the ruling. | Either state what Ascend adds to the gap matrix, or defer it. |
+| R20 | questionable | Instruction count is only the default cost (`act-backend/act_backend/generic/cpp/cost/count.cc:1-22`). The cost ABI is pluggable (`src/cost/c.rs:7`), so an extractor that ranks by count can disagree with a user cost model. | Rank through the cost ABI, or state that a non-default cost model reranks the kept candidates. |
+| R21 | questionable | Equality fits the OR-tools solver (`constraint.cc:23,57`), which today only permits overlap (`constraint.cc:214-230`). Without B11 copies, a marked input that has a later reader is overwritten; the architect review pairs the two (`reviews/backend/architect.md:48,101`). | Rule equality plus B11 copies at candidate building as one item, gated on the oracle test in `architect.md:101`. |
+| R22 | wrong | Overlap is the normal case for an e-graph selector: the cost extractor (R20) chooses among matching rules. The fixture `in_place()` declares `add_in_place` and `add_d1` on the same sum on purpose (`act-backend/tests/test_extraction.py:405-414`). Rejecting overlap rejects every ISA with in-place and out-of-place variants. TAIDL has no syntax to declare a priority. The real defect is tie-breaking by e-node order (`fast.rs:24-26`). | Allow overlap; break cost ties by a stated total order (declaration order) under R17's deterministic mode. |
+| R26 | wrong | The reason "'Tensor buffer' is the papers' term" contradicts owner decision 19 (buffers, not "tensor buffers"). | Keep `Buffer`; reason: it is the owner's term. |
+| R28 | questionable | It rests on one reviewer (`reviews/oracle/architect.md:90,116`) and opposes F4 (`semantics/plan/F4.md:6`: reject rather than unroll). "An agreed bound" is undefined, so the spike has no fail point. | Set the bound now (compile time on the attention tests and examples); amend F4 in the same ruling. |
+| R29 | questionable | It rests on one reviewer (`architect.md:27-29`). The interpreter is not on PyPI and needs CHLO legalization. Its StableHLO version need not match the jax pin of R6, so it may check a different reference than the spec names. | Owner approval should cover the build route and version; pin the interpreter to the R6 StableHLO commit, or keep O13 as the fallback. |
+| R54 | questionable | `engineering.md` allows non-ASCII in binary assets only; a new exemption is a rule change for the owner. | Ask the owner, or keep archived tutorials out of the checked tree until A11. |
+| R56 | wrong | It contradicts H4 (`semantics/holes.md`: every intermediate is an i64 or the issue faults). The backend checks every intermediate in i64 (`act-backend/act_backend/expression_writer.py:72,94`), so exact arithmetic means i128 or bignums in generated Rust. "Simpler" holds only for the Python oracle. | Adopt H4: every intermediate is i64, and leaving i64 is a fault; the oracle checks each step on concrete values after R28. |
+| R58 | questionable | "No example or tutorial calls them" holds for examples. Tests in all three repos call them: `taidl/tests/test_instruction.py`, `taidl/tests/test_expressions.py:183`, `act-oracle/tests/test_constraints.py:41`, `act-backend/tests/test_generation.py:220-221`. So do spec-draft pages (`instructions.md`, `conformance.md`, `glossary.md`). | Keep the removal; list the tests and spec pages to migrate in the same v3 item. |
+| R62 | questionable | It merges L3 (L), L12 (L), O6 (S), and O7 (L, widened by R31) into one M item (`language/plan/spec.md:12`, `language/plan/frontend.md:12`, `oracle/plan/checks.md:10-11`). No evidence supports the downsizing. | Size it L or larger, split it into module move and front-end checks, and fold R31's added checks into it explicitly. |
+
+## Unsettled questions
+
+| ID | Unsettled question | Proposed ruling |
+| -- | ------------------ | --------------- |
+| RA1 | R34 is missing; a question may have been dropped. | Restore R34 or mark the number retired. |
+| RA2 | After R5: equal regions spelled differently, and partial input/output overlap at issue (H1). | Fault at issue, checked by the oracle; the backend never emits it. |
+| RA3 | Two output regions that overlap (H2); the oracle lets the later write win (`instruction_codegen.py:667-681`). | Fault at issue: outputs are pairwise disjoint. |
+| RA4 | Who owns the tolerance R8 makes normative: the spec, `taidl.testing` (R43), or `act-oracle/tests/conftest.py:227` `ULPS` (TB19). | The spec states the bound per type and K; `taidl.testing` implements it; conftest imports it. |
+| RA5 | Float dot precision on GPU: once R32 drops `jax_default_matmul_precision` (`decorator.py:23`), a text module's DEFAULT precision may run f32 dot as TF32. | The oracle emits `precision_config` HIGHEST on every `dot`, tested on GPU under R48. |
+| RA6 | Undefined values inside semantics (H16 `compare` default, H17 divide by zero and wide shifts); owner decision 16 requires a defined value. | Adopt H16 and H17 as written. |
+| RA7 | Byte order and sub-byte packing in `d0` (H14, implementer Q13). | Adopt H14: little-endian, low bits first, verified by test. |
+| RA8 | State width and range (H12): R56 makes expressions exact, but `@s.` storage has no width. | A state variable is i64; an update outside i64 is a fault. |
+| RA9 | Data-dependent addressing (`casestudies/gaps.md:16`), which descriptors and indirect DMA need. | A Q2 design study beside R13; not in v3 unless two case studies need it under R59. |
+| RA10 | The size of `d0` (H8: a declared kernel parameter); R4 and R12 say nothing about it. | Adopt H8: the size is an issue-time parameter of the program. |
+| RA11 | Migration for v3's breaking changes (R2, R5, R58, R60): a converter, or a front-end error naming the replacement. | A rejected v3 construct reports its replacement with the clause id (R44); no converter. |
+| RA12 | Capacity: no ruling sums the Q1 and Q2 items against owner decision 11 (3-4 engineers, two quarters). | The tech lead publishes one sized roadmap table and cuts to fit before the rulings bind. |
+| RA13 | Precedence between `semantics/rulings.md` or `holes.md` and these rulings where they disagree (R5, R7, R28, R56). | These rulings win; each one that overrides a semantics ruling names it, and the semantics doc is updated in the same edit. |
