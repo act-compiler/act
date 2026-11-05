@@ -1,11 +1,7 @@
 > [!NOTE]
-> **Stay tuned:** New releases of the ACT tools are coming soon!
-> - [`taidl`](https://github.com/act-compiler/taidl) v2.12 (up from v2.3)
-> - [`act-oracle`](https://github.com/act-compiler/act-oracle) v2.9 (up from v2.2)
-> - [`act-backend`](https://github.com/act-compiler/act-backend) v1.18 (up from v1.2)
-> - `act-allo` v1.0, a new generator
+> **New:** ACT v2.4 released with [`taidl`](https://github.com/act-compiler/taidl) v2.15, [`act-oracle`](https://github.com/act-compiler/act-oracle) v2.11 and [`act-backend`](https://github.com/act-compiler/act-backend) v1.16.
 >
-> More is in the works, including `act-oracle` v3 and `act-e2e` for end-to-end LLM deployment.
+> More is in the works, including the new generator `act-allo`, an even faster simulator in `act-oracle` v3, and `act-e2e` for end-to-end LLM deployment.
 
 # ACT: Accelerator Compiler Toolkit
 
