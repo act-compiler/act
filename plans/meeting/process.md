@@ -40,7 +40,9 @@ A claim counts only with a citation; the moderator gives an uncited claim no wei
    Per question: the strongest opposing argument restated fairly, then a rebuttal or a concession with evidence, then the final position.
 3. Decision: the moderator reads all six files and rules per question on the quality of evidence and reasoning, never on the count of votes.
    Per question: decision, the reasoning chain, the evidence it rests on, dissent, and confidence.
-   A question whose evidence is balanced and whose answer is a value judgment goes to the owner, with the options.
+   The moderator decides every question, value judgments included.
+4. Resolution: when two panels rule differently, a joint moderator on a third model decides on the evidence of both.
+   Only a question that changes product direction, scope, or an external commitment, and that no owner decision covers, goes to the owner.
 
 ## Files
 
