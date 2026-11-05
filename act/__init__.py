@@ -1,3 +1,3 @@
 """ACT - Accelerator Compiler Toolkit"""
 
-__version__ = '2.3'
+__version__ = '2.4'
