@@ -1,0 +1,51 @@
+# Outside critic: the backend plan against standard practice
+
+Verdict.
+The plan reads the code correctly and its central premises hold: rewrites are text lines bound by number to three hand-indexed functions (`generic/src/isel/rewrites/applier.rs:15-58`), the analysis `make` computes no shape (`generic/src/ir/egraph.rs:396-401`), candidates cross to C++ as text (`generic/src/pipeline.rs:249-253`), and the two extractors repeat one constant pass (`isel/extractor/slow.rs:21-23`, `fast.rs:19-21`).
+It keeps what is good: the egg `Runner` with limits, the `merge` agreement check, the OR-Tools allocator, the checked arithmetic, and the test suite.
+Its order is right in outline: harness, moves, typed boundaries, then the analysis, then coverage.
+Its weakness is that it stops one level short of the simplification the owner asked for.
+B6 preserves the condition bodies "verbatim", but those bodies index RHS pattern positions (`rhs_metadata[1]`, `rhs_eclasses[7]` in `ir2ir_rewrites.rs:78-85,103-135`), which is the fragility that standard rule languages remove by binding names.
+The payload stays a `String` parsed on every match (`egraph.rs:63-110`), and `Language::matches` compares discriminants only (`egraph.rs:163-165`), so egg's own pattern search cannot see attributes; that is why the custom `find_matches` and `apply_pat` exist, and no plan item removes the cause.
+The verification net for the high-risk step B7 is two golden kernels of one accelerator family (`examples/mini_trn`, `mini_trn_double`), where the field standard is differential testing against an oracle, which this project already has (TAIDL-TO, `tests/conftest.py` `simulated`).
+
+## Per plan item
+
+| Plan item | Verdict (keep / change / drop) | Reason | Standard practice reference |
+| --- | --- | --- | --- |
+| B1 layout and stage names | keep | pure moves, cheap, and the `isel/initializer` and "Phase 1 Module 3" names (`pipeline.rs:229`) mislead; do it in the same commit as B10 and B5 moves so `use` lines churn once | Cranelift keeps one `isle/` and one `codegen/` tree per concern: https://github.com/bytecodealliance/wasmtime/blob/main/cranelift/isle/docs/language-reference.md |
+| B2 typed candidate handoff | keep | an in-process text round trip (`pii.rs:75-93`, `act_malloc.cc:45-66`) is the weakest boundary; a `#[repr(C)]` array is the plain fix; generate the struct for both sides from the B13 model so one schema exists | GlobalISel and ISLE pass typed MIR or terms between stages, never text: https://llvm.org/docs/GlobalISel/MIRPatterns.html |
+| B3 golden harness without docker | keep | every structural step depends on it; add an oracle-differential run on the extraction and matching specs (`tests/test_extraction.py`, `test_matching.py`) as the gate for behavioral steps, since two goldens are a thin net for B7 | Diospyros validates every output by translation validation, not by goldens: https://par.nsf.gov/servlets/purl/10232895 section 3.4 |
+| B4 remove the C++ candidate parser | keep | follows from B2; `parse_line` and `to_int` go, `create_instruction` stays (`cpp/malloc/include/parser.h:16-33`) | same as B2 |
+| B5 one kernel reader split in three layers | change | the reader works and its messages are pinned (`tests/test_reader.py`, 615 lines); a split for testability alone is refactoring without a driver; defer until B17 adds reader arms and split only what B17 touches | engineering.md "add abstraction at the second use site" |
+| B6 one Rust value per rewrite | change | right target, wrong preservation rule: the condition bodies index RHS positions, so keep each condition's logic but bind pattern variables by name; better, move attributes from the `String` payload into child e-nodes so egg's `Pattern`, `Subst` and `ConditionalApplier` do the matching and `find_matches`, `apply_pat`, `metadata_N` are deleted | egg `rewrite!` with `if` conditions and `ConditionalApplier`: https://docs.rs/egg/latest/egg/macro.rewrite.html ; TENSAT encodes attributes as child nodes: https://arxiv.org/abs/2101.01332 ; ISLE binds every operand by name: ISLE language reference above |
+| B7 shape and type in `Analysis::make` | keep | the egg-intended use; deletes every `set_shapes_N` (`ir2ir_rewrites.rs:89-140` for one rewrite); keep the `merge` panic as the loud check; depends on a typed payload, see missing items | egg `Analysis` docs: `make` computes data for a new e-node, `merge` returns `DidMerge`: https://docs.rs/egg/latest/egg/trait.Analysis.html |
+| B8 name and test each IR-to-IR rule | keep | cheap and standard; also assert that each of the 10 rules fires on a minimal e-graph and not on a near miss | egg test suites use one named rule per test; ISLE rules are named and priority-ordered |
+| B9 extraction without cloning | change | constant-ness belongs in `make` (`detect_constants`, `utils.rs:7-40`, is a lattice fact), but the `DetectedConst(repr)` node also carries the text the allocator evaluates (`act_malloc.cc:74-78`); add that node in `Analysis::modify`, the constant-folding idiom, so `extract` takes `&EGraph` without losing the value | egg `Analysis::modify` constant-folding example: https://docs.rs/egg/latest/egg/trait.Analysis.html |
+| B10 one extractor module, two strategies | keep | duplicated code, both strategies justified because cost is known only after allocation; also dedupe candidates by content, since after saturation the loop re-runs the fast extractor over an unchanged e-graph (`pipeline.rs:544-547`) and re-allocates identical candidates until `check_termination` fires (`pipeline.rs:165`) | extraction-gym compares extractors on one serialized e-graph format: https://github.com/egraphs-good/extraction-gym |
+| B11 in-place copies in candidate building | keep | a post-hoc fix-up (`inplace_fix.rs:9-18`) that reorders nodes is the right thing to fold into construction; the oracle test it asks for is essential | GlobalISel renders new instructions only in the apply step, never in a later fix-up: https://llvm.org/docs/GlobalISel/InstructionSelect.html |
+| B12 formatters instead of layout twins | change | delete the twins (`template_loader.py:13`), but nothing gates the generated crate's layout: `tests/lint.py` runs clippy and `-Werror`, and CI's rustfmt check covers `git ls-files` only (README testing section); so no formatter run is needed and the `clang-format` question is moot | TableGen and ISLE output is not formatted; it is generated code |
+| B13 one selectable-instruction model | keep | the one data model every emitter reads is how TableGen and ISLE work; also emit the B2 struct from it | TableGen records are the single model behind every backend emitter |
+| B14 checks as one pass producing the model | keep | removes the check-emitter import cycle (`spec_checks.py:10-19`) | ISLE type-checks rules before codegen |
+| B15 coverage doc kept in sync by a test | keep | small and useful | -- |
+| B16 state variables | keep, Q2 | the largest item; depends on L1 and O; correctly gated | -- |
+| B17 operations beyond the 18 | keep | correctly placed after B6 and B7; each op then costs one variant, one reader arm, one shape rule | -- |
+| B18 narrow element types | keep | small; the sub-byte packing caveat is real | -- |
+| B19 several outputs | keep, may slip | egg patterns have one root; a tuple node is the standard answer, as the plan says | TENSAT uses a tuple-like node for multi-output ops |
+| B20 slice stride, constant expressions | keep | small | -- |
+| B21 to B26 defect fixes | keep | each traces to a read bug; B21 and B22 are breaking and ride the major release, as stated | -- |
+| B27, B28 renames | keep | glossary alignment is cheap once | -- |
+| Q2 data-driven applier experiment (decisions.md round two) | drop | speculative generality: the rule set is small and generated code is what ISLE, TableGen and B6 produce; egglog interprets rules because it is a general engine, not a backend | ISLE compiles rules to Rust functions; TableGen compiles patterns to match tables |
+| Port the allocator to Rust (rejected) | keep rejected | OR-Tools C++ solver (`cpp/malloc/include/solver.h:26-63`) is the solid part | -- |
+
+## Missing items
+
+- A typed payload: every attribute is a `String` re-parsed per match (`egraph.rs:63-110`) and set by `set_metadata` with `expect` (`egraph.rs:137-150`); B7 needs typed fields, and B6 is far simpler once attributes are child e-nodes or typed fields with a wildcard.
+- Target constants in generic rewrites: rewrite 0 hard-codes `16` and `Dtype::I32` (`ir2ir_rewrites.rs:20-27,100`, `ir2ir_rewrites.txt` line 0) inside `generic/`, so the crate is not generic; the plan should generate or parameterize the rule from the spec.
+- Rule scheduling: rules 2, 3, 4 and 7 are unconditional expansions `(?x) => ...` (`ir2ir_rewrites.txt`) held back only by preconditions and the default `BackoffScheduler`; Isaria phases expansion, compilation and optimization rules and prunes between phases (https://cs.utexas.edu/~sgt/papers/compgen.pdf), egglog has rulesets and schedules; the plan has no item on rule sets or iteration order.
+- Search budget: `TIME_LIMIT` is one second and `N` is 1 (`lib.rs:18-24`), so extraction and OR-Tools allocation run after every iteration; no item measures where compile time goes or dedupes candidates across passes.
+- Differential testing as the gate: goldens are byte-identical on two kernels; the plan should require the oracle simulation over `test_extraction.py` and `test_matching.py` specs for B7, B9 and B11, in the Diospyros translation-validation spirit.
+- Fail point not listed for B6: egg's `Pattern` parse of `dot_?` relies on `FromOp` splitting at `_` (`egraph.rs:222-335`), so a typed pattern must define the wildcard before the text files are deleted.
+- Fail point not listed for B2: `--log` candidate files are read by the extraction tests (`tests/test_extraction.py:109,135,496`), so the Rust-side printer must keep the exact line format or the tests move with it.
+- Dependency not listed: B12 is scheduled "ideally after B6" but B6 rewrites the templates B12 deletes; make B6 a hard prerequisite so the twins are deleted once.
+- Dependency not listed: B10 and B9 both touch `annotate_constants` and the `DetectedConst` repr; order B9 before B10 or merge them.
