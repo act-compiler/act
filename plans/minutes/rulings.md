@@ -48,7 +48,7 @@ Only the owner decisions are binding.
 | R24 | `clang-format` at generation time | Not required; rustfmt formats the Rust output | Fewer tools in the generation path |
 | R25 | Region element-count checks | Move to the front end (L5); the backend keeps its literal check until then | Checks of meaning belong to the front end |
 | R26 | `TensorInfo` and `Buffer` identifiers | Rename `TensorInfo`; keep `Buffer` | "Tensor buffer" is the papers' term |
-| R27 | State registers and `@s.*` in the backend | Implement in v3 (Q2), after the front end's typed instruction model; the documented rejection stays until then | The owner named it as the known deficiency |
+| R27 | State variables and `@s.*` in the backend | Implement in v3 (Q2), after the front end's typed instruction model; the documented rejection stays until then | The owner named it as the known deficiency |
 
 ## Oracle
 
@@ -60,6 +60,7 @@ Only the owner decisions are binding.
 | R31 | Scope of O7 | Widen: region checks, constant ranges, and compare-type fit move to the front end | Checks of meaning belong to the front end |
 | R32 | O12 | Drop the unused matmul-precision flag and avoid `jax.device_put` | Neither affects a module compiled from text |
 | R33 | `docs/operations.md` | Fold into the coverage table and delete (O14) | It duplicates the language spec |
+| R34 | Retired | The number carries no ruling | -- |
 | R35 | Generated-code line splitter | Drop (O18) | rustfmt-style layout is not needed in Python output |
 | R36 | Public `kernel(...)` entry name | Keep | "Kernel" is the glossary term for an oracle function |
 | R37 | `generic/` directory name | Rename to `runtime/` | Says what it is |
@@ -93,5 +94,5 @@ Only the owner decisions are binding.
 | R50 | Tutorials | All three are outdated; A10 refreshes one against current ACT, A11 merges the copies | Owner decision 6 |
 | R51 | README trims (A1, A2) | Plan items only, executed with owner sign-off | Owner decision 5 |
 | R52 | `act-ecosystem` distribution name | Keep; fix the README sentence within A1 | Renaming a published package costs users |
-| R53 | Glossary terms `oracle`, `backend`, `kernel` | Added | Used across all repos |
+| R53 | Glossary terms `test oracle`, `compiler backend`, `kernel function` | Added | Used across all repos |
 | R54 | ASCII rule for archived tutorials | Exempt until A11 replaces them | Archived content is not edited |
