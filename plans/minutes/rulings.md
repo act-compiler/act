@@ -1,8 +1,8 @@
-# Tech-lead rulings
+# Open questions with draft answers
 
-Engineering questions raised by the tracks and reviewers, ruled on by the tech lead.
-Each ruling applies the owner decisions; a ruling never overrides one.
-Items that add a dependency are planned here and need owner approval before implementation.
+Engineering questions raised by the tracks and reviewers, each with a draft answer.
+None of these is decided: each goes to a mixed-model debate panel, which settles it on evidence.
+Only the owner decisions are binding.
 
 ## Language and semantics
 
