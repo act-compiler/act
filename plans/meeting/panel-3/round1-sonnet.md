@@ -64,7 +64,7 @@
   3. Option B (document the trees) pins the contract to a parser version that the owner may regenerate; every grammar change becomes a contract break.
   4. A serialized form (option C) is a second compatibility promise; StableHLO guarantees compatibility only for its portable artifact and explicitly none for bytecode, and pays 5 and 2 year windows for it.
   5. A small typed node model (lines, operands, attributes, integer expressions) gives an outside author what a serialized form would, without a second promise.
-  6. Plain typed dataclasses make a later JSON dump a mechanical add-on, so the trigger (second non-Python consumer) is cheap to honor.
+  6. Plain typed dataclasses make a later JSON dump a mechanical addition, so the trigger (second non-Python consumer) is cheap to honor.
 - Evidence: taidl/taidl/__init__.py:9; taidl/taidl/instruction.py:34-57; shared/interface.md "Documentation of the contract"; https://openxla.org/stablehlo/compatibility; draft R42 and decision SD5 (shared/decisions.md).
 - Confidence: medium.
 - Would change my mind: an RTL generator team committed to a non-Python host language in v3.
