@@ -36,30 +36,19 @@ Approved with conditions.
 
 ## Conditions
 
-1. The per-buffer initial value of the joint decision on unwritten reads is in no language text.
-   - The spec omits it: language/spec-draft/declarations.md S4.3, execution.md S5.6 "Storage before the first issue", overview.md S1.3.11, glossary.md "initial value" row.
-   - No language item declares it; the decision puts it next to L32 (language/plan/norms.md).
-   - O26 and B36 now depend on it; add the item, its spelling on `acc.buffer`, and an edge to O26.
-2. `f4e2m1fn` and `f8e8m0fnu` (L17, Q2.4) have no edge cases in the spec.
-   - Needed: S7.3 list and count ("19 element types" in grammar.md S2.1 and glossary.md), S8.3 type rows, and S8.4 rows for a type with no zero, sign, or infinity (`f8e8m0fnu`).
-   - language/proposals.md row 1 still shows `ops.scaled_dot`, which Q2.4 and S8.5 put outside the language.
-3. The expectations vocabulary disagrees with the spec.
-   - S1.2 and S12.4 use `supported`, `excluded`, `rejected`; tests/generators.md T11 and T12, tests/corpus/layers.md, failure.md, sections.md, and roadmap/milestones.md M4 (T12) use `supported` or `unsupported`.
-   - Pick one set and apply it to T11, T12, and the M4 criterion.
-4. The spec uses "program" for a sequence of issues (execution.md S5.6, overview.md S1.3), while S10 has no "program" row and glossary/terms.md bans "program" for the kernel function.
-   - Add a term row that separates the two, or rename one.
+1. Closed: the per-buffer initial value is `initial_value` on `acc.buffer` (S4.3), in S5.6, S1.3.11, S9, and both glossaries; plan item L46 (language/plan/norms.md) feeds O26 and B36.
+   - O26's dependency column in oracle/plan/checks.md still lists only L5 and O20; the oracle author adds L46.
+2. Closed: S7.3 lists 21 types with a table of zero, sign, infinity, and NaN; S7.5, S8.3, and S8.4 give the edge cases of `f4e2m1fn` and `f8e8m0fnu`; proposals.md row 1 no longer shows `ops.scaled_dot`.
+3. Closed: the expectations vocabulary is `supported`, `partial`, `excluded`, `rejected` (S1.2) in tests/generators.md T11 to T14, tests/corpus, tests/README.md, tests/overhaul.md, and the M4 criterion (T12).
+4. Closed: S10 and glossary/terms.md define "program" as a sequence of issues and "issue"; the kernel function now bans "program (for the function)", and "generator" is a Python package.
 5. OD43 to OD46 (C++ on MLIR, PyTorch backend, in-house C++ e-graph library) appear in no track plan and no roadmap wave.
    - Panel 12 owns them (meeting/panel-12/agenda.md); its decision must add the items and waves.
    - backend/plan/decisions.md "Engine: Keep egg" must then name OD45 as the later direction.
-6. Float accuracy of the approximate words is open for finite results.
-   - language/spec-draft/operation_meaning.md S8.4 fixes only their infinity, zero, and NaN results.
-   - A finite `exp`, `log`, or `tanh` result has no bound and no normative reference value, so a conforming generator for hardware has no criterion; state a bound or make the pinned reference value normative.
-7. Three milestone criteria name no check.
-   - roadmap/milestones.md M3 "The failure policy is in force for every generator (D16)": name D16's verification test.
-   - M1 "the region, in-place, and overlap fault rows hold (L36, L35, L5)": name the test item that runs those S1.3 rows.
-   - M2 "the guides for adding a generator exist (L40, L41, A27)": name the check, for example the U11 template generator built from the guide.
-8. diagnostics/plan/README.md D8 depends on O11, a fallback that lands only if O19 fails.
-   - Make the edge conditional, or point D8 at O20 or O11, whichever lands.
+6. Closed: S8.4 "Accuracy of approximate words" and S1.3.19 bound a finite result to `k_t` ulps of the exact value (16 at `f32` and `f64`, 8 at `f16` and `bf16`, 1 at 8- and 4-bit floats); D44 gives the evidence.
+7. Closed. roadmap/milestones.md names a check for each criterion.
+   - M3 names the D16 endings tests: `act-backend/tests/test_endings.py` and one `act-oracle` test per `KO021` to `KO040` code.
+   - M1 names the O30 matrix; U11 and T35 are wave 5, so M2 names the L41 worked generator run in CI and the A27 stub build.
+8. Closed. diagnostics/plan/README.md and D08 make D8 depend on "O20 or O11", the unroll outcome of O19.
 
 ## Minor items, no condition
 
@@ -68,9 +57,11 @@ Approved with conditions.
 - layers.md S11.4 writes the example link `A == B*8` while its form is `E == k*D + c`; `A == 8*B` matches the form.
 - minutes/owner-decisions.md lists decisions 31 to 33 after 46; numbers 2 to 4, 7 to 9, 18, 36, and 37 have no row; the file is the owner's and is not edited here.
 - language/README.md says the draft follows owner decisions 1 to 42; decisions 43 to 46 do not touch the language.
+- roadmap/q1-supporting.md and wave-3.md still list D8 on `O11`; q1-core.md and wave-4-7.md still carry the old T12 title; each takes the new text of diagnostics/plan/README.md and tests/generators.md.
+- oracle/plan/fidelity.md O30 has no cell for S1.3.3 (region bounds), which the M1 fault-row criterion cites.
+- language/spec-draft/generator_metadata.md S12.4 lists `supported`, `excluded`, and `rejected` for the expectations table and omits `partial`.
+- diagnostics/plan/D06-unsupported-registries.md says rows carry `partial` or `rejected`; S1.2 adds `excluded`.
 
 ## Missing for an engineer
 
-- The declaration of a per-buffer initial value (condition 1) is the one language feature a decided item needs and no item carries.
-- Edge cases of the two new element types (condition 2) block B18, C6, and the oracle's L17 rows.
-- An accuracy criterion for approximate words (condition 6) blocks the differential tests T13 for those words.
+- Nothing beyond the open conditions; L46, the edge cases of L17, and the S8.4 ulp bound now unblock O26, B36, B18, C6, and T13.

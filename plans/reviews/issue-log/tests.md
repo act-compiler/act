@@ -28,7 +28,7 @@ Panel questions are cited as Qn.k and owner decisions as ODn.
 | QA19: inventory counts do not follow the verdicts | minor | fixed | tests/review.md (counts, 503 tests); tests/inventory/ (one verdict word set, `reshape`) |
 | QA20: TB5 is wrong, the test asserts through `check_oracle` | minor | fixed | tests/bugs.md (TB5 retired) |
 | QA21: inventory omits lint scripts, `cost/*.c`, `pytest.sh` runners, `plain_dir` | minor | fixed | tests/inventory/ (script and fixture rows); tests/inventory/cleanup.md (T2 names `plain_dir`) |
-| QA22: debate rounds are decision history; T19 to T21 restate rulings | minor | open: T19 to T21 stay as scheduled items of the wave plan (Q8.4); `tests/decisions/round1.md` and `round2.md` hold decisions in force only and still carry round names, and a rename needs a file move | none yet |
+| QA22: debate rounds are decision history; T19 to T21 restate rulings | minor | fixed: `tests/decisions/round1.md` and `round2.md` are renamed `layout.md` and `cases.md`; T19 to T21 stay as scheduled items of the wave plan (Q8.4) | tests/decisions/README.md |
 | IN1: one `rejected` verdict for every phase | major | fixed | Q6.5; tests/corpus/format.md (`phase`) |
 | IN2: error matched by prose regex | major | fixed | Q6.5, Q3.9; tests/corpus/format.md (`code`, `clause`, `object`) |
 | IN3: coverage per section, not per clause | major | fixed | Q6.7; tests/corpus/norms.md (T26 `coverage.md`) |

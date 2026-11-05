@@ -14,3 +14,5 @@ The tech-lead rulings take each review into account.
 - [rulings/](rulings/README.md): audit of the tech-lead rulings
 - [issue-log/](issue-log/README.md): every review finding with severity, disposition, and where it landed, per review group
 - [approval.md](approval.md): final approval of the plans, with the fixes made and the conditions in force
+- [management/](management/README.md): program, product, and execution reviews of the roadmap, with a merged action list
+- [spec-gaps/](spec-gaps/README.md): gap reports on the language specification draft, with an outcome per row

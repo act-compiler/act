@@ -36,13 +36,13 @@ Where a track kept no response file, each finding was checked against the track'
 | backend | 67 | 56 | 10 | 0 | 1 | 0 |
 | oracle | 65 | 57 | 4 | 1 | 3 | 0 |
 | spec | 139 | 114 | 19 | 2 | 4 | 0 |
-| tests | 38 | 34 | 1 | 0 | 2 | 1 |
+| tests | 38 | 35 | 1 | 0 | 2 | 0 |
 | semantics | 50 | 43 | 0 | 0 | 7 | 0 |
 | shared-diagnostics | 20 | 17 | 1 | 0 | 2 | 0 |
 | casestudies-priorart | 20 | 19 | 0 | 0 | 1 | 0 |
 | act-glossary | 21 | 20 | 1 | 0 | 0 | 0 |
 | rulings | 32 | 27 | 0 | 0 | 5 | 0 |
-| total | 452 | 387 | 36 | 3 | 25 | 1 |
+| total | 452 | 388 | 36 | 3 | 25 | 0 |
 
 ## Counts per severity
 
@@ -60,7 +60,3 @@ Where a track kept no response file, each finding was checked against the track'
 - Rows of the track response files that answer owner decisions or tech-lead rulings, not review findings, are not in the group files; the rulings among them are in rulings.md.
 - Panel 11 (authoring surface and check function) is decided in `meeting/panel-11/decision.md`; no finding in the log waits on it.
 - Items renamed or cut while closing findings: the language bugs are LB1 to LB29, F7 and F9 of the semantics plan are cut, and A14 and A22 of the act plan are merged; the roadmap carries F7 and F9 as dropped rows and A14 and A22 as merged rows.
-
-## Findings left open
-
-- QA22: `tests/decisions/round1.md` and `round2.md` hold decisions in force but keep round names, and deleting or renaming them is a file move; T19 to T21 stay as scheduled items of the wave plan (Q8.4)
