@@ -15,7 +15,7 @@ T20 sets the impl-header rule, and `decisions/justifications.md` records every d
 | converter script and equivalence tests (2.x line) | one `Model` equality test per converted file (T37) | new, deleted with the string surface |
 | `taidl.testing` program runner, `act-oracle` adapter | `program.toml` cases on the oracle (T29) | seeds of `act-oracle/tests/test_kernel.py:590-598`, :1229-1240 |
 | `taidl/tests/test_*.py` (kept) | API unit tests with S tags (T1) | unchanged files |
-| `act-backend/tests/expectations.toml`, `act-oracle/tests/expectations.toml` | supported or unsupported per case (T11) | `test_refusals.py` loops, `conftest.py` `LOWERED` |
+| `act-backend/tests/expectations.toml`, `act-oracle/tests/expectations.toml` | coverage status per case (T11) | `test_refusals.py` loops, `conftest.py` `LOWERED` |
 | `act-backend/docs/coverage.md`, `act-oracle/docs/coverage.md` | rendered from expectations (T11) | `act-oracle/docs/operations.md` table |
 | `act-backend/tests/test_conformance.py`, `act-oracle/tests/test_conformance.py` | expectation runners (T12) | new |
 | `act-backend/tests/test_*.py` (kept, header `impl` or `cli`) | search, allocator, CLI, build contract | `test_endings.py`, `test_reader.py`, `test_extraction.py`, `test_allocator.py`, `test_cost.py`, `test_generation.py`, `test_names.py`, `test_package.py`, trimmed `test_matching.py` |

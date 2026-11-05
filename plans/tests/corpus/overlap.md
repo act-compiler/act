@@ -24,7 +24,8 @@ The cases are `program.toml` programs (T29), so attributes set the placement; th
 - What: dimension rows use a two-dimensional region: overlap in one dimension and apart in the other is apart (value under `apart`); partial in one dimension and equal in the other is partial.
 - What: each cell is named `overlap-<declaration>-<placement>` and cites S5.5 and, for a fault, S1.3.5; the S1.3.6 row of `norms.md` points at these cells.
 - What: rejection rows are `rejected` cases in phase `check`, each citing its S9 clause: a tie across buffers, a tie whose size texts differ, `apart` on identical region text, and identical input and output text without `inplace`.
-- What: size-defect rows hold equal starts and unequal sizes (`s_in = s_out = 0`, input size 16, output size 8): a fault under the default and a value under `may_overlap`, the narrowing model.
+- What: rejection rows also hold one case per S5.5 row of Q13b.3: a plain start below 0 or size below 1, a plain bound past a plain access dimension, two outputs with one start text, and an input tied to two outputs.
+- What: size-defect rows hold one start text and unequal sizes: with symbolic sizes issued 16 and 8, a fault under the default and a value under `may_overlap`, the narrowing model; the plain-size twin, 16 and 8, is rejected at `check`.
 - What: a size-defect row on `inplace` with unequal size text is rejected at `check`, not faulted at issue.
 - What: negative-attribute rows use start texts that differ and evaluate equal, as `1024 - addr_out` against `addr_in` with a negative `addr_out`: a value under the default, since the rules read evaluated starts and no attribute name.
 - What: a negative attribute whose evaluated start falls below 0 faults on the bounds constraint (S1.3.3), not on overlap.

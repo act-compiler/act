@@ -15,6 +15,7 @@ Nothing here was run against the repos; every claim cites a file and line read o
 | [corpus/](corpus/README.md) | the conformance corpus, items T5 to T10, T24 to T26, T29, T30, T32 to T36, T38, coverage of the outline |
 | [generators.md](generators.md) | expectations, differential tests, end-to-end, goldens, CI tiers, items T11 to T15, T23, T27, T31 |
 | [migration.md](migration.md) | ordered PR steps and what each deletes, items T16 to T18, T28, T37 |
+| [platform.md](platform.md) | long-term platform tests in roadmap waves 8 to 10, items T39 to T41 |
 | [decisions/](decisions/README.md) | design decisions in force, items T19 to T21, answers T22, justifications |
 
 ## Assumptions
@@ -23,10 +24,10 @@ Nothing here was run against the repos; every claim cites a file and line read o
 - T6 and T12 are breaking: v3 diagnostics carry a code and a clause id, and cases match on the code (Q3.9).
 - Size: S is under one engineer-week, M is one to three engineer-weeks, L is one engineer-month or more.
 - Quarters give the order; the roadmap track computes the load against three to four engineers over two quarters.
-- Q1 holds T1 to T8, T10 to T12, T14, T16, T17, T26 to T30, T32, T35, T37, T38; Q2 holds T4, T9, T13, T15, T18, T23 to T25, T31, T33, T34, T36.
+- Q1 holds T1 to T8, T10 to T12, T14, T16, T17, T26 to T30, T32, T35, T37, T38; Q2 holds T4, T9, T13, T15, T18, T23 to T25, T31, T33, T34, T36; T39 to T41 are later, in roadmap waves 8 to 10.
 - Terms follow the owner's papers first, then StableHLO and MLIR.
 - The user's file is the "ISA specification"; the language document is the "TAIDL language specification", cited as the language specification.
-- Other terms: reject (generation, kernel compile) and fault (run time), element type, region, hbm, test oracle, compiler backend, assembly code, unsupported (coverage status).
+- Other terms: reject (generation, kernel compile) and fault (run time), element type, region, hbm, test oracle, compiler backend, assembly code, coverage status (`supported`, `partial`, `excluded`, `rejected`).
 - The language specification is the draft in `taidl/docs/` with sections S1 to S12; every corpus case and tag cites an S id.
 - Accelerator scope is tensor accelerators plus GPU tensor-core instructions (mma, wgmma, TMA), with no SIMT model.
 - TAIDL v3 has no undefined behavior: every run-time violation is a fault or a defined behavior under one norm, and the corpus states which per case.

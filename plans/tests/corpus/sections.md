@@ -6,7 +6,7 @@ Sections with no case say so, and why.
 | section | case kind | first cases from | item |
 | --- | --- | --- | --- |
 | S1.1 conforming front end | none; defines what T6 asserts | - | T6 |
-| S1.2 conforming generator, unsupported features, exclusion | exclusion rows beside the `supported` and `unsupported` rows | - | T11, T38 |
+| S1.2 conforming generator, unsupported features, exclusion | expectations rows of each status: `supported`, `partial`, `excluded`, `rejected` | - | T11, T38 |
 | S1.3 run-time norm | `program.toml` cases per norm row, expecting a result or a `fault`; the catalogue is `norms.md` | `act-oracle/tests/test_kernel.py:590-749`, :1229, `act-backend/tests/test_refusals.py:351-358` | T26, T29, T8, T30 |
 | S2.1, S2.2 tokens | none in v3 for the string form; names and literals are Python's, with `trace` rows for the spellings it rejects | `taidl/tests/test_grammar.py:52-144`, :351-388 | T38 |
 | S3.1, S3.2 grammar | traced expression cases and `trace` rejection rows | `test_grammar.py:145-316`, `test_expressions.py:23-108` | T7, T38 |

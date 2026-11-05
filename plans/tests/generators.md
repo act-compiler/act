@@ -1,6 +1,6 @@
 # Per-generator expectations, differential testing, and CI tiers
 
-Each generator states, per corpus case, whether it supports the program or marks it unsupported with a coded error.
+Each generator states, per corpus case, one coverage status of S1.2: `supported`, `partial`, `excluded`, or `rejected` with a coded error.
 That table is the single source for the generator's `docs/coverage.md`, and the differential tests run the oracle and the backend on the cases both support.
 Items T11 to T15, T23, T27, and T31 cover the expectations table, its runner, differential tests, the end-to-end test, the golden policy, the shape module check, and the CI tiers.
 
@@ -9,7 +9,7 @@ Items T11 to T15, T23, T27, and T31 cover the expectations table, its runner, di
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
 | T11 | Expectations table per generator, coverage.md generated from it | T5, D1 | M | Q1 |
-| T12 | Expectation runner: supported, or unsupported with the documented code | T11, T6, D6 | M | Q1 |
+| T12 | Expectation runner: the row's status, with the documented code | T11, T6, D6 | M | Q1 |
 | T13 | Differential tests oracle vs backend on the supported intersection | T3, T12, T8, T29, B29 | L | Q2 |
 | T14 | One shared end-to-end suite in act | T3, T10, B29 | M | Q1 |
 | T15 | Golden policy: one regenerate, one record, one tolerance | T14, B29 | S | Q2 |
@@ -19,10 +19,12 @@ Items T11 to T15, T23, T27, and T31 cover the expectations table, its runner, di
 
 ## T11. Expectations table per generator, coverage.md generated from it
 
-- What: `act-backend/tests/expectations.toml` and `act-oracle/tests/expectations.toml`, one row per corpus case id: `supported`, or `unsupported` with the `code` and the section id of the clause it documents.
+- What: `act-backend/tests/expectations.toml` and `act-oracle/tests/expectations.toml`, one row per corpus case id, with one status of S1.2.
+- What: `supported` has no further field; `partial` adds the stated limit and the section id; `excluded` and `rejected` add the `code` and the section id of the clause they document.
+- What: the oracle excludes nothing (owner decision 42), so its rows are `supported`, `partial`, or `rejected`.
 - What: rows for tensor operators and element types replace `act-backend/tests/test_refusals.py:146-205` and `act-oracle/tests/conftest.py:75-155` (`LOWERED`).
 - What: T11 owns the one `coverage.md` renderer: clause text from the diagnostic registry (D1), verdicts from the expectations rows; the existing `act-oracle/docs/operations.md:21-40` table is regenerated from it.
-- Benefits: coverage.md cannot drift from the tests; a new corpus case with no row fails collection, so an unsupported feature is documented on the day it is tested.
+- Benefits: coverage.md cannot drift from the tests; a new corpus case with no row fails collection, so a feature that is not `supported` is documented on the day it is tested.
 - Caveats: the backend has no coverage doc today (`act-backend/README.md:48` states the contract in one line); B writes the first clause texts.
 - Fail points: a row marked supported for a case that compiles but selects nothing; T13 catches it because the differential run finds no assembly.
 - Order and dependencies: after T5 publishes case ids and D1 the registry; before T4 deletes the regex tests.
@@ -30,11 +32,14 @@ Items T11 to T15, T23, T27, and T31 cover the expectations table, its runner, di
 - Breaking: no.
 - Files: `act-backend/tests/test_refusals.py:146-205`, `act-oracle/tests/conftest.py:75-155`, `act-oracle/docs/operations.md`; every word and type fact preserved as a row.
 
-## T12. Expectation runner: supported, or unsupported with the documented code
+## T12. Expectation runner: the row's status, with the documented code
 
-- What: `tests/test_conformance.py` in each generator loads the pinned taidl's corpus, runs `generate_backend` or `generate_oracle` on each accepted case, and asserts the row: generation succeeds, or raises the documented `code`.
-- What: a backend never assumes an unsupported input away: every input outside its support is rejected with a coded error, and the runner fails a case that compiles to a result instead.
-- What: a rejected case leaves no output tree, as `act-backend/tests/test_refusals.py:439` and `act-oracle/tests/test_refusals.py:467` check today.
+- What: `tests/test_conformance.py` in each generator loads the pinned taidl's corpus, runs `generate_backend` or `generate_oracle` on each accepted case, and asserts the row's status.
+- What: `supported` and `partial`: generation succeeds, and a `partial` case lies inside the limit its row states.
+- What: `excluded`: generation succeeds, and the printed and stored exclusion carries the documented `code` and clause (S1.2).
+- What: `rejected`: generation raises the documented `code`.
+- What: a backend never assumes an unsupported input away: every input outside its support is `excluded` or `rejected` with a coded error, and the runner fails a case that compiles to a result instead.
+- What: a `rejected` case leaves no output tree, as `act-backend/tests/test_refusals.py:439` and `act-oracle/tests/test_refusals.py:467` check today.
 - What: the tests that stay in `test_refusals.py` move to `test_rejections.py` in the PR that deletes the loops.
 - Benefits: the generator rejection tests shrink to a data file; the code is tested against the rows coverage.md shows the user.
 - Caveats: a backend generation builds a cargo crate per case, so the runner has two tiers.
@@ -42,13 +47,13 @@ Items T11 to T15, T23, T27, and T31 cover the expectations table, its runner, di
 - Caveats: the arity check at `act-backend/tests/test_refusals.py:164-176` stays an `impl` test until the slow tier runs per pull request.
 - Fail points: a corpus bump in the pin adds cases with no rows; the runner fails collection and names the missing ids.
 - Order and dependencies: after T11, T6, and D6 (unsupported registries); one PR per generator.
-- Verification: `pytest -k conformance` passes in each generator with the pinned taidl; every row id exists in the corpus.
+- Verification: `pytest -k conformance` passes in each generator with the pinned taidl; every row id exists in the corpus; every row status is one of the four of S1.2.
 - Breaking: yes: generator rejections gain the code and the clause id, released with the matching generator majors (act-backend 2.0, taidl-to 3.0).
 - Files: both `test_refusals.py`; the no-output-left rule at backend :439 and oracle :467 preserved in the runner.
 
 ## T13. Differential tests oracle vs backend on the supported intersection
 
-- What: for each corpus case supported by both generators and carrying a `kernel.hlo` and inputs, compile the kernel with the backend, simulate the assembly on the oracle, and compare to the case's stored result within the case tolerance.
+- What: for each corpus case whose row is `supported` or `partial` in both generators (the supported intersection) and that carries a `kernel.hlo` and inputs, compile the kernel with the backend, simulate the assembly on the oracle, and compare to the case's stored result within the case tolerance.
 - What: one invariant holds for every case: simulating the assembly of a supported kernel never faults.
 - What: the first cases come from `act-backend/tests/test_matching.py` selection facts (:898 dot contracting pairs, :1247 slice ranges, :1177-1189 sum from a start), `test_constructs.py:437-575`, and `test_reader.py:240-298`.
 - What: fault cases are oracle-only programs (T29); the backend is a producer that never emits a faulting issue, so T13 holds no fault case.
@@ -59,14 +64,14 @@ Items T11 to T15, T23, T27, and T31 cover the expectations table, its runner, di
 - Fail points: a case where oracle and backend agree and both are wrong; the stored values from T8 guard it.
 - Fail points: a kernel the backend cannot compile is a coded rejection, not a mismatch; the runner compares no-assembly with the T11 rows.
 - Order and dependencies: after T3, T12, T8, T29, and B29; Q2; A owns the act tree.
-- Verification: every case with a kernel is either differentially tested or named in an expectations row as unsupported by one generator.
+- Verification: every case with a kernel is either differentially tested or named in an expectations row as `excluded` or `rejected` by one generator.
 - Breaking: no.
 - Files: `act-backend/tests/test_matching.py`, `test_constructs.py`, `test_reader.py:240-298`, `test_endings.py:620-641`; each selection fact preserved as a kernel plus expected result.
 
 ## T14. One shared end-to-end suite in act
 
 - What: `act/tests/test_end_to_end.py` grows to run every ISA specification in T10's list: generate both, compile every kernel, simulate, compare to the reference and the golden, replacing `act-backend/tests/test_mini_trn*.py` and `act-oracle/tests/test_mini_trn*.py`.
-- What: a kernel that an expectations row marks `unsupported` is skipped and reported; T10's row names the S8 words and S5 features it needs.
+- What: a kernel that an expectations row marks `excluded` or `rejected` is skipped and reported; T10's row names the S8 words and S5 features it needs.
 - Benefits: one place runs the real ISA specifications; the generator repos stop carrying example data twice.
 - Caveats: each generator repo keeps one smoke test that generates `mini_trn` and checks the tree is filled (`act-backend/tests/test_mini_trn.py:26-30`), so a generator PR still builds its own example.
 - Caveats: the smoke test is the only per-pull-request signal that a generator builds its example.
@@ -116,12 +121,13 @@ Items T11 to T15, T23, T27, and T31 cover the expectations table, its runner, di
 - What: tests run the search in the deterministic mode of B29; the default wall-clock bound stays for users.
 - What: most corpus kernels compile within 1 s on the standard CI machine; the exceptions are named in one list.
 - What: a flaky test is quarantined in one PR with an owner and a removal date, never rerun until green.
+- What: the oracle time per kernel is recorded for each T10 ISA specification and printed in the coverage docs, so the budgets rest on measured oracle cost.
 - What: the gate for B29 is byte identity of assembly and candidate logs, via a same-job double run per architecture; corpus-side assembly facts are check lines.
 - Benefits: a deleted per-pull-request test has a per-pull-request replacement; the tiers have triggers and limits.
 - Caveats: amd64 versus arm64 equality is unproven, so goldens are per architecture until measured.
 - Fail points: a tier over budget for a week; the overrun action fires.
 - Order and dependencies: after T12 and B29.
-- Verification: each tier appears in CI config with its trigger and budget.
+- Verification: each tier appears in CI config with its trigger and budget; the coverage docs list the oracle time per kernel of each T10 ISA specification.
 - Breaking: no.
 - Files: CI config of the four repos; no test file removed.
 

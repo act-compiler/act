@@ -23,7 +23,7 @@ T24 fuzzes the surface against the S9 contract, and T25 measures whether the sui
 - What: each row names the specification, its kernels, the reference for each kernel, whether a golden exists, and the S8 words and S5 features it needs.
 - Benefits: one list replaces the `EXAMPLES` dict in `taidl/tests/test_examples.py` and the two `examples/` trees' implicit lists.
 - Caveats: the examples live in three repos today; the list points to the taidl copy and the generators fetch it through the pin.
-- Fail points: a listed specification that a generator does not support in full; T14 skips and reports a kernel whose expectations row says `unsupported`.
+- Fail points: a listed specification that a generator does not support in full; T14 skips and reports a kernel whose expectations row says `excluded` or `rejected`.
 - Order and dependencies: after T5; input to T14.
 - Verification: `test_examples.py` in taidl and act-oracle read the list, not their own constants.
 - Breaking: no.

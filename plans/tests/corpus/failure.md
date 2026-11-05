@@ -19,7 +19,7 @@ T36 turns owner decision 40 into cases: nothing fails without a genuine cause.
 - What: an exclusion is never a stop: a kernel that avoids the excluded instruction compiles, and a kernel that needs it is rejected at kernel compile time naming it, as a coded `K` row.
 - What: the oracle excludes nothing and registers no check of its own; a valid ISA specification with a state-updating instruction runs on it.
 - What: front-end and generator rows: every `rejected` corpus case, trace exception or `check` entry, carries a message naming the object and the fix (`expected` and `found` per `scheme.md`), and its class is `R` or `U`, never `I`.
-- What: a sweep runs both generators over every accepted corpus case; each ends in a result or in its expectations row (`unsupported` with a code), never in an `I`, `X`, or uncoded stop.
+- What: a sweep runs both generators over every accepted corpus case; each ends in a result or in its expectations row (`excluded` or `rejected` with a code), never in an `I`, `X`, or uncoded stop.
 - Benefits: a stop without a cause (a panic in search, a generator crash on a valid ISA specification) fails a named row.
 - Caveats: the injection hook exists only in test builds; the drop log is read from stderr and the drop file of D16.
 - Fail points: a drop that hides a wrong answer; the same-assembly row and the T13 simulation of every emitted assembly rule it out.

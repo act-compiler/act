@@ -113,7 +113,8 @@ T37 follows the order of work of Q11.4: operation table and node model, `check` 
 - Benefits: equality of `Model` tests the contract itself, not text, so a converter bug fails a named file.
 - Caveats: the tests run only on the branch where both front ends exist, and they are deleted with the string surface; the converted files stay.
 - Fail points: a `Model` field outside equality (a call site compared by accident); the equality definition excludes call sites by name and a test checks one site differs.
-- Order and dependencies: after T6, T38, and U3; the tracer and the `Model` over the string front end exist first; before T7 seeds from converted files.
+- What: A28 runs this per-file check on act's own converted files before the last 2.x release; this item extends it to every corpus file.
+- Order and dependencies: after T6, T38, and U3; the tracer and the `Model` over the string front end exist first; before T7 seeds from converted files; before U14 and the release gate A31.
 - Verification: one test per converted file and a count equal to the file count; no v2 file remains unconverted at step 22.
 - Breaking: no.
 - Files: new converter script and equivalence tests on the 2.x line; converted files replace the originals as T7 and step 22 delete them.

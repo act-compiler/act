@@ -15,7 +15,7 @@ Each case cites the S id of its layer and, for a fault, S1.3.10 (a value outside
 - What: cross-check rows run a typed attribute and its hand-written pair of range constraints over a swept range and require the same fault set and values (decision 30).
 - What: a region start `1024 - addr` with a typed negative `addr` is a value; the type binds the attribute, the implicit constraints bind the evaluated start.
 - What: backend rows (T13) check that a generated addressing attribute stays inside its declared range and that a `u8` attribute is never negative; a `s64` attribute may be negative.
-- What: a declared range the solver cannot hold is a coded generation error, never a clamp; the row expects `unsupported` with the code in the backend expectations table.
+- What: a declared range the solver cannot hold excludes its instruction with a coded reason, never a clamp; the row expects `excluded` with the code in the backend expectations table.
 - Benefits: the type is one implicit constraint, so a width that widens or narrows a range fails a named boundary row.
 - Caveats: `u64` is the only rejected width among the type objects; `u64` and `u0` do not exist as names, so the case expects the `NameError` or the `check` entry the surface gives; `s64` is the default, so no row declares `s64` as rejected.
 - Fail points: a boundary row passed by an oracle that wraps; the neighbor values -129 and 128 rule it out.
@@ -58,6 +58,7 @@ Each case cites the S id of its layer and, for a fault, S1.3.10 (a value outside
 - Caveats: the oracle evaluates a link as any constraint; the allocator receives the encoded attribute with the type's domain and the link as a linear constraint.
 - Fail points: a decode row that passes because the inverse divides inexactly; the `A = 12` row rules it out.
 - Order and dependencies: after T33; same PR as T33.
+- Development: T33 and T34 are written from wave 3 on the private heads with the rest of the encoding unit and merge whole after the deletion pass (U14).
 - Verification: nine rejected rows and the two partial-direction rows exist; every row names its attribute.
 - Breaking: no.
 - Files: new cases under `taidl/conformance/`; seed `act-backend/act_backend/isel_ir2isa_rewrites_rs_generator.py:166-181` (`attribute_factor`).
@@ -70,7 +71,7 @@ Each case cites the S id of its layer and, for a fault, S1.3.10 (a value outside
 - What: neutrality rows: for every case carrying metadata, the generated oracle source and the backend's assembly are byte-identical with all metadata stripped, so another generator's entry changes no output.
 - What: a generator-owned row: an unknown key inside the named generator's own namespace is rejected by that generator naming node and key; the front end accepts it.
 - What: a misspelled namespace is ignored by every generator and listed by the front end.
-- What: the template generator of U11 has an expectations table (T11) with a `supported` or coded `unsupported` row for every corpus case, and generated coverage.
+- What: the template generator of U11 has an expectations table (T11) with a row for every corpus case, `supported`, `partial`, `excluded`, or `rejected` with its code, and generated coverage.
 - Benefits: decision 39 becomes executable: adding a generator's data cannot change another generator's output.
 - Caveats: metadata never changes what S5 to S8 mean, so no row compares metadata against a language rule.
 - Fail points: a generator that reads another namespace; the stripped comparison fails on the first byte.
