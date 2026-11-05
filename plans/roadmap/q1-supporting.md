@@ -34,6 +34,8 @@ Plan items scheduled for quarter 1 in the supporting tracks, by track.
 | D1 | Registry, classes and message format | L1, L25 | M | -- |
 | D2 | Call sites and exception classes in the front end | D1 | M | -- |
 | D3 | Recode and reword the front-end messages | D1, D2, L26 | M | -- |
+| D6 | Unsupported-feature registries | B15, D1, L7, O14, O17 | M | -- |
+| D9 | Silent fallbacks become errors | B24, B26, D1, L5 | S | -- |
 | D14 | Run-time violation table and norm | L5, L6 | S | -- |
 
 ## semantics

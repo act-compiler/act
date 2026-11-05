@@ -8,5 +8,6 @@ Sizes are unassisted estimates used to rank work; the plan assumes Claude-assist
 - [q1-supporting.md](q1-supporting.md): quarter 1 items of the case studies, prior art, shared code, diagnostics, and semantics tracks
 - [q2-core.md](q2-core.md): quarter 2 items of the core tracks
 - [q2-supporting.md](q2-supporting.md): quarter 2 items of the supporting tracks
+- [other-core.md](other-core.md): core-track items whose plans give no quarter
 - [dependencies.md](dependencies.md): items moved to Q2 by a dependency, and dependencies on undefined IDs
 - [load.md](load.md): item counts and weights per track and quarter, and the longest dependency chain

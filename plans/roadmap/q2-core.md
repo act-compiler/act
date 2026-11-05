@@ -7,47 +7,50 @@ Plan items scheduled for quarter 2 in the core tracks, by track.
 | ID | Item | Depends on | Size | Rulings |
 | -- | ---- | ---------- | ---- | ------- |
 | L3 | Normative shape and element type rules per operation | L2, O6, O7 | L | R62 |
-| L8 | Spec consistency checks in CI | L1 | M | -- |
-| L9 | Worked examples per section | L3 | M | -- |
-| L12 | Shape and element type checker | L3, O7 | L | R62 |
-| L15 | Rename confusing internal names | L25 | M | -- |
-| L16 | Range-check `constant` literals by element type | L3 | S | -- |
+| L8 | Spec consistency checks in CI | L1 | S | -- |
+| L12 | Shape and element type checker | L3 | L | R62 |
+| L15 | Rename confusing internal names | L25 | S | -- |
+| L16 | Range and type checks at the declaring call | L3 | S | -- |
 | L17 | Low-precision and block-scaled element types, `scaled_dot` | L2, L3 | M | -- |
-| L18 | Write masks on output regions | L24, L3 | M | -- |
-| L19 | Strided regions | L5 | M | -- |
-| L20 | `convolution` with window attributes | L3 | M | -- |
-| L21 | Rounding and saturation attributes on `convert` | L3 | S | -- |
-| L22 | Sub-computations for `reduce`, `scatter`, `sort`, `map` | L3 | L | -- |
-| L23 | Indirect regions: starts read from a data model | L19 | M | -- |
-| L28 | Banned-synonym lint | L26 | S | -- |
 
 ## backend
 
 | ID | Item | Depends on | Size | Rulings |
 | -- | ---- | ---------- | ---- | ------- |
-| B5 | One kernel reader: tokenizer, line parser, e-graph builder | B1, B3 | M | -- |
-| B11 | In-place copies as a candidate rewrite, not a fix-up | B10 | M | -- |
-| B14 | Checks as one pass producing that model | B13 | M | -- |
-| B15 | Keep `docs/coverage.md` in sync by a test | B14, L7 | S | -- |
-| B16 | State variables in the backend | B13, L1 | L | -- |
-| B17 | Operations beyond the 18 | B6, B7 | M | -- |
+| B5 | Reader checks HLO annotations against the inferred shapes | B7 | S | -- |
+| B10 | One cost-guided extractor keeping the best few candidates | B9 | M | -- |
+| B11 | In-place copies as a step of candidate building | B10 | M | -- |
+| B12 | Emit plain code without layout twins | B6 | S | R19 |
+| B16 | State in the backend | B13, L1 | L | -- |
+| B17 | Operations beyond the 18, `concatenate` of any arity | B31, B6, B7 | M | -- |
 | B18 | Element types `s2`, `s4`, `u2`, `u4`, `f8e4m3fn`, `f8e5m2` | B7, L17 | S | -- |
 | B19 | Several output regions | B11, B2 | L | -- |
-| B20 | `slice` stride and `constant` expressions | B6 | S | -- |
-| B23 | Check shape and element-type agreement of semantics lines (D3) | B13, L12, L3 | M | -- |
-| B26 | Extraction errors as dropped candidates, unset shape as `Option` (D7, D8) | B7 | S | -- |
+| B20 | `slice` stride, `constant` expressions, float literal range | B6 | S | -- |
+| B23 | Check shape and element-type agreement of semantics lines (D3) | B13, B7, L12, L3 | M | -- |
+| B32 | IR-to-IR rule phases | B29, B8 | M | -- |
+| B33 | Target constants out of IR-to-IR rewrite 0 | B6 | S | -- |
+| B34 | Search budget measurement and candidate deduplication | B10, B29 | S | -- |
 
 ## oracle
 
 | ID | Item | Depends on | Size | Rulings |
 | -- | ---- | ---------- | ---- | ------- |
-| O3 | Replace string templates by emitter calls | O2, O4 | L | R30 |
+| O1 | Runtime code out of `API_FILE` into `runtime/`; split what remains of `utils.py` | O20 | M | R28 |
+| O2 | One instruction record from the visitor, consumed by checks and emission | O1, O5 | M | R30 |
+| O3 | Emitter calls in generic form instead of string templates; one word table | O2 | M | R30 |
 | O6 | Spec errors raise `ValueError`; S8.3 table from the front end | L3 | S | R62 |
-| O7 | Move `shapes.py` rules to the front end, keep call-time evaluation | B23, L12, O6 | L | R31, R62 |
+| O7 | Move static checks to the front end: shapes, region values, constant ranges, `compare` type | B23, L12, O6 | M | R31, R62 |
 | O8 | Round float literals once, from the decimal | L16 | S | -- |
-| O9 | `triangular_solve` at `f16`: decide and narrow the widening | L3 | S | -- |
-| O12 | Scope jax configuration to the oracle | -- | M | R32 |
-| O13 | NumPy reference interpreter for differential tests | O2 | L | -- |
+| O9 | `triangular_solve` at `f16`: measure, then widen only where needed | L3 | S | -- |
+| O11 | Reject a loop-expression start whose 64-bit steps overflow; only if O20 does not land | O19 | S | R28 |
+| O12 | Drop the matmul-precision flag; transfer buffers without `jax.device_put` | -- | S | R32 |
+| O13 | Differential reference over the instruction record | O2 | M | -- |
+| O15 | Apply the naming table: identifiers, comments, docs | L25, L27, O1 | M | -- |
+| O19 | Spike: unroll every loop at trace time, measure compile time | O21, O8 | S | -- |
+| O20 | Unroll every loop; delete loop algebra, `Unroll`, `while` emission | O19 | M | -- |
+| O22 | Enforce the numerics norm table: a guard column and a golden per row | L6, O3 | M | -- |
+| O23 | Detect data-dependent errors inside the module | O22, O3 | M | -- |
+| O24 | Call-time errors: checked 64-bit values, overlapping outputs, constraint overflow | L5, L6, O20 | S | -- |
 
 ## tests
 

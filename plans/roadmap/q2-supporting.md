@@ -42,10 +42,8 @@ Plan items scheduled for quarter 2 in the supporting tracks, by track.
 | -- | ---- | ---------- | ---- | ------- |
 | D4 | Move run-time-independent checks into the front end | B22, B24, D14, D3, L10, L12, L14, L16, L3, L5 | L | -- |
 | D5 | Delete duplicated checks in generators | B14, B23, D4, O6, O7 | M | -- |
-| D6 | Unsupported-feature registries | B15, D1, L7, O14, O17 | M | -- |
 | D7 | Backend runtime diagnostics (Rust and C++) | B25, B26, B4, B5, D1 | L | -- |
 | D8 | Oracle run-time and call diagnostics | D1, D14, L6, O11, O6 | M | -- |
-| D9 | Silent fallbacks become errors | B24, B26, D1, L5 | S | -- |
 | D10 | Registry coverage test and wording lint | D1, L28, T5, T6 | M | -- |
 | D11 | Generate S9 and the unsupported tables | B15, D3, D6, L7, L8, O14 | S | -- |
 | D12 | act umbrella: scripts and entry points | A15, A6, D1 | S | -- |
