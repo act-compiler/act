@@ -1,13 +1,13 @@
 # Review of the current test suites
 
-The four suites hold 508 tests: 131 in taidl, 223 in act-backend, 153 in act-oracle, 1 in act.
+The four suites hold 503 tests: 131 in taidl, 223 in act-backend, 148 in act-oracle, 1 in act.
 Much of it is good: the oracle's reference tests, the front-end API tests, and the CLI contract tests are worth keeping as they stand.
 The weak parts are the per-PR selection tests, the three hand-copied word tables, and two conftest files that couple modules to fixtures by name.
 Verdicts use keep, reshape, merge, delete; the inventory holds the per-file reasons and TB1 to TB22 the defects.
 
 ## What works and should be kept
 
-- Reference-value tests against NumPy per operation word and element type: `act-oracle/tests/test_elementwise.py:406`, `test_reduce.py:87-129`, `test_structural.py:239-403`, `test_compare_select_clamp.py:122-146`, `test_linalg.py:94-166`, `test_constant_iota.py:107-157`; these are language tests already and become the S8 corpus with stored expected values (T8).
+- Reference-value tests against NumPy per tensor operator and element type: `act-oracle/tests/test_elementwise.py:406`, `test_reduce.py:87-129`, `test_structural.py:239-403`, `test_compare_select_clamp.py:122-146`, `test_linalg.py:94-166`, `test_constant_iota.py:107-157`; these are language tests already and become the S8 corpus with stored expected values (T8).
 - Front-end API tests with wide parametrization: `taidl/tests/test_instruction.py:48-66` (names), :213-268 (regions), :294-440 (overlap; seeds of T30), `test_expressions.py:24-250`, `test_data_model.py:34-59`; they map onto S4 to S6 and need only tags (T1).
 - Grammar word and type sweeps that derive their cases from the grammar itself: `taidl/tests/test_grammar.py:279-297`, `act-backend/tests/test_refusals.py:146-157` and :185-197, `act-oracle/tests/test_refusals.py:67`; the sweep idea is right and becomes the expectations table (T11).
 - Rejection tests that check the error the user sees and that nothing is left behind: `act-backend/tests/test_refusals.py:439`, `act-oracle/tests/test_refusals.py:467-477`, `act-backend/tests/test_generation.py:36`.
@@ -26,7 +26,7 @@ Verdicts use keep, reshape, merge, delete; the inventory holds the per-file reas
 - Fixtures couple to module constants by name: `act-backend/tests/conftest.py:463-495` read `request.module.EXAMPLE_DIR`.
 - Generated text is pinned: `act-backend/tests/test_generators.py:239`, :264, `test_mini_trn.py:72`, `test_constructs.py:500`.
 - Formatter layout is tested twice: `test_generators.py:175-393` by hand and `conftest.py:468-472` on every generated tree.
-- Seventeen tests show no assertion in their body; some assert inside helpers, some pass by not raising (TB1 to TB6).
+- Sixteen tests show no assertion in their body; some assert inside helpers, some pass by not raising (TB1 to TB4 and TB6).
 - No generator documents its unsupported features in a form a test reads; `act-oracle/docs/operations.md:21` is close but hand-maintained.
 - No differential test exists beyond the one 4x4 matmul in act.
 - No test runs an instruction-level program with attributes, addresses, and state, so the run-time norm has no executable cases (T29).
@@ -54,7 +54,7 @@ Verdicts use keep, reshape, merge, delete; the inventory holds the per-file reas
 | act-backend | `test_package.py` | keep | - |
 | act-backend | `test_mini_trn.py`, `test_mini_trn_double.py` | merge | T14; one smoke test stays |
 | act-backend | `conftest.py` | reshape | T2, T3 |
-| act-oracle | `test_kernel.py` | reshape | T17 split; :1287-1728 to T7 and T29 |
+| act-oracle | `test_kernel.py` | keep | T17 split by theme; :1287-1728 to T7 and T29 |
 | act-oracle | `test_refusals.py` | reshape | T11 rows and T12 runner; the rest becomes `test_rejections.py` |
 | act-oracle | `test_templates.py` | merge | T8 |
 | act-oracle | `test_elementwise.py`, `test_reduce.py`, `test_structural.py`, `test_compare_select_clamp.py`, `test_linalg.py`, `test_constant_iota.py` | keep | T8 moves the cases, the files stay as runners |
@@ -70,8 +70,8 @@ Verdicts use keep, reshape, merge, delete; the inventory holds the per-file reas
 | repo | keep | reshape | merge | delete |
 | --- | --- | --- | --- | --- |
 | taidl | 85 | 42 | 4 | 0 |
-| act-backend | 112 | 83 | 16 | 12 |
-| act-oracle | 110 | 31 | 7 | 0 |
+| act-backend | 112 | 62 | 37 | 12 |
+| act-oracle | 110 | 12 | 26 | 0 |
 | act | 1 | 0 | 0 | 0 |
 
 - Delete counts the layout tests of `test_generators.py` and the three egraph regex and text pins of `test_refusals.py` and `test_mini_trn*.py`, as counted on the planning day; every other removal happens by merge, with the fact preserved as a corpus case or an expectations row.

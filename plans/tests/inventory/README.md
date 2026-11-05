@@ -22,3 +22,5 @@ Line numbers are from the trees as read on the planning day and move with other 
 - `e2e`: generates, compiles, and simulates a real example.
 - `golden`: compares to a stored output file.
 - `cli` or `pkg`: contract of the command line, the build, or the wheel; neither spec nor implementation.
+- `script`: a runner or a lint or regenerate script that CI runs; not a test.
+- `fixture`: an input or a plugin file that tests load; not a test.

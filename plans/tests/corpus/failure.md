@@ -15,7 +15,10 @@ T36 turns owner decision 40 into cases: nothing fails without a genuine cause.
 - What: oracle rows: invalid assembly (unknown mnemonic, wrong operand count, attribute outside its type) stops with a `K` code naming the assembly line; a binary word matching no instruction stops with the decode error naming the word offset.
 - What: oracle rows: a valid program on every corpus ISA specification runs to the end, including the fixed-value cases (divide by 0 and out-of-range `convert` in tensor data), with no stop.
 - What: a fault that a valid-looking program reaches (S1.3) is the program's violation, reported as a `V` code at the issue; no other oracle ending exists.
-- What: front-end and generator rows: every `rejected` corpus case carries a message naming the object and the fix (`expected` and `found` per `scheme.md`), and its class is `R` or `U`, never `I`.
+- What: exclusion rows (Q11.3): an instruction the backend cannot model (state read or update, two outputs, a size over an addressing attribute, a constraint the allocator cannot hold, a tensor operator outside the table) is excluded with `code`, clause, and author line; the ISA specification generates, exits 0, and the report is printed and stored in the crate.
+- What: an exclusion is never a stop: a kernel that avoids the excluded instruction compiles, and a kernel that needs it is rejected at kernel compile time naming it, as a coded `K` row.
+- What: the oracle excludes nothing and registers no check of its own; a valid ISA specification with a state-updating instruction runs on it.
+- What: front-end and generator rows: every `rejected` corpus case, trace exception or `check` entry, carries a message naming the object and the fix (`expected` and `found` per `scheme.md`), and its class is `R` or `U`, never `I`.
 - What: a sweep runs both generators over every accepted corpus case; each ends in a result or in its expectations row (`unsupported` with a code), never in an `I`, `X`, or uncoded stop.
 - Benefits: a stop without a cause (a panic in search, a generator crash on a valid ISA specification) fails a named row.
 - Caveats: the injection hook exists only in test builds; the drop log is read from stderr and the drop file of D16.

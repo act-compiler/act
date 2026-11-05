@@ -25,7 +25,7 @@ T1 tags, T2 and T3 fix the fixtures, T4 deletes the text pins last.
 
 ## T2. Remove hidden fixture coupling in the two conftest.py files
 
-- What: replace `request.module.EXAMPLE_DIR` with an explicit `example` fixture parameter; move the formatter check out of `work_dir` into its own test; move import-time generation in `act-oracle/tests/test_mini_trn.py:20` into a session fixture.
+- What: replace `request.module.EXAMPLE_DIR` in `work_dir`, `plain_dir`, and `assembly` with an explicit `example` fixture parameter; move the formatter check out of `work_dir` into its own test; move import-time generation in `act-oracle/tests/test_mini_trn.py:20` into a session fixture.
 - Benefits: a module can exercise several examples; a formatting failure fails one test, not a module.
 - Caveats: B and O own these trees; this item waits for their tracks to land.
 - Fail points: a fixture rename breaks every module at once; noticed by collection errors on the first run.

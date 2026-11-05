@@ -2,7 +2,7 @@
 
 T9 adds generated cases where hand-written ones run out.
 T10 names the real ISA specifications the end-to-end suite runs.
-T24 fuzzes the front end against the S9 contract, and T25 measures whether the suite would catch a mutated check.
+T24 fuzzes the surface against the S9 contract, and T25 measures whether the suite would catch a mutated check.
 
 ## T9. Property-based tests for shapes, element types, and names
 
@@ -29,12 +29,13 @@ T24 fuzzes the front end against the S9 contract, and T25 measures whether the s
 - Breaking: no.
 - Files: `taidl/tests/test_examples.py`, `act-oracle/tests/test_examples.py`; their checks preserved, their lists replaced by the shared one.
 
-## T24. Nightly grammar fuzzer
+## T24. Nightly surface fuzzer
 
-- What: a nightly job generates ISA specification texts from the grammar and asserts one property: the front end accepts, or rejects with a `code`.
+- What: a nightly job generates ISA specification files from the surface (random instruction functions built from the operation table, expressions, and `require` terms) and asserts one property: `check` returns a `Model`, or the tracer or `check` rejects with a `code`.
 - What: the language specification says a conforming front end rejects exactly the listed descriptions (S9), which is this property on unwritten inputs.
 - What: a counterexample is promoted to a corpus case with `origin = "property:<seed>"`.
 - Benefits: tests the S9 contract beyond the hand-written cases.
+- What: a generated file that is accepted must also print and reparse (the printer of Q3.4), so the fuzzer tests the printer.
 - Caveats: starts after the T6 runner exists; uses the T9 strategies and the `hypothesis` dependency.
 - Fail points: a crash that is neither acceptance nor a coded rejection; the job fails and keeps the seed.
 - Order and dependencies: after T6 and T9; Q2.

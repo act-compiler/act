@@ -8,10 +8,11 @@ T20 sets the impl-header rule, and `decisions/justifications.md` records every d
 
 | location | holds | comes from |
 | --- | --- | --- |
-| `taidl/conformance/<group>/<slug>/` | corpus cases: `spec.py`, `case.toml`, `semantics.txt`, `kernel.hlo`, `inputs.npz`, `program.toml` (T5) | `taidl/tests/test_grammar.py` parametrize blocks, rejection cases of `test_instruction.py` and `test_expressions.py`, ISA specification texts from both generators' `test_refusals.py` |
+| `taidl/conformance/<group>/<slug>/` | corpus cases: `spec.py` in the authoring surface, `case.toml`, `kernel.hlo`, `inputs.npz`, `program.toml` (T5) | `taidl/tests/test_grammar.py` parametrize blocks, rejection cases of `test_instruction.py` and `test_expressions.py`, ISA specification texts from both generators' `test_refusals.py` |
 | `taidl/conformance/accelerators.md` | real ISA specification list (T10) | `taidl/tests/test_examples.py` `EXAMPLES` |
 | `taidl/conformance/norms.md`, `coverage.md`, `CHANGES.md` | norm catalogue, coverage report, case-id delta (T26, T5) | new |
-| `taidl/tests/test_conformance.py` | front-end verdict runner (T6) | new |
+| `taidl/tests/test_conformance.py` | `check` verdict runner (T6) | new |
+| converter script and equivalence tests (2.x line) | one `Model` equality test per converted file (T37) | new, deleted with the string surface |
 | `taidl.testing` program runner, `act-oracle` adapter | `program.toml` cases on the oracle (T29) | seeds of `act-oracle/tests/test_kernel.py:590-598`, :1229-1240 |
 | `taidl/tests/test_*.py` (kept) | API unit tests with S tags (T1) | unchanged files |
 | `act-backend/tests/expectations.toml`, `act-oracle/tests/expectations.toml` | supported or unsupported per case (T11) | `test_refusals.py` loops, `conftest.py` `LOWERED` |
@@ -31,7 +32,7 @@ T20 sets the impl-header rule, and `decisions/justifications.md` records every d
 
 | current | action | preserved | item |
 | --- | --- | --- | --- |
-| `taidl/tests/test_grammar.py` | reshape | every parametrized case as a corpus directory; lexer-level tests stay | T7 |
+| `taidl/tests/test_grammar.py` | reshape | every parametrized case as a corpus directory in the authoring surface; lexer-level tests are deleted with `taidl/antlr4/` | T7 |
 | `taidl/tests/test_grammar.py::TestDocs` | reshape | doc-sync intent; table shape stated | T11 |
 | `taidl/tests/test_instruction.py` | keep as is, tag | all; TB1 and TB2 gain assertions | T1 |
 | `taidl/tests/test_expressions.py` | keep as is, tag | all | T1 |
@@ -72,7 +73,8 @@ T20 sets the impl-header rule, and `decisions/justifications.md` records every d
 
 - Step 1 (T28, T2): mapped-deletion check; decouple the two conftest files; no test deleted.
 - Step 2 (T1): tag kept tests with S ids; fix TB1, TB2, TB4 by adding the missing assertion.
-- Step 3 (T5, T6, T26, T29): corpus loader, front-end runner, norm catalogue, and program runner with seed cases; existing tests untouched.
+- Step 3 (T5, T6, T26, T29, T38): corpus loader, `check` runner, surface cases, norm catalogue, and program runner with seed cases; existing tests untouched.
+- Step 3b (T37): converter run over the ISA specification files, one equivalence test per file; no original deleted.
 - Step 4 (T7): one PR per outline file moves `test_grammar.py` blocks into cases and deletes the block moved.
 - Step 5 (T8): S8 cases with stored values and tolerances; the six reference files become runners.
 - Step 6 (T11, T16, T12): expectations tables, generators reading the corpus through the pin, and runners; `LOWERED` and the rejection loops deleted as the runners cover them.
@@ -81,3 +83,4 @@ T20 sets the impl-header rule, and `decisions/justifications.md` records every d
 - Step 9 (T13): differential tests; selection-fact tests deleted one for one as their case lands.
 - Step 10 (T9, T24, T25, T23): property tests, fuzzer, mutation pilot, shape module check.
 - Step 11 (T4, T18): deletion pass; headers on every surviving impl file.
+- Step 12 (T37): the equivalence tests, the grammar tests, and the string surface are deleted together.

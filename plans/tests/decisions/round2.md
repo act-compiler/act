@@ -15,7 +15,7 @@ Each decision names the item it changes and the evidence it rests on.
 ## Diagnostics in cases
 
 - Cases match on `code` and `object`, never on message prose (Q3.9).
-- A rejected case also records `phase` and the clause id; a `run` fault matches on `code`, since a C or C++ oracle has no Python class (Q6.5).
+- A rejected case also records `phase` (`trace`, `check`, `generate`, `run`) and the clause id; a `check` case lists every entry of the one `Rejection`; a `run` fault matches on `code`, since a C or C++ oracle has no Python class (Q6.5).
 - The clause id sits on line 1 of a message until the owner decides otherwise (Q3.8).
 - A few text tests cover the message format; D owns them.
 - No shim for the old message text.
@@ -23,7 +23,7 @@ Each decision names the item it changes and the evidence it rests on.
 
 ## Case format
 
-- Python scripts for the ISA specification, with `semantics.txt` for the text-level sections (S2, S3, S7, S8).
+- Python files in the authoring surface of panel 11 for the ISA specification; the string form and `semantics.txt` do not exist in v3, and a v2 file reaches the corpus through the converter (T37).
 - `program.toml` for instruction-level cases, executor-neutral so a non-Python oracle can run it (Q6.1).
 - A text format for a whole ISA specification waits for L; the loader is the single place to extend.
 - Binds: T5, T29.

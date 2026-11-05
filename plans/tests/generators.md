@@ -20,7 +20,7 @@ Items T11 to T15, T23, T27, and T31 cover the expectations table, its runner, di
 ## T11. Expectations table per generator, coverage.md generated from it
 
 - What: `act-backend/tests/expectations.toml` and `act-oracle/tests/expectations.toml`, one row per corpus case id: `supported`, or `unsupported` with the `code` and the section id of the clause it documents.
-- What: rows for operation words and element types replace `act-backend/tests/test_refusals.py:146-205` and `act-oracle/tests/conftest.py:75-155` (`LOWERED`).
+- What: rows for tensor operators and element types replace `act-backend/tests/test_refusals.py:146-205` and `act-oracle/tests/conftest.py:75-155` (`LOWERED`).
 - What: T11 owns the one `coverage.md` renderer: clause text from the diagnostic registry (D1), verdicts from the expectations rows; the existing `act-oracle/docs/operations.md:21-40` table is regenerated from it.
 - Benefits: coverage.md cannot drift from the tests; a new corpus case with no row fails collection, so an unsupported feature is documented on the day it is tested.
 - Caveats: the backend has no coverage doc today (`act-backend/README.md:48` states the contract in one line); B writes the first clause texts.
@@ -132,7 +132,7 @@ Items T11 to T15, T23, T27, and T31 cover the expectations table, its runner, di
 - What: a tied input shared with another reader gets a copy before the instruction, and the oracle result is unchanged.
 - What: a tied input pinned to HBM or held as a shared view is a coded rejection, not a wrong answer.
 - What: a default pair is allocated equal-or-apart; if the solver limit forces apart for default pairs, the rows assert apart and name the limit as a backend limit.
-- What: the unmarked kernel in which an author forgot `set_apart` on a streaming unit is a T30 fault on the oracle and never a corrupt allocation on the backend.
+- What: the unmarked kernel in which an author forgot `apart` on a streaming unit is a T30 fault on the oracle and never a corrupt allocation on the backend.
 - What: the backend emits no issue that faults on any T30 cell it compiles; T13 simulates every such assembly.
 - Benefits: the allocator's touch exception is tested per relation, the place a dying input may share storage with its output.
 - Caveats: the default-pair allocation and the tied equal-offset constraint are not landed in act-backend today, so the rows land with B29 and the allocator change.

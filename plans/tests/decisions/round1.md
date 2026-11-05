@@ -12,6 +12,6 @@
 | property-based tests | per pull request with a fixed seed, after the corpus | T9, T24 |
 | mutation pilot | once per release, never a pull request gate | T25 |
 | error messages | cases match on the diagnostic `code` and `object` (see round2.md) | T6, T12 |
-| case format | Python `Accelerator` scripts plus text files (see round2.md) | T5 |
+| case format | Python files in the authoring surface plus `case.toml` and `program.toml` (see round2.md) | T5 |
 | shared kit | split between `taidl.testing` and `act/testkit/` | T3 |
 | examples trees in generator repos | scripts live in taidl; each generator keeps kernels and one smoke test | T10, T14 |
