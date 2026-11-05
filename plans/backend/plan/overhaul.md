@@ -48,7 +48,7 @@ Sizes are engineer-weeks (ew); Q1 is weeks 1-13.
 | 13 | B10, B34, B36, B11 | A | behavioral: one extractor; copy as a step of candidate building | 6 ew | equal or lower cost; oracle run |
 | 14 | B32, B33 | A | behavioral: rule guards, target constants | 3 ew | equal or lower cost |
 | 15 | B12, B5 | B | generators and reader | 3 ew | `tests/lint.sh`; `test_reader.py` |
-| 16 | B15 to B20, B43 | A and B | coverage; input format readers | 12-17 ew | per-row tests flip; per-format equal assembly |
+| 16 | B15 to B20, B43 | A and B | coverage; input format detection | 12-17 ew | per-row tests flip; each format names itself |
 | 17 | B44, B45 | B | behavioral: derived attributes, then the assembler unit, last of v3 | 6 ew | round-trip corpus; neutrality test |
 
 - Steps 1-7 (lane A) and 8-12 (lane B) run in parallel in Q1; steps 13-15 open Q2; step 16 fills Q2.
@@ -56,3 +56,4 @@ Sizes are engineer-weeks (ew); Q1 is weeks 1-13.
 - Step 17 lands last as one unit and never ships in part (panel 10, Q10.4); the date moves, not the scope.
 - Total about 69-74 ew: above two backend engineers for two quarters, so the roadmap places the excess (B41 to B45) with the other tracks.
 - Every breaking item ships in act-backend 2.0 with the v3 release (owner decision 26).
+- B47 to B56 follow in roadmap waves 8 to 10, in the order of `platform.md` and `egraph.md`.

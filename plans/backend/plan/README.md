@@ -1,6 +1,7 @@
 # act-backend plan
 
-Plan for the next two quarters, item ids B1 to B46, sized in overhaul.md against the roadmap's three to four engineers.
+Plan for the next two quarters, item ids B1 to B56, B1 to B46 sized in overhaul.md against the roadmap's three to four engineers.
+Items B47 to B56 are the long-term platform, in roadmap waves 8 to 10 after M5.
 B22 is merged into B21 and B23 is cut.
 
 - [review.md](review.md): the backend as it stands, what to keep, verdict per component
@@ -15,6 +16,8 @@ B22 is merged into B21 and B23 is cut.
 - [generators.md](generators.md): B12 to B14 and B46, Python generators, templates, checks after `check`, exclusion report
 - [coverage.md](coverage.md): B15 to B20, coverage gaps including state
 - [defects.md](defects.md): B21 to B26, fixes for bugs D1 to D8
-- [failures.md](failures.md): B41 to B43, dropped candidates, input validation including a kernel that needs an excluded instruction, input formats (bugs D17 to D22)
+- [failures.md](failures.md): B41 to B43, dropped candidates, input validation including a kernel with no covering, input formats (bugs D17 to D22)
 - [encoding.md](encoding.md): B38, B44, B45, width-layer domains, derived attributes, assembler unit (bug D15)
 - [naming.md](naming.md): B27 and B28, terminology and renames
+- [platform.md](platform.md): B47, B48, B50, B53 to B56, StableHLO importer, dialect, torch adapter, C++ HLO reader, one C++ driver
+- [egraph.md](egraph.md): B49, B51, B52, the in-house C++ e-graph library, matcher, and the engine swap

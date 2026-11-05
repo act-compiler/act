@@ -38,7 +38,7 @@ Each emitter re-walks the TAIDL ANTLR tree (`isel_ir2isa_rewrites_txt_generator.
 
 - What: the backend's checks are plain functions the entry calls after `check` (B21); they build the B13 model; no check imports an emitter; there is no registry and no checker subclass (Q11.3).
 - What: a language rule is `check`'s (Q3.2, Q3.11); a check the backend keeps is a backend limit, listed in the coverage doc.
-- What: an unknown key in the backend's `meta` namespace rejects, naming node and key, since the architect can correct it.
+- What: an unknown key in the `backend` metadata namespace rejects, naming node and key, since the architect can correct it.
 - What: an instruction is excluded from the backend's instruction set, with a reason, when it reads or updates state, has other than one output, has a size over an addressing attribute or state, has a constraint the allocator cannot hold, or uses a tensor operator outside the supported table.
 - What: the other model limits of `coverage.md` (an element type outside the supported 13, a `slice` stride, a `constant` expression, a `concatenate` arity) follow the same rule.
 - What: each exclusion carries the code, the section id, and the author's line (B46); an empty usable set rejects.
@@ -55,10 +55,11 @@ Each emitter re-walks the TAIDL ANTLR tree (`isel_ir2isa_rewrites_txt_generator.
 - What: each exclusion is one line with code, section id, instruction, and the author's file and line in the Q3.8 form (D6, D18); it is printed at generation and stored in the generated crate.
 - What: the generation summary prints the count of excluded instructions.
 - What: the crate records, for each excluded instruction, the tensor operators of its semantics.
-- What: a kernel that needs an excluded instruction is rejected at kernel compile time naming the instruction and its stored reason (B42, KB042); it needs one when a tensor operator of the kernel is implemented by no remaining instruction and by an excluded one.
+- What: a kernel with no covering is rejected at kernel compile time (B42); the message names the lowest uncovered operation and lists, as a hint, each excluded instruction whose tensor operators include it, with its stored reason.
+- What: `generate_backend` returns the frozen report (U2); the backend binary at `<base_dir>/backends/<accelerator>` is a path the report lists.
 - What: S1.2 gains the exclusion outcome beside rejection; both name the feature and neither gives it another meaning (Q11.3).
 - Benefits: no silent drop; the architect sees what the target left out and why.
 - Caveats: the report is part of the crate and does not change the emitted compiler; the neutrality test compares output with metadata stripped, not the report.
 - Fail points: an exclusion printed but not stored; noticed by a test that reads the crate.
 - Order and dependencies: after B14; before B42's kernel check.
-- Verification: an ISA specification with a semaphore instruction and one usable instruction prints and stores one line; a kernel that needs the semaphore is rejected naming it; an ISA specification of only excluded instructions rejects.
+- Verification: an ISA specification with a semaphore instruction and one usable instruction prints and stores one line; a kernel whose only cover is the semaphore is rejected with it in the hint; an ISA specification of only excluded instructions rejects.

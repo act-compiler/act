@@ -8,7 +8,7 @@ Other candidate-level failures panic, assert, or call `process::exit(1)`; they a
 | --- | --- | --- | --- | --- |
 | B41 | Every candidate-level failure is a dropped candidate with a recorded reason (D5, D7, D8, D17 to D21) | B25, B26 | M | Q1 |
 | B42 | Input validation and a documented input specification | B5, B46 | M | Q1 |
-| B43 | Input formats other than XLA HLO text: detection now, readers staged | B42 | L | Q2 |
+| B43 | Input formats other than XLA HLO text: detection, including portable artifacts; readers in B47 and B53 | B42 | S | Q2 |
 
 ## What stops the backend, and what does not
 
@@ -43,15 +43,17 @@ Other candidate-level failures panic, assert, or call `process::exit(1)`; they a
 ## B42 Input validation and the input specification
 
 - What: a short document states the input specification: formats, operations (the table behind the rewrites), element types, shape limits, and layouts accepted.
+- What: it names StableHLO portable artifacts with a version window, ranked static-shape tensors, and a dtype list (Q12.4).
+- What: the v3 input is XLA HLO text; the document and the M4 criteria state it, with the export route from JAX and from PyTorch (B53).
 - What: the reader (B5) validates the kernel against it before any search and stops with a named reason of one of two kinds: `invalid kernel` (malformed or ill-typed) or `outside the input specification` (well-formed, not taken).
-- What: the reader also reads the exclusion report stored in the crate (B46) and stops with `KB042`, naming the instruction and its reason, when the kernel needs an excluded instruction.
+- What: when extraction finds no covering, the run ends at kernel compile time with class `K`, object the kernel, naming the lowest uncovered operation and the stop cause; it then lists, from the exclusion report stored in the crate (B46), each excluded instruction whose tensor operators include that operation, as a hint outside the match key.
 - What: reader panics on kernel text (D22) become these errors; the `.hlo` extension check (`pipeline.rs:312-318`) becomes a check on content, so a mislabeled file is named by its format.
 - Preserves: every existing reader message (`line.rs`, `parser.rs`, `lib.rs`).
 - Benefits: the only two reasons for the backend to stop are testable, and a user knows which side to fix.
-- Caveats: a kernel with an operation no ISA instruction implements is not outside the input specification; it yields no candidate, so it ends as every-candidate-dropped with that reason, unless an excluded instruction implements it (`KB042`).
+- Caveats: a kernel with an operation no ISA instruction implements is not outside the input specification; it yields no candidate, so it ends as no covering, with the excluded-instruction hint when one implements it.
 - Fail points: an invalid kernel reaching selection and dropping every candidate with an unhelpful reason; noticed by a fuzz test of mutated kernels that must end in a named reader error or a compile.
 - Order and dependencies: after B5 (annotation-checking reader) and B46; uses the coverage rows for the backend's input.
-- Verification: one test per error kind, including a kernel that needs an excluded instruction; a mutation test over the example kernels never panics.
+- Verification: one test per error kind, including a kernel with no covering whose hint names an excluded instruction; a mutation test over the example kernels never panics.
 
 ## B43 Input formats not supported today
 
@@ -60,16 +62,16 @@ Other candidate-level failures panic, assert, or call `process::exit(1)`; they a
 
 | Format | Today | Plan |
 | --- | --- | --- |
-| XLA HLO (text) | supported | Stays; the input specification (B42) documents it |
-| StableHLO | not supported | Detected and named; reader staged first, since its operations map onto the HLO operation table |
-| torch-mlir | not supported | Detected and named; reader staged second, through its StableHLO lowering |
-| torch.fx | not supported | Detected and named; reader staged third, graph nodes mapped to the operation table |
+| XLA HLO (text) | supported | Stays; the input specification (B42) documents it; its C++ reader is B55 |
+| StableHLO (text or portable artifact) | not supported | Detected and named; read by B47 |
+| torch-mlir | not supported | Detected and named; read through B53's package |
+| torch.fx | not supported | Detected and named; read by B53's walker when the pairing check fails |
 
-- What (Q1, size S): detect the format from content; stop with `outside the input specification: <format> is not supported`.
-- What (Q2): one reader per format producing the same kernel record as the HLO reader (B5), so selection is unchanged; operations a format has and the table lacks are named in the input specification.
+- What: detection only, from content, including StableHLO portable artifacts; stop with `outside the input specification: <format> is not supported` (Q12.4).
+- What: the readers move to B47 (StableHLO) and B53 (torch-mlir, torch.fx); this item writes none.
 - Preserves: the HLO reader and its goldens.
 - Benefits: a user who passes a StableHLO file gets the format named, not a parse error from the HLO reader.
-- Caveats: a reader needs a dependency or a hand-written parser; a new dependency is asked before it lands (engineering rules); format versions drift.
-- Fail points: a format reader accepting a dialect it silently misreads; noticed by a differential test against the HLO form of the same kernel on the oracle.
-- Order and dependencies: after B42; the Q2 readers also depend on the operation table of B6 and B8.
-- Verification: per format, a kernel in that format and in HLO compile to equal assembly; an unsupported format names itself.
+- Caveats: a portable artifact is bytecode, so detection reads its magic number, not text.
+- Fail points: a format detected as another; noticed by one detection test per format.
+- Order and dependencies: after B42; before B47.
+- Verification: per format, a file in that format names its format; an HLO kernel compiles as before.

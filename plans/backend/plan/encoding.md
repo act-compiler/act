@@ -45,13 +45,15 @@ B38 is rewritten below; B44 and B45 are new.
 
 ## B45 Assembler and disassembler generator
 
-- What: one generator takes a `Model` or an `Accelerator`, reads only the `Model` that `check` returns, and emits an assembler and a disassembler per ISA specification with an encoding block; it exposes `generate_<name>(accelerator, base_dir=None, **options)` like any generator (owner decision 39).
-- What: generation checks reject, naming the instruction and the bit or attribute: a word bit covered by no slice or by two, two instructions whose fixed bits a word matches, an encoded attribute whose type width differs from its slice total.
-- What: encode evaluates the link; decode inverts it by one subtraction and one exact division; a word matching no instruction is the defined decode error (owner decision 40).
+- What: one generator takes a `Model` or an `Accelerator`, reads only the `Model` that `check` returns, and emits an assembler and a disassembler per ISA specification with an encoding block; it exposes `generate_<name>(source, /, base_dir=None, **options)` and returns the frozen report like any generator (owner decision 39).
+- What: it repeats none of the block checks, which `check` runs (S11.3); it excludes an instruction with no block, with a printed reason.
+- What: encode evaluates the link; decode matches fixed bits, reads fields, inverts each link by exact division, checks each derived type, and stops at the lowest failing word index (S11.4).
+- What: words serialize as `ceil(word/8)` little-endian bytes, top bits zero; `byte_order='big'` is its option (S11.3).
 - What: the unit lands with the round-trip test `decode(encode(x)) == x` on a corpus ISA specification with a small word, a scattered immediate, and an `A == B*8` link, and with the expectations table of the generator tests.
 - Preserves: the backend and the oracle, which never read the block.
 - Benefits: a binary program for the accelerator, from the same ISA specification, with the decoder as its inverse.
 - Caveats: package home (a new package or inside act-backend) is a packaging choice for the roadmap owner; it needs no allocation, so it shares no code with the allocator.
 - Fail points: a scattered slice order reversed; noticed by the round-trip corpus.
 - Order and dependencies: last of the v3 backend set; depends on B44 and on the front end's layer 2 items; ships with them or not at all.
-- Verification: the round-trip passes on the corpus; each generation check has a failing ISA specification; the neutrality test (output of oracle and backend equal with the block stripped) passes.
+- Development: the encoding unit (L38, L39, B44, B45, T33, T34) is developed from wave 3 on the private heads and merges whole after the deletion pass (U14); the release gate (A31) and K20 are unchanged.
+- Verification: the round-trip passes on the corpus; a block-less instruction is excluded with a printed reason; the neutrality test (output of oracle and backend equal with the block stripped) passes.

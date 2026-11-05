@@ -23,6 +23,7 @@ These items set the target layout, the test gate, and the typed candidate bounda
 ## B2 Typed candidate and kernel-fact handoff
 
 - What: pass each candidate to `act_malloc` as a flat `#[repr(C)]` node array (op id, typed payload, children, buffer, hbm offset) plus the kernel facts in the same call, instead of `<n>.pii` and `metadata.json`.
+- What: the typed payload in the node array is plain integers and a dtype enum (B31), checked by the size and offset test; it is B49's e-node payload and key (Q12.4; needed now).
 - What: the Rust `#[repr(C)]` struct is the one schema; cbindgen derives the C header from it at build time (Q4.11, owner decision 28).
 - Preserves: `act_malloc`'s reason buffer (`generic/src/malloc/cpp.rs:15-24`); `create_instruction`, `hold`, `hold_tensors`; `--log` candidate files, written from Rust in today's exact line format.
 - Benefits: deletes `PiiGraph`'s `Display` round trip (`ir/pii.rs:75-93`) and the `metadata.json` read; no temp-file I/O per candidate.
@@ -41,5 +42,6 @@ These items set the target layout, the test gate, and the typed candidate bounda
 - Benefits: goldens are simulated outputs (`README.md:109`), so equal goldens do not prove an equal selection; the assembly and candidate checks do, and goldens stay a regression check.
 - Caveats: needs OR-Tools and nlohmann/json installed; T owns test infrastructure.
 - Fail points: platform drift looks like a regression; record platform with each run.
-- Order and dependencies: with B29, before any other item; owned jointly with T.
+- What: a thin oracle-vs-backend run over the T14 ISA specifications gates every wave 3 and wave 4 merge of the Rust rewrites.
+- Order and dependencies: with B29, before any other item; owned jointly with T; B31, B7, B9, B6, and B10 depend on it.
 - Verification: two runs on two machines give identical assembly and candidate files on unchanged code.

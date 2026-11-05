@@ -9,8 +9,8 @@ The allocator reads each same-buffer input-output pair's relation and applies it
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
 | B37 | One extraction module and no re-extraction after saturation | B1, B29 | S | Q1 |
-| B10 | One k-best extractor on (class, buffer) | B9, B29, B37 | M | Q2 |
-| B36 | Drop a candidate that reads unwritten on-chip storage | B10 | S | Q2 |
+| B10 | One k-best extractor on (class, buffer) | B9, B29, B37, B3 | M | Q2 |
+| B36 | Drop a candidate that reads unwritten on-chip storage | B10, L46 | S | Q2 |
 | B11 | Copy of a shared tied input as a step of candidate building | B10, B30 | M | Q2 |
 | B30 | Pair relations in the allocator: tie equality and a narrowed touch exception | B2, B39 | M | Q1 |
 | B39 | Pair-relation record in the typed handoff | B2, L35 | S | Q1 |
@@ -29,6 +29,7 @@ The allocator reads each same-buffer input-output pair's relation and applies it
 ## B10 One k-best extractor
 
 - What: one k-best enumeration on (class, buffer) ranked by a node-count proxy; the k candidates are re-ranked through the cost ABI after allocation (Q4.5).
+- What: extraction orders choices by a canonical term key, never by e-node id, so B52's engines give the same order (Q12.4; needed now).
 - What: the enumerating extractor stays as a test-only cross-check; k is measured on the examples before it is fixed.
 - Preserves: the (class, buffer) state and child buffer rule (`fast.rs:50-54,99-106,200-208`); drop reasons (`pipeline.rs:207-219`).
 - Benefits: replaces two strategies (283 and 208 lines) with one; candidates come in cost order; allocation feasibility is a filter on them.
@@ -46,7 +47,7 @@ The allocator reads each same-buffer input-output pair's relation and applies it
 - Benefits: the oracle's unwritten-read fault never fires on a backend program.
 - Caveats: arises only from partial writes and storage reuse, both visible on the candidate.
 - Fail points: a valid candidate dropped; noticed by the oracle run and a partial-write kernel test.
-- Order and dependencies: after B10.
+- Order and dependencies: after B10; the declared-value exemption after L46.
 - Verification: a partial-write kernel test; every backend program runs on the oracle with no fault.
 
 ## B11 Copy of a shared tied input as a step of candidate building

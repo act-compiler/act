@@ -31,6 +31,7 @@ The other gaps: 18 tensor operators plus `parameter` (`isel_ir2isa_rewrites_txt_
 - What: a kernel compiles under one known state; read-only `@s.` in starts, sizes and constraints folds to an integer at compile time (Q4.7).
 - What: an instruction with any other use of state stays excluded, and its reason names the state (B27, B46).
 - Not in this plan: state updates and state-only instruction emission follow after v3, since an e-graph orders no effects (Q4.7).
+- Relaxation to weigh with state updates: an addressing attribute in an update whose target appears only in starts and constraints, marked as a fixpoint over every update; S5.4 rejects it until then (Q13b.4).
 - Preserves: today's exclusion of `@s.` until each use is supported.
 - Benefits: ISA specifications with modes (dataflow, layout) become usable for read-only state.
 - Caveats: the `@x.` writer path would compile `@s.n` as attribute `n` (D12), so each fold needs its own test.

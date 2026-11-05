@@ -7,7 +7,7 @@ Section ids are those of the TAIDL language specification outline.
 - A `rejected` feature is a problem the architect can correct; it makes `generate_backend` raise `ValueError` before any new file is written.
 - An `excluded` feature is a model limit of the backend (owner decision 40, Q11.3): the instruction that uses it is left out of the generated backend.
 - Each exclusion has a reason with the code, the section id, and the author's file and line; generation prints it, and the crate stores it (B46).
-- A kernel that needs an excluded instruction stops at kernel compile, naming the instruction (B42).
+- A kernel with no covering stops at kernel compile, naming the lowest uncovered operation and listing excluded instructions as a hint (B42).
 - An ISA specification with no usable instruction left is rejected.
 - Before v3 the rows marked `excluded` below raise as rejections.
 - The old binary and crate are deleted before the checks run (`generator.py:90-98`).
@@ -111,7 +111,7 @@ The backend stops only on an invalid input kernel or one outside the input speci
 | StableHLO | rejected | Not supported today; v3 names the format in the error (B43). |
 | torch-mlir | rejected | Not supported today; v3 names the format in the error (B43). |
 | torch.fx | rejected | Not supported today; v3 names the format in the error (B43). |
-| Kernel that needs an excluded instruction | rejected | Stops before search, naming the instruction and its stored reason (B46, B42). |
+| Kernel with no covering | rejected | Stops at kernel compile with class `K`, naming the lowest uncovered operation and the stop cause; lists each excluded instruction that implements it, with its stored reason, as a hint (B46, B42). |
 | Malformed or ill-typed kernel | rejected | Stops with the line and the rule; some reader paths panic today (D22, B42). |
 | Well-formed kernel outside the input specification | rejected | Stops naming the operation, element type, or format (B42). |
 | One candidate failing in rewrite, extraction, allocation, or cost | not a stop | Dropped with a reason; today a cost failure exits (D17), and several panics and asserts remain (D18 to D20, B41). |

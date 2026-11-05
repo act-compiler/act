@@ -13,6 +13,7 @@ egg's default `BackoffScheduler` is already in force (`Runner::default()`, `pipe
 ## B29 Deterministic search mode
 
 - What: a flag that bounds search by iteration and candidate counts instead of `TIME_LIMIT` and `SATURATION_FACTOR`; `search` returns `Result`, and `main.rs` only parses flags.
+- What: `search` returns one record: the stop reason, the candidates with their costs, and the chosen assembly (Q12.4; needed now).
 - What: the deterministic mode is the only test and CI mode; the wall-clock mode stays the user default (owner decision 27, Q4.2).
 - What: one equivalence check, inside B29, compares the two modes on the examples; if they differ, goldens are re-recorded once in a commit of their own.
 - Preserves: the wall-clock mode; stop reasons and their messages.
@@ -26,7 +27,8 @@ egg's default `BackoffScheduler` is already in force (`Runner::default()`, `pipe
 
 - What: guard rules 2, 3, 4 and 7 on the ISA having a consumer of the operator they produce (Q4.10).
 - What: if B29 still records node-limit stops after the guards, run expansion and selection rules as separate phases, each its own egg `Runner`.
-- Preserves: every rule and its condition; egg as the engine; no egglog.
+- What: once the guards end node-limit stops, both modes run egg's `SimpleScheduler` instead of `BackoffScheduler`, unless cost rises on an example; goldens are re-recorded once in its commit (Q12.3).
+- Preserves: every rule and its condition; egg as the engine until B52; no egglog.
 - Benefits: saturation stops for a stated reason, not at the node limit.
 - Caveats: a phase order can lose a candidate that interleaved firing finds, so phases are a behavioral step.
 - Fail points: a cost rise on one example; noticed by the B3 cost comparison.
