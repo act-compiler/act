@@ -32,7 +32,7 @@ Owner decisions and panel decisions bind; each proposal row names the panel ques
 | R22 reject overlapping rewrite rules | rejected | Q4.1: overlap allowed, ties by declaration index, exact duplicates warned | B35 |
 | R23 keep egg; borrow rule sets, explanations, stop reasons | partly | Q4.10: keep egg, guards on bare-variable rules, phases only if node-limit stops remain | B32, B33 |
 | R24 no `clang-format` at generation | partly | Owner decision 29: rustfmt runs on the generated crate at generation | B12 |
-| R25 region count checks to the front end | accepted | Q3.2: the backend calls `validate()` first and deletes `check_regions` | B21, B22, B23 |
+| R25 region count checks to the front end | accepted | Q3.2: the backend entry calls `check` once and deletes `check_regions` | B21, B22, B23 |
 | R26 rename `TensorInfo`, keep `Buffer` | accepted | `Buffer` kept under owner decision 19 | naming.md |
 | R27 state in v3 Q2 after the typed model | partly | Q4.7: read-only state folds in v3; updates after v3 | B16, B24 |
 
@@ -43,4 +43,4 @@ Owner decisions and panel decisions bind; each proposal row names the panel ques
 | R5, R58 remove `set_inplace` and placement marks | rejected | The marks stay (owner decisions 22, 30); Q9.2 expands each to its relation | coverage-table.md; B39 |
 | R11 no-semantics instructions | accepted | Q4.7: the silent drop is fixed first | B24 |
 | R62 shape module | accepted | Q3.1: shape and per-word type rules are U4's; B23 cut | B23, B7 |
-| R9, R44, R57 (`ROOT` placement, clause ids, constant literals) | pending panel | No backend plan change depends on them; a clause id sits on line 1 of a message; B20's float range check matches the existing integer check (`spec_checks.py:97-105`) | none |
+| R9, R44, R57 (`ROOT` placement, clause ids, constant literals) | accepted | Q2.9 leaves `ROOT` unchanged; Q3.8 puts a clause id on line 1 of a message; Q1.10 and Q5.5 parse a literal exactly and range-check the exact value; B20's float range check matches the existing integer check (`spec_checks.py:97-105`) | none |

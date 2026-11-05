@@ -6,23 +6,24 @@ D15 is fixed by B38 (encoding.md), D6 and D13 by B6, D9 by B27, D10 by B2, D11 b
 
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
-| B21 | Call `Accelerator.validate()` first and delete the backend's region count check (D1, D2) | U3 | S | Q1 |
+| B21 | Entry takes a `Model` or calls `check` once; delete the backend's region count check (D1, D2) | U3 | S | Q1 |
 | B22 | Merged into B21 | -- | -- | -- |
 | B23 | Cut: line agreement (D3) is U4's | -- | -- | -- |
-| B24 | Reject, or report, instructions with no semantics (D4) | L5 | S | Q1 |
+| B24 | Reject instructions with no semantics, exclude state-only ones (D4) | L5 | S | Q1 |
 | B25 | C++ errors returned, never `assert` (D5) | -- | S | Q1 |
 | B26 | Extraction errors as dropped candidates, unset shape as `Option`, shape disagreement as a coded fault (D7, D8) | B7 | S | Q1 |
 
-## B21 Validation by the front end (D1, D2)
+## B21 The checked model (D1, D2)
 
-- What: `generate_backend` calls `Accelerator.validate()` before any backend check, then `check_regions` (`spec_checks.py:394-418`) is deleted.
+- What: `generate_backend` takes a `Model` or an `Accelerator`; given an `Accelerator` it calls `check` once (U10, Q11.3); its body reads only the `Model`.
+- What: `check_regions` (`spec_checks.py:394-418`) is deleted.
 - What: the element count and element type of each region value (D1, D2) are U3's checks, raised with their shared codes.
-- Preserves: every other backend rejection and its message.
+- Preserves: every backend limit and its message text, now the reason of an exclusion (B14).
 - Benefits: one rejection per rule across generators; the backend keeps no parallel checker (Q3.2).
 - Caveats: the literal-only count check stays until U3 ships, and no interim check is written (Q3.2, Q4.8).
-- Fail points: a valid example rejected by `validate()`; noticed by example generation.
+- Fail points: a valid example rejected by `check`; noticed by example generation.
 - Order and dependencies: after U3; no v3 backend ships without U3 (owner decision 10).
-- Verification: a test that a count or type mismatch raises from `validate()`; `grep check_regions act_backend` empty.
+- Verification: a test that a count or type mismatch raises from `check`; `grep check_regions act_backend` empty; the entry gives equal output for an `Accelerator` and its `Model`.
 - Breaking: yes.
 
 ## B22 Merged into B21
@@ -32,17 +33,18 @@ D15 is fixed by B38 (encoding.md), D6 and D13 by B6, D9 by B27, D10 by B2, D11 b
 ## B23 Cut
 
 - Shape and element-type agreement between semantics lines (D3) folds into U4 (Q3.1).
-- The backend asserts typed semantics from `validate()` and keeps no rule table of its own (Q4.8).
+- The backend asserts typed semantics from the `Model` and keeps no rule table of its own (Q4.8).
 
 ## B24 Instructions with no semantics (D4)
 
-- What: an instruction with regions and no semantics is rejected; one with only state updates stays left out until B16, with a named message.
-- Preserves: leaving out a state-only instruction.
-- Benefits: a forgotten `add_semantics` is not silently dropped (`generator.py:119-122`); decision 16 makes the silent drop a defect (Q4.7).
-- Caveats: L5 may make this a front-end rejection; then B24 shrinks to the message for state-only instructions.
+- What: an instruction with regions and no semantics is rejected, since the architect can add the body.
+- What: one that only updates or reads state is excluded with a reason until B16, and an update stays excluded after it (B14, B46).
+- Preserves: leaving out a state-only instruction, now with a printed and stored reason.
+- Benefits: a forgotten body is not silently dropped (`generator.py:119-122`); decision 16 makes the silent drop a defect (Q4.7).
+- Caveats: L5 may make the first part a front-end rejection; then B24 shrinks to the state-only exclusion.
 - Fail points: an ISA specification that declares unused instructions; noticed by its owner's generation.
 - Order and dependencies: after L5; first of the state work (Q4.7).
-- Verification: rejection test; message test for a state-only instruction.
+- Verification: rejection test; exclusion-report test for a state-only instruction.
 - Breaking: yes.
 
 ## B25 C++ errors returned (D5)
@@ -61,7 +63,7 @@ D15 is fixed by B38 (encoding.md), D6 and D13 by B6, D9 by B27, D10 by B2, D11 b
 - What: when `merge` joins a declared and a computed dim that are both bound and differ, it raises the shared coded shape fault at selection, not a panic (Q3.6, Q3.11).
 - Preserves: candidate node fields; every non-error path; a kernel-versus-pattern mismatch stays a non-match.
 - Benefits: a bad candidate is dropped with a reason; rank-0 merges are checked; no panic is left in selection (owner decision 16).
-- Caveats: touches every shape reader; the computed dim must be expressible for each supported operation word.
+- Caveats: touches every shape reader; the computed dim must be expressible for each supported tensor operator.
 - Fail points: a `None` shape read as rank 0; noticed by a rank-0 kernel test.
 - Order and dependencies: after B7.
 - Verification: no `panic!` in `ir/pii.rs` or `merge`; a rank-0 kernel test; a disagreeing-description test raises the coded fault; B3 gate identical.

@@ -38,14 +38,14 @@ B38 is rewritten below; B44 and B45 are new.
 - What: the link is a linear constraint in the model, routed to the solver as `malloc_instructions_h_generator.py:510` routes address constraints.
 - Preserves: the text assembly the backend prints; a specification without a block, which has no derived attribute.
 - Benefits: search never emits a value the decoder cannot invert, and no generator runs a solver for a derived attribute.
-- Caveats: the closed form needs k nonzero (checked by the front end); a link naming state or another derived attribute is refused there, not here.
+- Caveats: the closed form needs k nonzero (checked by the front end); a link naming state or another derived attribute is rejected there, not here.
 - Fail points: an inexact division accepted; noticed by a kernel test whose only valid E has no integer partner and must drop the candidate with a reason.
 - Order and dependencies: after B38 and B30; before B45, which shares the corpus ISA specification.
 - Verification: the corpus ISA specification (an `A == B*8` link) compiles a kernel; every printed `A` is a multiple of 8; the oracle run agrees.
 
 ## B45 Assembler and disassembler generator
 
-- What: one generator reads the typed model after `validate()` and emits an assembler and a disassembler per ISA specification with an encoding block; it exposes `generate_<name>(accelerator, base_dir=None, **options)` like any generator (owner decision 39).
+- What: one generator takes a `Model` or an `Accelerator`, reads only the `Model` that `check` returns, and emits an assembler and a disassembler per ISA specification with an encoding block; it exposes `generate_<name>(accelerator, base_dir=None, **options)` like any generator (owner decision 39).
 - What: generation checks reject, naming the instruction and the bit or attribute: a word bit covered by no slice or by two, two instructions whose fixed bits a word matches, an encoded attribute whose type width differs from its slice total.
 - What: encode evaluates the link; decode inverts it by one subtraction and one exact division; a word matching no instruction is the defined decode error (owner decision 40).
 - What: the unit lands with the round-trip test `decode(encode(x)) == x` on a corpus ISA specification with a small word, a scattered immediate, and an `A == B*8` link, and with the expectations table of the generator tests.

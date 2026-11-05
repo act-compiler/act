@@ -7,7 +7,7 @@ Other candidate-level failures panic, assert, or call `process::exit(1)`; they a
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
 | B41 | Every candidate-level failure is a dropped candidate with a recorded reason (D5, D7, D8, D17 to D21) | B25, B26 | M | Q1 |
-| B42 | Input validation and a documented input specification | B5 | M | Q1 |
+| B42 | Input validation and a documented input specification | B5, B46 | M | Q1 |
 | B43 | Input formats other than XLA HLO text: detection now, readers staged | B42 | L | Q2 |
 
 ## What stops the backend, and what does not
@@ -18,6 +18,7 @@ Other candidate-level failures panic, assert, or call `process::exit(1)`; they a
 | Every candidate dropped | Stop with the first drop reason (`pipeline.rs:207-210`) | Yes |
 | Invalid input kernel (a syntax or type error in it) | Stop, naming the line and the rule | Yes |
 | Input kernel outside the input specification (an operation, element type, or format the backend does not take) | Stop, naming the operation, element type, or format | Yes |
+| Input kernel that needs an instruction the backend excluded at generation (B46) | Stop before search, naming the instruction | Yes, from the stored exclusion report |
 | Output or log path cannot be written | Stop, naming the path and the system error | Yes |
 | A defect in the backend itself | Not a stop condition by design: reported as a bug, tested away | -- |
 
@@ -43,13 +44,14 @@ Other candidate-level failures panic, assert, or call `process::exit(1)`; they a
 
 - What: a short document states the input specification: formats, operations (the table behind the rewrites), element types, shape limits, and layouts accepted.
 - What: the reader (B5) validates the kernel against it before any search and stops with a named reason of one of two kinds: `invalid kernel` (malformed or ill-typed) or `outside the input specification` (well-formed, not taken).
+- What: the reader also reads the exclusion report stored in the crate (B46) and stops with `KB042`, naming the instruction and its reason, when the kernel needs an excluded instruction.
 - What: reader panics on kernel text (D22) become these errors; the `.hlo` extension check (`pipeline.rs:312-318`) becomes a check on content, so a mislabeled file is named by its format.
 - Preserves: every existing reader message (`line.rs`, `parser.rs`, `lib.rs`).
 - Benefits: the only two reasons for the backend to stop are testable, and a user knows which side to fix.
-- Caveats: a kernel with an operation no ISA instruction implements is not outside the input specification; it yields no candidate, so it ends as every-candidate-dropped with that reason.
+- Caveats: a kernel with an operation no ISA instruction implements is not outside the input specification; it yields no candidate, so it ends as every-candidate-dropped with that reason, unless an excluded instruction implements it (`KB042`).
 - Fail points: an invalid kernel reaching selection and dropping every candidate with an unhelpful reason; noticed by a fuzz test of mutated kernels that must end in a named reader error or a compile.
-- Order and dependencies: after B5 (annotation-checking reader); uses the coverage rows for the backend's input.
-- Verification: one test per error kind; a mutation test over the example kernels never panics.
+- Order and dependencies: after B5 (annotation-checking reader) and B46; uses the coverage rows for the backend's input.
+- Verification: one test per error kind, including a kernel that needs an excluded instruction; a mutation test over the example kernels never panics.
 
 ## B43 Input formats not supported today
 

@@ -20,7 +20,7 @@ Every structural step passes the B3 gate (identical chosen assembly and `--log` 
 | `generic/cpp/malloc/src/parser.cc` | replace | `create_instruction`, `hold`, `hold_tensors` kept (B4) | those three |
 | `generic/cpp/malloc/src/constraint.cc` | reshape | pair relations at the touch point; no tie exemption (B30) | every other edge |
 | `generic/cpp/malloc/src/` other files | keep | as is | all |
-| `act_backend/spec_checks.py` | reshape | `checks/` after `validate()`, building the instruction model (B21, B14) | every backend-limit rejection and message |
+| `act_backend/spec_checks.py` | reshape | `checks/` as plain functions after `check`, building the instruction model; limits exclude with a reason, correctable faults reject (B21, B14, B46) | every backend-limit condition and message text |
 | `act_backend/*_generator.py` | reshape | `emit/`, one per generated file, reading the model (B13) | generated code's behavior |
 | `act_backend/template_loader.py`, `templates/` | replace | one template per fragment; rustfmt at generation (B12) | fragment text |
 | `act_backend/expression_writer.py`, `operand_sizes.py` | keep | as is | all |
@@ -43,7 +43,7 @@ Sizes are engineer-weeks (ew); Q1 is weeks 1-13.
 | 9 | B13 | B | structural: instruction model | 4 ew | generated crates identical |
 | 10 | B2, B4 | B | structural: typed FFI | 4 ew | B3 gate; no file read in C++ without `--log` |
 | 11 | B39, B30, B40 | B | behavioral: pair relations in the allocator | 4 ew | oracle test per relation; equal offsets for a tie |
-| 12 | B21, B24, B14, B27 | B | `validate()` first, checks and breaking rejections | 3 ew | `test_refusals.py`; new rejection tests |
+| 12 | B21, B24, B14, B46, B27 | B | `check` once, checks, exclusion report and breaking rejections | 3 ew | `test_refusals.py`; new rejection and exclusion tests |
 | 12a | B41, B42 | A and B | behavioral: dropped candidates, input validation | 4 ew | unexpected-drop test; mutated-kernel test |
 | 13 | B10, B34, B36, B11 | A | behavioral: one extractor; copy as a step of candidate building | 6 ew | equal or lower cost; oracle run |
 | 14 | B32, B33 | A | behavioral: rule guards, target constants | 3 ew | equal or lower cost |

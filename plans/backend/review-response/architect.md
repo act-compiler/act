@@ -15,7 +15,7 @@ Rows follow the review's "Plan step by step" table, then its "What the plan woul
 | Step 7: B14 removes the import cycle | accepted | `spec_checks.py:9-18` | none |
 | Step 8: B7, B9, B26 move to Q1 | accepted | `merge` makes failures loud (`egraph.rs:406-411`); the B3 gate makes the risk measurable | isel.md; defects.md; overhaul.md |
 | Step 8: B9 right after B7, S-sized | accepted | `is_const` exists in class data (`egraph.rs:370-374`) | B9 |
-| Step 9: B21, B22, B24, B27 agree; B23 rules from the B7 table | partly | Q3.2 makes B21 and B22 one `validate()` call; U4 owns the rule table | B21, B22 |
+| Step 9: B21, B22, B24, B27 agree; B23 rules from the B7 table | partly | Q3.2 makes B21 and B22 one `check` call; U4 owns the rule table | B21, B22 |
 | Step 9: B23 re-homed to the language track | accepted | Q3.1 folds B23 into U4; the backend asserts typed input (Q4.8) | B23 cut |
 | Step 10: B11 upgraded to a solver equality | accepted | Owner decision 17; `constraint.cc:214-230` only skips the interference edge | B30 (new); D14 |
 | Step 10: B15 to B20 keep in Q2 | accepted | Cheaper after B7 and B6 | none |

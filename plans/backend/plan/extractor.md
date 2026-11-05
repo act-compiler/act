@@ -40,6 +40,7 @@ The allocator reads each same-buffer input-output pair's relation and applies it
 ## B36 Unwritten on-chip storage
 
 - What: a candidate that reads an element of an on-chip buffer no earlier issue wrote is dropped with a named reason; no zeroing is inserted (Q4.9, Q1.4).
+- What: a buffer with a declared initial value is exempt, and the backend may rely on that value instead of a zeroing issue (joint decision on unwritten reads).
 - What: the backend emits the zeroing or overwriting first issue an ISA provides where a kernel needs one; it never emits a faulting issue (Q1.12).
 - Preserves: every candidate whose reads all have a producer.
 - Benefits: the oracle's unwritten-read fault never fires on a backend program.

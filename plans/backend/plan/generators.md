@@ -8,8 +8,9 @@ Each emitter re-walks the TAIDL ANTLR tree (`isel_ir2isa_rewrites_txt_generator.
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
 | B12 | Emit plain code without layout twins; rustfmt at generation | B6 | S | Q2 |
-| B13 | One selectable-instruction model built from the front end's objects | B1, U2 | M | Q1 |
-| B14 | Checks as one pass producing that model | B13, B21 | M | Q1 |
+| B13 | One selectable-instruction model built from the front end's `Model` | B1, U2 | M | Q1 |
+| B14 | Backend checks after `check`: reject or exclude, producing that model | B13, B21 | M | Q1 |
+| B46 | Exclusion report: printed, stored in the crate, named at kernel compile | B14 | S | Q1 |
 
 ## B12 Emit plain code without layout twins
 
@@ -24,8 +25,8 @@ Each emitter re-walks the TAIDL ANTLR tree (`isel_ir2isa_rewrites_txt_generator.
 
 ## B13 One selectable-instruction model
 
-- What: one dataclass per selectable instruction holding inputs, output, attributes, pattern, payload values and conditions, built from the front end's semantics objects, not ANTLR contexts.
-- What: B13 builds from today's `instruction.py` objects under U2's documented contract; it reads `validate()`'s derived facts once U3 publishes them (Q3.5).
+- What: one dataclass per selectable instruction holding inputs, output, attributes, pattern, payload values and conditions, built from the front end's `Model`, not ANTLR contexts.
+- What: B13 builds from today's `instruction.py` objects under U2's documented contract until `check` returns the `Model`; it then reads the `Model` and its derived facts only (Q3.5, Q11.3).
 - Preserves: each emitter's output; `expression_writer.py` and `operand_sizes.py`.
 - Benefits: emitters stop re-visiting ANTLR trees; one place says what the backend knows of an instruction.
 - Caveats: the model holds no allocator struct; B2's Rust struct is a separate schema (Q4.11).
@@ -33,13 +34,31 @@ Each emitter re-walks the TAIDL ANTLR tree (`isel_ir2isa_rewrites_txt_generator.
 - Order and dependencies: after B1 and U2 (Q3.3); re-pointing at a later front-end model is small.
 - Verification: generated crates for both examples identical.
 
-## B14 Checks as one pass producing the model
+## B14 Backend checks after `check`: reject or exclude
 
-- What: `spec_checks.py` builds the B13 model and rejects while building, after `validate()` has run (B21); no check imports an emitter.
-- What: a check the backend keeps is a backend limit, listed in the coverage doc; a language rule is `validate()`'s (Q3.2, Q3.11).
-- Preserves: every backend-limit rejection, its order and its message.
-- Benefits: a rejection and the code it guards cannot drift; each coverage row maps to one function.
-- Caveats: rejection order and messages are pinned by `tests/test_refusals.py`.
-- Fail points: a rejection lost in the move; noticed by `tests/test_refusals.py`.
+- What: the backend's checks are plain functions the entry calls after `check` (B21); they build the B13 model; no check imports an emitter; there is no registry and no checker subclass (Q11.3).
+- What: a language rule is `check`'s (Q3.2, Q3.11); a check the backend keeps is a backend limit, listed in the coverage doc.
+- What: an unknown key in the backend's `meta` namespace rejects, naming node and key, since the architect can correct it.
+- What: an instruction is excluded from the backend's instruction set, with a reason, when it reads or updates state, has other than one output, has a size over an addressing attribute or state, has a constraint the allocator cannot hold, or uses a tensor operator outside the supported table.
+- What: the other model limits of `coverage.md` (an element type outside the supported 13, a `slice` stride, a `constant` expression, a `concatenate` arity) follow the same rule.
+- What: each exclusion carries the code, the section id, and the author's line (B46); an empty usable set rejects.
+- Preserves: every backend-limit condition and its message text, which becomes the reason; rejection order for the cases that still reject.
+- Benefits: a valid ISA with one semaphore instruction needs one specification, not two (casestudies/trainium2.md:115); the backend and the oracle agree on what is valid; each coverage row maps to one function.
+- Caveats: `tests/test_refusals.py` pins order and messages; the cases that became exclusions assert the reason in the report instead.
+- Caveats: no strict mode turns exclusions into errors; the printed report and the expectations table give the signal.
+- Fail points: a limit that excludes silently; noticed by a test per exclusion row that reads the printed and the stored report.
 - Order and dependencies: after B13; before B15.
-- Verification: `tests/test_refusals.py` passes; no check-emitter import cycle.
+- Verification: `tests/test_refusals.py` passes for the rejecting cases; one test per exclusion row; no check-emitter import cycle.
+
+## B46 Exclusion report
+
+- What: each exclusion is one line with code, section id, instruction, and the author's file and line in the Q3.8 form (D6, D18); it is printed at generation and stored in the generated crate.
+- What: the generation summary prints the count of excluded instructions.
+- What: the crate records, for each excluded instruction, the tensor operators of its semantics.
+- What: a kernel that needs an excluded instruction is rejected at kernel compile time naming the instruction and its stored reason (B42, KB042); it needs one when a tensor operator of the kernel is implemented by no remaining instruction and by an excluded one.
+- What: S1.2 gains the exclusion outcome beside rejection; both name the feature and neither gives it another meaning (Q11.3).
+- Benefits: no silent drop; the architect sees what the target left out and why.
+- Caveats: the report is part of the crate and does not change the emitted compiler; the neutrality test compares output with metadata stripped, not the report.
+- Fail points: an exclusion printed but not stored; noticed by a test that reads the crate.
+- Order and dependencies: after B14; before B42's kernel check.
+- Verification: an ISA specification with a semaphore instruction and one usable instruction prints and stores one line; a kernel that needs the semaphore is rejected naming it; an ISA specification of only excluded instructions rejects.
