@@ -1,19 +1,21 @@
 # Case-study plan items
 
 One file per item; sizes assume 3-4 engineers and one coordinated major release (TAIDL v3).
+An item that duplicates an L item points to it and keeps the evidence and the verification.
+Dependency prefixes: L language, F semantics, B backend, O oracle, T tests, U shared code, P prior art.
 
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
-| C1 | [Typed views of storage](c01_typed_views.md) | L, F, B, O, T | M | Q1 |
-| C2 | [Strided and multi-dimensional regions](c02_strided_regions.md) | C1, L, B, O, T | L | Q1 |
-| C3 | [Instruction families and indexed state](c03_instruction_families.md) | L, S, B, O | M | Q1 |
-| C4 | [Mode-dependent semantics](c04_mode_semantics.md) | L, F, B, O, T | M | Q1 |
-| C5 | [Body-taking operations and convolution](c05_body_operations.md) | P, L, O, B, T | L | Q2 |
-| C6 | [Block-scaled and added element types](c06_element_types.md) | P, L, F, O, B | M | Q2 |
-| C7 | [Numeric annotations](c07_numeric_annotations.md) | L, O, D | M | Q2 |
-| C8 | [Data-dependent addressing](c08_data_dependent_addressing.md) | L, O, B | L | Q2 |
-| C9 | [Float attributes and bit operators](c09_scalar_extensions.md) | L, S, B, O | S | Q1 |
+| C1 | [Typed-view idiom and byte order](c01_typed_views.md) | F6, C10 | S | Q1 |
+| C2 | [Strided regions: evidence that admits L19](c02_strided_regions.md) | C11 | S | Q1 |
+| C3 | [Instruction families and indexed state: idiom](c03_instruction_families.md) | C10 | S | Q1 |
+| C4 | [Mode-dependent semantics: idiom](c04_mode_semantics.md) | C11 | S | Q1 |
+| C5 | [Body operations: evidence that admits L20](c05_body_operations.md) | C12 | S | Q2 |
+| C6 | [Added element types: evidence for L17](c06_element_types.md) | L17 | S | Q1 |
+| C7 | [Numeric annotations: evidence for L21](c07_numeric_annotations.md) | C10 | S | Q2 |
+| C8 | [Data-dependent addressing: study that admits L23](c08_data_dependent_addressing.md) | C11 | M | Q2 |
+| C9 | [Float attributes and bit operators: idiom](c09_scalar_extensions.md) | C10 | S | Q1 |
 | C10 | [Modeling cookbook and scope notes](c10_modeling_cookbook.md) | L, T | S | Q1 |
 | C11 | [Case studies as an executable corpus](c11_executable_corpus.md) | T, O | M | Q1 |
-| C12 | [Re-run the case studies on v3](c12_rerun_on_v3.md) | C1, C2, C3, C4, C5, C6, C7, C8, C9, C11 | S | Q2 |
+| C12 | [Re-run the case studies on v3, add NVDLA](c12_rerun_on_v3.md) | C1, C8, C10, C11 | S | Q2 |
 | C13 | [Defined-behavior audit of the case studies](c13_defined_behavior_audit.md) | L, F, O, T, C11 | S | Q1 |

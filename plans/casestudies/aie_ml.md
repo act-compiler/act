@@ -98,7 +98,7 @@ ENTRY {
 | Instruction | Verdict | Missing construct or workaround |
 | --- | --- | --- |
 | `dma_bd_2d` | expressible with workaround | Buffer descriptors give up to 3-D strides with per-dimension wrap; a region is a contiguous box (instructions.md:22), so each stride pattern is a covering read plus `slice`. A 3-D pattern with a non-unit innermost step needs `slice` strides, which take backtick values (IDLV2.g4:20). Writes with strides need read-modify-write. |
-| `lock_acq0` | expressible with workaround | Locks become state plus a constraint; the blocking wait between core and DMA is concurrency outside TAIDL (overview.md:10). |
+| `lock_acq0` | expressible with workaround | Locks become state plus a constraint; the blocking wait between core and DMA is concurrency, out of v3. The constraint is sound only for a sequential program order, and a program that would legitimately wait faults (C13). |
 | `vld` | expressible as is | `copy`. |
 | `vmac_4x8x4_s8` | expressible with workaround | The register-lane layout of the matrix operands is a `reshape`; the sketch uses an 8x8 shape for brevity; the real mode set (4x8x4, 8x8x4, 4x16x8 and more) means one instruction per mode or a `select` across modes, since semantics cannot branch on an attribute (expressions.md:34). |
 | `set_srs` | expressible as is | State-only configuration (instructions.md:29). |

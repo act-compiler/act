@@ -16,7 +16,7 @@
 
 ## Borrow
 
-- Instruction as a single self-contained unit: name, arguments with their memories, applicability asserts and body in one place; TAIDL's `add_instruction`, `set_inputs`, `set_outputs`, `set_inplace`, `add_semantics`, `add_constraints` sequence (taidl/taidl/instruction.py:96-329) could gain one declarative form that calls the same checks.
+- Instruction as a single self-contained unit: name, arguments with their memories, applicability asserts and body in one place; TAIDL's `add_instruction`, `set_inputs`, `set_outputs`, `set_inplace` (pending panel 9), `add_semantics`, `add_constraints` sequence (taidl/taidl/instruction.py:96-329) could gain one declarative form that calls the same checks.
 - Memory as a declared class with its own rules: TAIDL's data model (S4.3) is this; add per-data-model properties a generator reads, such as alignment or in-place rules, instead of per-instruction marks.
 - Unification with integer equation solving: the backend's attribute recovery (`generate_comp_attr_extraction`, act-backend/act_backend/isel_ir2isa_rewrites_rs_generator.py:220) does a restricted version; stating it as "solve attribute from shape" in the spec makes the accepted forms explicit.
 

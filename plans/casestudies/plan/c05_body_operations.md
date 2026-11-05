@@ -1,8 +1,8 @@
 # C5 Body-taking operations and convolution
 
-- What: Admit StableHLO operations with a region body or windows: `reduce` with a custom reducer, `reduce_window`, `convolution`, and a bounded `scan`.
-- Benefits: Makes CNN accelerators (Eyeriss, conv-mode units) and scan instructions expressible without unrolling (gap rank 3).
-- Caveats: The line grammar of S3.1 must carry nested blocks and convolution dimension labels; ACT-Backend rewrites must learn windows.
-- Fail points: `convolution` padding and dilation attributes are misread; noticed by differential tests against the StableHLO interpreter.
-- Order and dependencies: P, then L, then O, then B, then T.
-- Verification: The Eyeriss `conv_rs_3x3` written as one `convolution` matches the unrolled sketch on random inputs.
+- What: The extensions are L20 (`convolution`) and the cut L22; this item holds the case-study evidence and the verification.
+- Evidence: `tensor_tensor_scan` (Trainium2) and Tensix are the real sites; Eyeriss and CGRA are invented and count zero; NVDLA joins when C12 runs it (gap rank 6).
+- Scope: a bounded `scan` is the only body-taking form a study asks for; `reduce` with a custom reducer and `reduce_window` have no site.
+- Fail points: `convolution` padding and dilation attributes are misread; noticed by differential tests once L20 lands.
+- Order and dependencies: C12 (NVDLA); this item depends on no L item, and L20 depends on this evidence.
+- Verification: The Eyeriss `conv_rs_3x3` unrolled sketch is the baseline an admitted `convolution` must match on random inputs.

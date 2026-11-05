@@ -4,6 +4,8 @@
 
 - Generate shape recovery, dtype check, attribute solving and constant detection once as named Rust functions, and compose them per rule, replacing the per-rule bodies `generate_precond_function` emits.
 
+- A backend refactor under a borrowed name; its value depends on B13, not on the prior art.
+
 ## Benefits
 
 - Generated Rust shrinks; a bug is fixed in one function.

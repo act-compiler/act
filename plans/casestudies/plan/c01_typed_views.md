@@ -1,8 +1,8 @@
-# C1 Typed views of storage
+# C1 Typed-view idiom and byte order
 
-- What: Let a region give its own element type over a byte or untyped data model, as `[dm, starts, sizes, type]`, with a fixed little-endian byte order.
-- Benefits: Removes the `u8` plus `bitcast_convert` pattern from 7 of 10 case studies (gap rank 1); fixes the byte order that S1.3 leaves implementation-defined.
-- Caveats: The data model element type (S4.3) becomes a default; S7.2 must define a view whose type width does not divide the unit shape in bytes.
+- What: Document `u8` plus `bitcast_convert` as the way a region gives its own element type over byte storage; the little-endian byte order comes from F6.
+- Benefits: Keeps the verbosity of 7 case studies (gap rank 5) out of the grammar; a typed-view syntax is verbosity, not an idiom failure (Q2.3).
+- Caveats: S7.2 must state the result of a view whose type width does not divide the unit shape in bytes.
 - Fail points: Generators disagree on byte order; noticed when the TAIDL-TO oracle and the compiled kernel differ on a mixed-type load test.
-- Order and dependencies: L, F, then B and O, then T.
-- Verification: Rewrite the TPU, Trainium2, and AMX sketches with views and check the oracle results equal the `bitcast_convert` versions bit for bit.
+- Order and dependencies: F6, then C10 carries the idiom text.
+- Verification: The TPU, Trainium2, and AMX sketches run under the oracle with the fixed byte order and give the same results on a little-endian test vector.

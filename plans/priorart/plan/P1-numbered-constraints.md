@@ -13,7 +13,7 @@
 
 ## Caveats
 
-- The S8 table has 78 words; writing constraints for all is a quarter of one engineer.
+- The S8 table has about 75 words after three rare operations are removed; writing constraints for all is a quarter of one engineer.
 - `dot`, `gather`, `pad` and `dynamic_update_slice` need multi-line constraints; keep StableHLO's wording where TAIDL's attributes match.
 
 ## Fail points

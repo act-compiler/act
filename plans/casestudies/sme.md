@@ -16,12 +16,14 @@ sme.add_data_model('p', [16], [64], 'pred')    # P0..P15, one flag per byte
 sme.add_initial_state('sm', 0)
 sme.add_initial_state('za_on', 0)
 
-# smstart: configuration op, streaming mode and ZA on
+# smstart: streaming mode and ZA on; ZA, Z0-Z31, P0-P15 zeroed
 i = sme.add_instruction('smstart', [], [], update=['@s.sm = 1', '@s.za_on = 1'])
-i.set_outputs([['za', ['0'], ['64']]])
+i.set_outputs([['za', ['0'], ['64']], ['z', ['0'], ['32']], ['p', ['0'], ['16']]])
 i.add_semantics("""
 ENTRY {
-    ROOT %Out0 = u8[64,64] constant(0);
+    %Out0 = u8[64,64] constant(0);
+    %Out1 = u8[32,64] constant(0);
+    ROOT %Out2 = pred[16,64] constant(false);
 }
 """)
 
@@ -52,8 +54,10 @@ i.add_semantics("""
 ENTRY {
     %In0 = pred[16,4] parameter(0);
     %In1 = pred[16,4] parameter(1);
-    %pa = pred[16] slice(%In0), slice={[0:16], [0:1]};
-    %pb = pred[16] slice(%In1), slice={[0:16], [0:1]};
+    %pa1 = pred[16,1] slice(%In0), slice={[0:16], [0:1]};
+    %pa = pred[16] reshape(%pa1);
+    %pb1 = pred[16,1] slice(%In1), slice={[0:16], [0:1]};
+    %pb = pred[16] reshape(%pb1);
     %In2 = u8[16,4] parameter(2);
     %In3 = u8[16,4] parameter(3);
     %a = f32[16] bitcast_convert(%In2);
@@ -78,7 +82,7 @@ ENTRY {
 }
 """)
 
-# smstop: leave streaming mode, ZA contents become undefined
+# smstop: leave streaming mode; a later ZA access faults
 i = sme.add_instruction('smstop', [], [], update=['@s.sm = 0', '@s.za_on = 0'])
 ```
 
@@ -86,10 +90,10 @@ The f32 tile `ZAt.S` is every fourth ZA row from row `t` (https://developer.arm.
 
 | Instruction | Verdict | Missing construct or workaround |
 | --- | --- | --- |
-| `smstart` | expressible as is | Mode bits are state (declarations.md:34); zeroing ZA is a `constant` output. |
-| `ld1w_zah` | expressible with workaround | Predication is a `pred` data model plus `select` (operations.md:89). The tile slice row is computed from computational attributes in a start, which expressions.md:13 allows. Real SME scales by vector length at run time; SVL is fixed per ISA description because data model sizes are Python integers (accelerator.py:37-41). |
+| `smstart` | expressible as is | Mode bits are state (declarations.md:34); zeroing ZA, Z0-Z31, and P0-P15 is a `constant` output each. |
+| `ld1w_zah` | expressible with workaround | Predication is a `pred` data model plus `select` (operations.md:89). The tile slice row is computed from computational attributes in a start, which expressions.md:13 allows. Real SME scales by vector length at run time; fixing SVL per ISA specification is a correct modeling choice, not a gap. |
 | `fmopa_s` | expressible with workaround | The outer product is `dot` with empty contracting lists (operations.md:34). The interleaved tile-in-ZA layout needs the whole ZA as input and `dynamic_slice`/`dynamic_update_slice` with a `constant(`@c.tile`)` index, because a region box cannot select every fourth row (instructions.md:22). `pred` element per byte is a modeling choice; SVE predicates are one bit per byte. |
-| `smstop` | expressible with workaround | State-only (instructions.md:29); ZA contents after `smstop` have no TAIDL value; v3 has no undefined behavior, so it must pick a defined value (such as zero) or make a later read a defined error; the sketch rules such reads out by constraints. |
+| `smstop` | expressible as is | State-only (instructions.md:29); a ZA access with `@s.za_on == 0` traps on hardware, which is a fault under v3 (constraint `@s.sm == 1 and @s.za_on == 1`), so no value is needed. |
 | SVL-agnostic code (not sketched) | not expressible | A data model size or shape that depends on a run-time vector length; shapes may depend on state (semantics.md:62) but data model sizes may not. |
 
 Doc gaps:

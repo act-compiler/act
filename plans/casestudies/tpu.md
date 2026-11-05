@@ -46,7 +46,7 @@ i = tpu.add_instruction('matmul_acc', ['m'], ['src', 'acc'])
 i.set_inputs([['vmem', ['@a.src'], ['@c.m * 2']], ['mxu_w', ['0'], ['1']],
               ['mrb', ['@a.acc'], ['@c.m']]])
 i.set_outputs([['mrb', ['@a.acc'], ['@c.m']]])
-i.set_inplace([False, False, True])
+i.set_inplace([False, False, True])  # tied: output reuses the accumulator
 i.add_semantics("""
 ENTRY {
     %In0 = u8[`@c.m * 2`,8,512] parameter(0);
@@ -100,7 +100,7 @@ ENTRY {
 
 | Instruction | Verdict | Missing construct or workaround |
 | --- | --- | --- |
-| `dma_in` | expressible as is | Contiguous byte copy; strided HBM tiles need the C3 workaround (read the covering range, `slice` with a backtick stride). |
+| `dma_in` | expressible as is | Contiguous byte copy; strided HBM tiles need the covering-range workaround (read the covering range, `slice` with a backtick stride). |
 | `push_w` | expressible with workaround | MXU weight latch modeled as a hidden data model `mxu_w`; VMEM is `u8` because a data model has one element type (semantics.md:47), so every typed read is `reshape` + `bitcast_convert`. |
 | `matmul_acc` | expressible as is | Accumulation is read-modify-write of the same region (instructions.md:26, instructions.md:50); `dot` with bf16 operands and f32 result relies on mixed-type `dot`, which operations.md:121 allows only implicitly. |
 | `set_act` | expressible as is | State-only instruction (instructions.md:29) with a constraint (instructions.md:33). |

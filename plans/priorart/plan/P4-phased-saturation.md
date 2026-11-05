@@ -3,7 +3,9 @@
 ## What
 
 - Split rules into rulesets, expansion (slice through convert, reshape pairs, broadcast removal), mapping (ir2isa), cleanup, and run them in sequence, each with its own node and iteration limit and stop reason.
-- Drop the wall-clock `TIME_LIMIT` as a correctness-affecting bound; keep it as a watchdog that reports.
+- Keep the wall-clock `TIME_LIMIT` as the user default, never a cause of a wrong answer; tests use the deterministic mode.
+
+- A backend refactor under a borrowed name; its value depends on B6, not on the prior art.
 
 ## Benefits
 

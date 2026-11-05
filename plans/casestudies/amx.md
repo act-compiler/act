@@ -16,10 +16,12 @@ for t in range(8):
     amx.add_initial_state(f'rows{t}', 0)
     amx.add_initial_state(f'colsb{t}', 0)
 
-# ldtilecfg: configuration op; fields given as attributes
-i = amx.add_instruction('ldtilecfg_t0', ['pal', 'r', 'cb'], [],
-                        update=['@s.palette = @c.pal', '@s.rows0 = @c.r', '@s.colsb0 = @c.cb'],
-                        constraints=['@c.pal == 1 and @c.r <= 16 and @c.cb <= 64'])
+# ldtilecfg: one instruction configures all eight tiles
+attrs = ['pal'] + [f'r{t}' for t in range(8)] + [f'cb{t}' for t in range(8)]
+upd = ['@s.palette = @c.pal'] + [f'@s.rows{t} = @c.r{t}' for t in range(8)] \
+      + [f'@s.colsb{t} = @c.cb{t}' for t in range(8)]
+cons = ['@c.pal == 1'] + [f'@c.r{t} <= 16 and @c.cb{t} <= 64' for t in range(8)]
+i = amx.add_instruction('ldtilecfg', attrs, [], update=upd, constraints=cons)
 
 # tileloadd tmm0: rows x colsb bytes, stride from base
 i = amx.add_instruction('tileloadd_t0', ['stride'], ['base'],
@@ -52,7 +54,7 @@ i = amx.add_instruction('tdpbf16ps_2_0_1', [], [],
 i.set_inputs([['tmm', ['0', '0'], ['1', '16']], ['tmm', ['1', '0'], ['1', '16']],
               ['tmm', ['2', '0'], ['1', '16']]])
 i.set_outputs([['tmm', ['2', '0'], ['1', '16']]])
-i.set_inplace([False, False, True])
+i.set_inplace([False, False, True])  # tied: output reuses the accumulator
 i.add_semantics("""
 ENTRY {
     %In0 = u8[16,32,2] parameter(0);
@@ -90,7 +92,7 @@ ENTRY {
 
 | Instruction | Verdict | Missing construct or workaround |
 | --- | --- | --- |
-| `ldtilecfg` | expressible with workaround | The real instruction reads a 64-byte configuration from memory; a state update cannot read a region (instructions.md:41, expressions.md:8), so the fields become attributes. Per-tile `rows`/`colsb` are 16 scalar state variables, one instruction per tile, because state cannot be indexed by an attribute (expressions.md:15). |
+| `ldtilecfg` | expressible as is | One instruction with 17 attributes (palette byte 0, `colsb` bytes 16-31, `rows` bytes 48-55) and 17 ordered updates (S5.4) matches the single 64-byte block. The block is read as attributes; the instruction needs no region read. |
 | `tileloadd` | expressible with workaround | The tile index is baked into the instruction name (64 variants across tiles and operands), since a region start that selects a tile could be `@a.t`, but the state it reads (`@s.rows<t>`) cannot. Shapes depend on state through backtick expressions (semantics.md:62). Zeroing the unused rows matches the SDM. |
 | `tilezero` | expressible as is | `constant` over the whole tile. |
 | `tdpbf16ps` | expressible with workaround | One variant per (dst, a, b) triple: 8x8x8 = 512 names, or fewer if constraints pin the triple. The VNNI pair layout of B is a `transpose`; full generality over configured `M, N, K` needs shapes from state, which works, but the constraint-pinned 16x16x32 form is simpler. The SDM's intermediate rounding (FP32 FMA with DAZ/FTZ, round-to-nearest-even per pair) is not expressible precisely. |

@@ -23,7 +23,7 @@
 ## Avoid
 
 - Migrating to egglog wholesale: it is a different runtime and language; borrow the schedule and analysis ideas inside egg first.
-- Node and time limits as the only termination story: a 1 s limit makes results machine-dependent; prefer saturation of a phase with a stated bound.
+- Node and time limits as the only termination story: the wall-clock bound stays the user default and tests use the deterministic mode; a phase also stops on saturation with a stated bound, and a limit never yields a wrong answer.
 
 ## Relevance
 

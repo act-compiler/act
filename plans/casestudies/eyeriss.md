@@ -51,9 +51,12 @@ ENTRY {
     %x0 = s32[3,1022] slice(%x), slice={[0:3], [0:1022]};
     %x1 = s32[3,1022] slice(%x), slice={[0:3], [1:1023]};
     %x2 = s32[3,1022] slice(%x), slice={[0:3], [2:1024]};
-    %f0 = s32[3] slice(%fk), slice={[0:3], [0:1]};
-    %f1 = s32[3] slice(%fk), slice={[0:3], [1:2]};
-    %f2 = s32[3] slice(%fk), slice={[0:3], [2:3]};
+    %g0 = s32[3,1] slice(%fk), slice={[0:3], [0:1]};
+    %f0 = s32[3] reshape(%g0);
+    %g1 = s32[3,1] slice(%fk), slice={[0:3], [1:2]};
+    %f1 = s32[3] reshape(%g1);
+    %g2 = s32[3,1] slice(%fk), slice={[0:3], [2:3]};
+    %f2 = s32[3] reshape(%g2);
     %y0 = s32[1022] dot(%x0, %f0), lhs_contracting_dims={0}, rhs_contracting_dims={0};
     %y1 = s32[1022] dot(%x1, %f1), lhs_contracting_dims={0}, rhs_contracting_dims={0};
     %y2 = s32[1022] dot(%x2, %f2), lhs_contracting_dims={0}, rhs_contracting_dims={0};

@@ -17,7 +17,7 @@
 ## Borrow
 
 - Two layers with one source: the typed op and the intrinsic op are generated from one definition; TAIDL's instruction with its PII-graph node is the same split and should stay generated from one `add_instruction`.
-- Undefined-contents constructor: `arm_sme.get_tile` names "contents undefined" as a value; TAIDL should say whether an unwritten region holds an arbitrary value or is undefined to read.
+- Undefined-contents constructor: `arm_sme.get_tile` names "contents undefined" as a value; TAIDL states the defined value of an unwritten region.
 - Typed hardware state: descriptors, barriers and accumulators as declared state kinds with their own rules, the way TAIDL has `d0` as a special data model; a GPU case study needs a state kind for a descriptor and for an async group.
 - Target-feature predicates: `+sme2` gating is an instruction constraint over a configuration state; TAIDL constraints over `@s.` can express it if the state is declared read-only.
 - Microkernel boundary: IREE keeps layout in codegen and the inner tile in a kernel; ACT's allocator and PII graph play codegen while an instruction plays the kernel; keep pack and unpack as IR rewrites, not as instruction semantics.

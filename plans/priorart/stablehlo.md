@@ -10,7 +10,7 @@
 
 ## TAIDL today, for comparison
 
-- TAIDL's S8.2 table gives operand counts and attribute forms per operation (taidl/docs/operations.md:38-70) but S9 says "shapes and element types are not checked against S8; S1.3 lists this as undefined" (taidl/docs/conformance.md, last section).
+- TAIDL's S8.2 table gives operand counts and attribute forms per operation (taidl/docs/operations.md:38-70) but S9 says "shapes and element types are not checked against S8" (taidl/docs/conformance.md, last section).
 - Checks that StableHLO states as constraints live in generator code: the oracle's `disagreement` and `check_shapes` (act-oracle/taidl_to/oracle_visitor.py:285-301) and the backend's shape checks (act-backend/act_backend/isel_ir2isa_rewrites_rs_generator.py:588-603).
 - TAIDL's operation words already map one-to-one onto StableHLO names, with `dot` and `broadcast` as the stated exceptions (taidl/docs/operations.md:5-8).
 
@@ -18,7 +18,7 @@
 
 - Numbered constraints per operation in S8: each with `(C<n>)` and a predicate over `shape`, `element_type` and attributes, cited by both generators' error messages.
 - Inputs and Outputs tables with constraint references: one row per operand and per result.
-- The three-word vocabulary: implementation-defined, undefined, rejected; each S1.3 item classified under one word.
+- A three-word vocabulary with fixed meanings: rejected, fault, defined value; each S1.3 item classified under one word.
 - Examples as tests: each S8 row gets one semantics line example with expected output that the oracle executes and the backend's conformance corpus reuses.
 - Helper-function notation: define `shape(%v)`, `element_type(%v)`, `rank(%v)` once in S7 and use them in every constraint.
 

@@ -16,9 +16,9 @@
 
 ## Borrow
 
-- A generated instruction page: from one `Accelerator`, emit per-instruction documentation with the signature, data models read and written, attributes with constraints, state updates, the semantics block, undefined cases, and one example kernel line with its oracle result.
+- A generated instruction page: from one `Accelerator`, emit per-instruction documentation with the signature, data models read and written, attributes with constraints, state updates, the semantics block, faults and defined values, and one example kernel line with its oracle result.
 - Engine as a declared instruction property: a tag the cost model and scheduling can read, declared in the instruction, not inferred.
-- Per-feature undefined-behavior notes: each S1.3 case that applies to an instruction is listed on its page.
+- Per-feature behavior notes: each S1.3 case that applies to an instruction is listed on its page with its fault or defined value.
 - Generation variants as one accelerator with a read-only state variable, documented on the page as "on v4".
 
 ## Avoid

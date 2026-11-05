@@ -47,7 +47,7 @@ i.set_outputs([['pe_w', ['0'], ['1']]])
 i.add_semantics("""
 ENTRY {
     %In0 = s8[16,16] parameter(0);
-    ROOT %Out0 = s8[1,16,16] copy(%In0);
+    ROOT %Out0 = s8[1,16,16] reshape(%In0);
 }
 """)
 
@@ -55,7 +55,7 @@ ENTRY {
 i = g.add_instruction('compute_acc', [], ['a', 'c'], constraints=['@s.dataflow == 1'])
 i.set_inputs([['sp', ['@a.a'], ['16']], ['pe_w', ['0'], ['1']], ['accm', ['@a.c'], ['16']]])
 i.set_outputs([['accm', ['@a.c'], ['16']]])
-i.set_inplace([False, False, True])
+i.set_inplace([False, False, True])  # tied: output reuses the accumulator
 i.add_semantics("""
 ENTRY {
     %In0 = s8[16,16] parameter(0);

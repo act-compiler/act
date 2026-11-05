@@ -5,6 +5,8 @@
 - Replace `ir2ir_rewrites.txt` and `ir2isa_rewrites.txt` numbered strings and the three parallel `match name` tables in `applier.rs` with one generated Rust value per rule: name, pattern with typed variables (value, constant, attribute), side conditions, result data, priority.
 - Reject at generation time a rule whose pattern can join values of unlike shape or element type, so `TensorInfo::merge` never panics.
 
+- A backend refactor under a borrowed name; its value depends on B6 and B8, not on the prior art.
+
 ## Benefits
 
 - Rules are greppable by name; a priority is declared, not an e-node-order accident.

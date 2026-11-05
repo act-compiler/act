@@ -2,7 +2,7 @@
 
 ## What
 
-- A generator in the act umbrella renders one page per instruction from an `Accelerator`: signature, data models read and written, attributes and constraints with `(C<n>)`, state updates, semantics block, undefined cases, one example line with its oracle output.
+- A generator in the act umbrella renders one page per instruction from an `Accelerator`: signature, data models read and written, attributes and constraints with `(C<n>)`, state updates, semantics block, faults and defined values, one example line with its oracle output.
 
 ## Benefits
 

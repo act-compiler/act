@@ -10,7 +10,7 @@
 ## TAIDL today, for comparison
 
 - TAIDL declares semantics once and generates both matcher and emitter, which removes tensorize's description-versus-implementation drift.
-- The reduce split (reset and update) is what TAIDL expresses through accumulate-style instructions with an input that is also written (`set_inplace`, S5.5).
+- The reduce split (reset and update) is what TAIDL expresses through accumulate-style instructions with an input that is also written (`set_inplace`, S5.5; pending panel 9).
 - Halide's ordered rule table is the shape of `ir2ir_rewrites.txt` (act-backend/act_backend/generic/src/isel/rewrites/ir2ir_rewrites.txt:1-10), but egg applies rules without order.
 
 ## Borrow

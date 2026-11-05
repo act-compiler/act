@@ -1,28 +1,29 @@
-# P11 Typed hardware state kinds and data-model layout properties
+# P11 Alignment as a buffer property
 
 ## What
 
-- Add declared state kinds beyond integers: descriptor, async group or barrier, read-only configuration; each with the operations an instruction may perform on it.
-- Add data-model properties stride and alignment, read by the allocator instead of generated integer checks.
-- Needed for the GPU tensor-core case study: mma, wgmma, TMA.
+- Add the buffer property alignment, read by the allocator instead of generated integer checks.
+- Stride is a region property and belongs to C2 and L19, not here.
+- No new state kind in v3: descriptors, barriers, and async groups use plain integer state, attributes, and region reads.
 
 ## Benefits
 
-- Backend state support (B16) has a typed target instead of integers in an e-graph.
+- Backend state support (B16) keeps integer state as its target.
+- The GPU case study (the Hopper sketch with mma, wgmma, and TMA) loads without a state kind.
 
 ## Caveats
 
-- Largest language change in the release; needs the owner's terminology decisions for state words.
+- Typed state kinds return after v3 only if a second ran site shows plain state failing.
+- Needs the glossary words for buffer and state.
 
 ## Fail points
 
-- A state kind that no case study uses, noticed at the case-study review; drop it.
-- Asynchrony that the sequential execute function cannot express, noticed by the formal track.
+- An alignment property that no case study uses, noticed at the case-study review; drop it.
 
 ## Order and dependencies
 
-- Depends on P8, B16, L, C.
+- Depends on P8, B16, L, C11.
 
 ## Verification
 
-- The GPU case study loads, runs in the oracle, and the backend selects at least one mma instruction.
+- The Hopper sketch runs in the oracle, and the backend selects at least one mma instruction.

@@ -1,8 +1,9 @@
 # C12 Re-run the case studies on v3
 
-- What: Re-express every case study with the v3 constructs and redo the verdict tables, adding the missing Ascend study.
-- Benefits: Measures whether v3 closed the gaps; the gap matrix becomes a release criterion.
-- Caveats: Requires C1 to C9 to have landed; partial landing gives a partial re-run.
+- What: Re-express every case study with the v3 constructs, redo the verdict tables and the gap matrix counts, and add the NVDLA study.
+- NVDLA: a descriptor-driven engine with public register documentation; it is the second site for convolution and an input to the C8 study. No Ascend study is made.
+- Benefits: Measures whether v3 closed the gaps; the gap matrix is a release criterion.
+- Caveats: Requires the admitted extensions (L17) and C11 to have landed.
 - Fail points: A construct lands but does not remove the workaround; noticed as an unchanged verdict row.
-- Order and dependencies: C1, C2, C3, C4, C5, C6, C7, C8, C9, C11.
-- Verification: Each High row of the gap matrix moves to expressible as is in at least the case studies that raised it.
+- Order and dependencies: C1, C8, C10, C11.
+- Verification: Each High row of the gap matrix has a decision backed by ran sites.

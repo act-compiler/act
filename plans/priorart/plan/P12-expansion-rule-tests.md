@@ -4,6 +4,8 @@
 
 - Each hand-written `ir2ir` rule gets a name, a stated shape relation, and a test that checks both sides agree in the oracle on random shapes and element types.
 
+- A backend refactor under a borrowed name; its value depends on P3 and P7, not on the prior art.
+
 ## Benefits
 
 - Soundness of the search rests on ten tested rules instead of ten strings.

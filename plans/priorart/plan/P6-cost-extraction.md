@@ -5,6 +5,8 @@
 - Give the extractor a per-e-node cost from a declared per-instruction latency or from the C cost model, and prune `extract_slow` enumeration by cost instead of a node count alone.
 - Keep `c_bridge` as the final arbiter over the surviving candidates.
 
+- Scheduled after v3 unless the B track names a compile-time failure it fixes.
+
 ## Benefits
 
 - Fewer candidates written and scored; compile time bounded by cost search, not by `SLOW_LIMIT_CUTOFF`.
@@ -20,7 +22,7 @@
 
 ## Order and dependencies
 
-- Depends on P4, B10.
+- Depends on P4, B10; after v3.
 
 ## Verification
 
