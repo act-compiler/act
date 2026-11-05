@@ -10,7 +10,7 @@
 
 ## TAIDL today, for comparison
 
-- A TAIDL data model is a named array with addressed dimensions and a unit shape (taidl/docs/instructions.md S5.2); ArmSME's tile and NVGPU's fragment are data models with a fixed unit shape.
+- A TAIDL data model is a named array with access dimensions and a base element shape (taidl/docs/instructions.md S5.2); ArmSME's tile and NVGPU's fragment are data models with a fixed base element shape.
 - TAIDL has no asynchronous or token-typed state; NVGPU's `mbarrier` and async tokens and TMA descriptors are state the owner's new scope (mma, wgmma, TMA) needs.
 - The backend models no state at all (act-backend/docs/coverage.md, state row), while the oracle unrolls updates in order (act-oracle/docs/coverage.md, S5.4 row).
 

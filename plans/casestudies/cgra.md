@@ -76,7 +76,7 @@ ENTRY {
 
 | Instruction | Verdict | Missing construct or workaround |
 | --- | --- | --- |
-| `dma_in`, `dma_out` | expressible as is | Two addressed dimensions select bank and offset (declarations.md:24). |
+| `dma_in`, `dma_out` | expressible as is | Two access dimensions select bank and offset (declarations.md:24). |
 | `load_cfg` | expressible with workaround | The bitstream is stored as data, but its meaning cannot be derived from its bits: semantics cannot interpret a region's contents as a program (operation_meaning.md:22 excludes `while`, `call`, `map`). A tag `@c.id` stands for which known configuration was loaded. |
 | `launch` | expressible with workaround | Only a closed, enumerated set of configurations works: each one's dataflow graph is written into the semantics and chosen by `select` on `@s.cfg_id`. Every configuration is computed on every launch, and a new kernel mapping needs a new ISA specification. Configurations with loops carried across PEs (recurrences, reductions with feedback) need `scan` or `while` and are not expressible. |
 | general bitstream-defined semantics (not sketched) | not expressible | An instruction whose semantics is a function of a data region's contents; this is an interpreter, beyond a dataflow semantics. |

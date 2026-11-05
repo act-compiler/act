@@ -103,4 +103,4 @@ ENTRY {
 
 Doc gaps:
 - The docs say why `convolution` is out (operation_meaning.md:23) but give no recommended workaround pattern, which CNN accelerators need first.
-- No doc says whether a 1-D data model with a large unit shape or a 2-D one is preferred for a buffer read in partial lines; the choice changed every start expression here.
+- No doc says whether a 1-D data model with a large base element shape or a 2-D one is preferred for a buffer read in partial lines; the choice changed every start expression here.

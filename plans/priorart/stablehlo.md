@@ -12,7 +12,7 @@
 
 - TAIDL's S8.2 table gives operand counts and attribute forms per operation (taidl/docs/operations.md:38-70) but S9 says "shapes and element types are not checked against S8" (taidl/docs/conformance.md, last section).
 - Checks that StableHLO states as constraints live in generator code: the oracle's `disagreement` and `check_shapes` (act-oracle/taidl_to/oracle_visitor.py:285-301) and the backend's shape checks (act-backend/act_backend/isel_ir2isa_rewrites_rs_generator.py:588-603).
-- TAIDL's operation words already map one-to-one onto StableHLO names, with `dot` and `broadcast` as the stated exceptions (taidl/docs/operations.md:5-8).
+- TAIDL's tensor operators already map one-to-one onto StableHLO names, with `dot` and `broadcast` as the stated exceptions (taidl/docs/operations.md:5-8).
 
 ## Borrow
 

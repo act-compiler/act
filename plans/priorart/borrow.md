@@ -29,4 +29,4 @@ Each row names the plan item that carries it.
 | 4 | A general imperative language inside the ISA specification | Sail, ILAng | widens the generator surface without a tensor-level gain |
 | 5 | Prose constraints with no checkable form | NKI pages, MLIR C++ verifiers | the spec must generate the check, not describe it |
 | 6 | Time limits as the only termination story for saturation | act-backend `TIME_LIMIT` 1 s | results differ by machine; the wall-clock bound stays the user default, tests use the deterministic mode, and a bound never yields a wrong answer (owner decision 27) |
-| 7 | SIMT per-thread fragments for tensor-core ops | NVGPU `mma.sync` | out of scope (owner decision 15); model warpgroup-level operands with a unit shape |
+| 7 | SIMT per-thread fragments for tensor-core ops | NVGPU `mma.sync` | out of scope (owner decision 15); model warpgroup-level operands with a base element shape |

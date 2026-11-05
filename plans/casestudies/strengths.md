@@ -1,6 +1,6 @@
 # What TAIDL already expresses well
 
-- Named on-chip memories map directly onto data models with addressed dimensions and a unit shape: VMEM, SBUF partitions, PSUM banks, AMX tiles, ZA rows, Gemmini scratchpad and accumulator, Tensix `Dst` (declarations.md:23-28, S4.3).
+- Named on-chip memories map directly onto data models with access dimensions and a base element shape: VMEM, SBUF partitions, PSUM banks, AMX tiles, ZA rows, Gemmini scratchpad and accumulator, Tensix `Dst` (declarations.md:23-28, S4.3).
 - `dot` as StableHLO `dot_general` covers every main compute op met: MXU and TensorE matmul, `wgmma`, AMX `TDP*`, SME outer products with empty contracting lists, AIE-ML `MAC` modes, Gemmini and Tensix tiles (operations.md:34, operations.md:106, S8.2).
 - Accumulation is a read-modify-write of one region (instructions.md:26, S5.2); the in-place mark ties the output to the accumulator input (S5.5).
 - Configuration ops fit as state-only instructions with constraints and ordered updates: AMX `ldtilecfg` as one instruction, SME streaming mode, Gemmini `config_ex`, AIE-ML shift, Eyeriss mapping (instructions.md:29, instructions.md:42-46, S5.4).

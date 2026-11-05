@@ -2,7 +2,7 @@
 
 Ranked by severity, then by the number of public sites.
 Severity: High means a common instruction needs a workaround that is lossy or cannot be stated; Medium means a workaround works but is verbose or explodes the instruction count; Low means rare or out of scope.
-Section ids are those of the TAIDL language specification (S1 to S10).
+Section ids are those of the TAIDL language specification (S1 to S12).
 
 ## Counting rule
 

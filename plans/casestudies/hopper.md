@@ -114,5 +114,5 @@ ENTRY {
 
 Doc gaps:
 - The docs give no example of `gather`; its seven attributes (operations.md:104) had to be matched against the StableHLO spec at https://openxla.org/stablehlo/spec.
-- No doc says whether a data model may model a register file indexed by thread; `dimensions` of rank 2 with an empty unit shape (declarations.md:26) was inferred.
+- No doc says whether a data model may model a register file indexed by thread; `access_dims` of rank 2 with an empty base element shape (declarations.md:26) was inferred.
 - Scope: the SIMT thread model is outside the owner's scope; each tensor-core instruction is modeled whole, with threads only as a dimension of `rf`, and the docs should say this is the intended view.

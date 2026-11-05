@@ -106,7 +106,7 @@ ENTRY {
 | Instruction | Verdict | Missing construct or workaround |
 | --- | --- | --- |
 | `dma_copy` | expressible with workaround | A region is a contiguous box (instructions.md:22) and `d0` is flat (declarations.md:29); the row stride is read as a covering range, then `slice` with backtick limits (IDLV2.g4:20, IDLV2.g4:25). Strided SBUF writes would need read-modify-write of the gap bytes. Indirect DMA is expressible with a workaround: `gather` or `dynamic_slice` takes its indices from a parameter region (semantics.md:126), and an attribute bounds the covering source range, as the Hopper swizzle does with `gather`. NKI access patterns with 3-4 strided dimensions stay a workaround. |
-| `nc_matmul` | expressible with workaround | The accumulate flag becomes `select` on `constant(`@c.acc`)` (semantics.md:69); the PSUM bank is read whole and rewritten with `dynamic_update_slice` because region sizes cannot cover a partial unit shape (instructions.md:23). |
+| `nc_matmul` | expressible with workaround | The accumulate flag becomes `select` on `constant(`@c.acc`)` (semantics.md:69); the PSUM bank is read whole and rewritten with `dynamic_update_slice` because region sizes cannot cover a partial base element shape (instructions.md:23). |
 | `act_exp` | expressible with workaround | A float immediate is not an attribute type (instructions.md:13); it is passed as `u32` bits and `bitcast_convert`ed. ScalarE evaluates `exp` by table approximation; the result accuracy cannot be stated (operations.md:35 rejects `result_accuracy`). |
 | `tt_add` | expressible as is | Elementwise ops over typed views; the `u8` storage costs a `bitcast_convert` per operand (semantics.md:47). |
 | `iota_part` | expressible as is | `iota` (operations.md:41). |
@@ -118,4 +118,4 @@ Doc gaps:
 - No pattern for a data model whose elements change type per instruction (SBUF holds bf16, fp8, f32 and int tiles); semantics.md:47 forbids a typed view, so `u8` plus `bitcast_convert` was inferred, not documented.
 - Whether slice limits may be backtick expressions is stated only for values in general (semantics.md:79); the grammar was read to confirm (IDLV2.g4:20).
 - The byte order of `bitcast_convert` is implementation-defined (overview.md:42), so every typed SBUF view depends on a generator choice.
-- Nothing documents how a partition-major memory with a size not divisible by the unit shape should be split into `dimensions` and `unit_dim`.
+- Nothing documents how a partition-major memory with a size not divisible by the base element shape should be split into `access_dims` and `base_element_dims`.
