@@ -7,7 +7,7 @@ These items set the target layout, the test gate, and the typed candidate bounda
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
 | B1 | Target module layout and stage names | B29 | S | Q1 |
-| B2 | Typed candidate and kernel-fact handoff to the C++ allocator | B1, B13 | M | Q1 |
+| B2 | Typed candidate and kernel-fact handoff to the C++ allocator | B1, B25, B31 | M | Q1 |
 | B3 | End-to-end gate: goldens, chosen assembly, candidate logs, oracle run | B29, T | M | Q1 |
 
 ## B1 Target module layout and stage names
@@ -23,21 +23,22 @@ These items set the target layout, the test gate, and the typed candidate bounda
 ## B2 Typed candidate and kernel-fact handoff
 
 - What: pass each candidate to `act_malloc` as a flat `#[repr(C)]` node array (op id, typed payload, children, buffer, hbm offset) plus the kernel facts in the same call, instead of `<n>.pii` and `metadata.json`.
-- What: the struct is emitted for Rust and C++ from the B13 model, so one schema exists.
-- Preserves: `act_malloc`'s reason buffer (`generic/src/malloc/cpp.rs:15-24`); `--log` candidate files, written from Rust in today's exact line format.
+- What: the Rust `#[repr(C)]` struct is the one schema; cbindgen derives the C header from it at build time (Q4.11, owner decision 28).
+- Preserves: `act_malloc`'s reason buffer (`generic/src/malloc/cpp.rs:15-24`); `create_instruction`, `hold`, `hold_tensors`; `--log` candidate files, written from Rust in today's exact line format.
 - Benefits: deletes `PiiGraph`'s `Display` round trip (`ir/pii.rs:75-93`) and the `metadata.json` read; no temp-file I/O per candidate.
-- Caveats: `tests/test_extraction.py:109,135,496` read `--log` candidate files, so the Rust printer keeps their line format.
-- Fail points: ABI mismatch between Rust and C++ structs; noticed as wrong allocations, so add a round-trip test that prints the struct from C++.
-- Order and dependencies: after B1 and B13; enables B4; payload fields from B31.
+- Caveats: `tests/test_extraction.py:109,135,496` read `--log` candidate files, so the Rust printer keeps their line format; cbindgen joins the act-backend build when B2 lands.
+- Fail points: ABI mismatch between Rust and C++ structs; noticed as wrong allocations, so add a size and offset assertion test and a round trip that prints the struct from C++.
+- Order and dependencies: after B1, B25 and B31; independent of the B13 instruction model; enables B4.
 - Verification: B3 gate identical; no file read in C++ without `--log`.
 
 ## B3 End-to-end gate
 
 - What: a test entry that generates, builds and compiles the examples with a local toolchain, in B29's deterministic mode.
-- What: a structural step passes when the chosen assembly, the `--log` candidate files and the goldens are identical.
-- What: a behavioral step passes an oracle-differential run over the specs of `tests/test_extraction.py` and `tests/test_matching.py`.
+- What: a structural step passes when the chosen assembly and the `--log` candidate files are identical (Q4.2).
+- What: a behavioral step passes an oracle-differential run over the ISA specifications of `tests/test_extraction.py` and `tests/test_matching.py`.
+- What: every backend program in that run executes on the oracle with no fault (Q1.12); the run compares only cases where both succeed or both raise (Q4.9).
 - Preserves: `tests/conftest.py` logic and the goldens.
-- Benefits: goldens are simulated outputs (`README.md:109`), so equal goldens do not prove an equal selection; the assembly and candidate checks do.
+- Benefits: goldens are simulated outputs (`README.md:109`), so equal goldens do not prove an equal selection; the assembly and candidate checks do, and goldens stay a regression check.
 - Caveats: needs OR-Tools and nlohmann/json installed; T owns test infrastructure.
 - Fail points: platform drift looks like a regression; record platform with each run.
 - Order and dependencies: with B29, before any other item; owned jointly with T.

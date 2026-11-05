@@ -1,6 +1,6 @@
 # act-backend naming todo
 
-Names and words to change, aligned to the spec glossary.
+Names and words to change, aligned to the glossary of the TAIDL language specification.
 None is applied: the scope forbids code edits, so every row is a plan item (B27, B28).
 `new` is a proposal; rows marked `?` need an owner call.
 
@@ -20,7 +20,7 @@ None is applied: the scope forbids code edits, so every row is a plan item (B27,
 | `DetectedConst` | `FoldedConstant` | `generic/src/ir/egraph.rs:398`, extractors | no |
 | `EggSymbolTable` | `ValueIds` | `generic/src/isel/initializer/lib.rs:23` | no |
 | `HLOExpr` | `KernelExpr` | `generic/src/isel/initializer/expression.rs` | no |
-| `slow`, `fast` extractors | keep; header states what each enumerates | `generic/src/isel/extractor/slow.rs:13`, `fast.rs:12` | no |
+| `slow`, `fast` extractors | gone: one k-best extractor; the enumerator kept test-only is named `enumerate` (B10) | `generic/src/isel/extractor/slow.rs:13`, `fast.rs:12` | no |
 | `inplace_fix`, `fix_inplace` | `copy_overwritten`, `copy_overwritten_inputs` | `generic/src/isel/extractor/inplace_fix.rs:9` | no |
 | `precond_N`, `metadata_N`, `set_shapes_N` | named per rewrite, `condition`, `result_types`, `result_shapes` | `generic/src/isel/rewrites/ir2ir_rewrites.rs`, `applier.rs:15-58` | no |
 | `ir2ir`, `ir2isa` in prose | IR-to-IR rewrite rule, IR-to-ISA rewrite rule | file names under `generic/src/isel/rewrites/`, generator module names | no |
@@ -32,7 +32,9 @@ None is applied: the scope forbids code edits, so every row is a plan item (B27,
 | `get_instruction_metadata`, `InstructionMetadata`, `instruction_info.py` | `selectable_instructions`, `SelectableInstruction`, `selectable.py` | `act_backend/generator.py:49`, `act_backend/instruction_info.py` | no |
 | `get_next_variable`, `substitute_variables`, `variable_counter` | `fresh_variable`, `rename_variables`, `next_variable` | `act_backend/isel_ir2isa_rewrites_txt_generator.py:39-54` | no |
 | `COMPARED` | `PAYLOAD_OPERATIONS` | `act_backend/isel_ir2isa_rewrites_rs_generator.py:41` | no |
-| `TWINS` | `LAYOUTS` | `act_backend/template_loader.py:14` | no |
+| `TWINS` | gone with the layout twins (B12) | `act_backend/template_loader.py:14` | no |
+| spec (the user's file) | ISA specification (owner decision 32) | `act_backend/` messages and docstrings, `README.md` (act-backend) | no |
+| TAIDL spec (the language document) | TAIDL language specification (owner decision 32) | `docs/coverage.md`, `README.md` (act-backend) | no |
 | dtype (in messages and docs) | element type | Rust `Dtype` may stay as a type name | no |
 | refuses | rejects | `README.md:48` (act-backend) | no |
 | machine code, assembly | compiled kernel | `README.md:16` and the usage section (act-backend) | no |

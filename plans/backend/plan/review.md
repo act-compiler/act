@@ -10,8 +10,8 @@ Evidence is file:line from the code; nothing was run.
 - 64-bit overflow is handled exactly: integer-only arithmetic is evaluated and checked (`act_backend/spec_checks.py:147-166`), and sizes that may overflow at selection get checked Rust (`act_backend/operand_sizes.py:1-10`).
 - Floor division matches the oracle in all three places it is written: Python-emitted Rust and C++ (`act_backend/expression_writer.py:10,74`) and the solver (`cpp/malloc/include/solver.h:26-63`).
 - Standard egg use for saturation: `Runner` with node, iteration and time limits (`generic/src/pipeline.rs:491-495`).
-- The analysis `merge` turns a shape-changing rewrite into a loud internal error, not a wrong result (`generic/src/ir/egraph.rs:403-410`).
-- The allocator drops a candidate with a reason instead of failing the compile (`cpp/malloc/src/act_malloc.cc:52-64`, `generic/src/malloc/cpp.rs:12`).
+- The analysis `merge` turns a shape-changing rewrite into a loud internal error, not a wrong result (`generic/src/ir/egraph.rs:403-410`); a panic is not a defined error under owner decision 40, so B26 makes it the shared coded shape fault and B41 drops the candidate (Q3.6).
+- The allocator drops a candidate with a reason instead of failing the compile (its asserts and the cost-model exit are the exceptions, D17 and D20) (`cpp/malloc/src/act_malloc.cc:52-64`, `generic/src/malloc/cpp.rs:12`).
 - The cost model is a one-function C ABI, a clean extension point (`README.md` cost section).
 - A large test suite pins behavior: `tests/test_matching.py` (1,479 lines), `test_refusals.py`, `test_reader.py`, goldens.
 

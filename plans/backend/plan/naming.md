@@ -11,7 +11,7 @@ Identifier renames inside the crate are not breaking.
 
 ## B27 Glossary terms in messages, docs and Python names
 
-- What: reject for refuse, addressing attribute for address attribute, state for machine state, region for operand, buffer for a declared memory, `is_supported_constraint` for `honoured`, element type for dtype.
+- What: reject for refuse, addressing attribute for address attribute, state for machine state, region for operand, buffer for a declared memory, `is_supported_constraint` for `honoured`, element type for dtype, ISA specification for the user's spec (owner decision 32).
 - What: the size and constraint errors for `@s.` name the state, as the start and semantics errors do (`spec_checks.py:287-290,364-367`).
 - Preserves: message structure (instruction name first); only words change.
 - Benefits: messages use the spec's words; grep finds one term per concept.

@@ -8,7 +8,7 @@ Rows follow the critic's verdict, the per-item table, then the missing items.
 | Verdict: string payload, discriminant-only `matches` | accepted | `egraph.rs:63-110,163-165` | B31 |
 | Verdict: two goldens are a thin net for B7 | accepted | Oracle simulation exists (`tests/conftest.py`) | B3 |
 | B1: same commit as B10 and B5 moves | partly | B1 moves the extractor and reader files with B28 once; B10 and B5 are now behavioral and stay separate commits (one concern per commit) | B1 |
-| B2: generate the struct for both sides from B13 | accepted | One schema, as TableGen and ISLE do | B2, B13 |
+| B2: generate the struct for both sides from B13 | partly | One schema, but Q4.11 makes the Rust struct the schema and cbindgen derives the C header (owner decision 28) | B2, B13 |
 | B3: oracle-differential gate for behavioral steps | accepted | `tests/test_extraction.py`, `test_matching.py` specs | B3 |
 | B4 keep | accepted | `parser.h:16-33` | none |
 | B5: defer the split | accepted | `tests/test_reader.py` pins messages; no driver for a split | B5 (redefined) |
@@ -20,15 +20,15 @@ Rows follow the critic's verdict, the per-item table, then the missing items.
 | B10: keep both strategies | partly | Merge accepted; two strategies replaced by one k-best extractor, since the default cost counts `api.` lines (`count.cc:17`) and k-best still gives the allocator several candidates | B10 |
 | B10: dedupe candidates across passes | accepted | Unchanged e-graph re-extracted (`pipeline.rs:544-547`) | B34 (new) |
 | B11 keep | accepted | `inplace_fix.rs:9-18` | B11 |
-| B12: no formatter run needed | accepted | Checked: `tests/lint.py:19,27` lints only; CI format check covers `git ls-files` (`README.md:110`) | B12 |
-| B13 keep; emit the B2 struct | accepted | As B2 row | B13 |
+| B12: no formatter run needed | rejected | Owner decision 29: rustfmt runs on the generated crate at generation | B12 |
+| B13 keep; emit the B2 struct | partly | B13 kept; the B2 struct is not emitted from it (Q4.11) | B13 |
 | B14 keep | accepted | `spec_checks.py:10-19` | none |
 | B15 keep | accepted | -- | none |
 | B16 keep, Q2 | accepted | Largest item; depends on L1 and O | none |
 | B17 to B20 keep | accepted | -- | none |
 | B21 to B26 keep | accepted | Each traces to a read bug | none |
 | B27, B28 keep | accepted | -- | none |
-| Drop the Q2 data-driven applier experiment | pending panel | R19; the architect argues for data on evidence; the separate experiment is gone, the form is open | B6; decisions.md |
+| Drop the Q2 data-driven applier experiment | accepted | Q4.4: no separate experiment; the data form is a spike on the first two B6 rules | B6; decisions.md |
 | Keep the allocator port rejected | accepted | `solver.h:26-63` | none |
 | Missing: typed payload | accepted | `egraph.rs:63-110,137-150` | B31 (new) |
 | Missing: target constants in rewrite 0 | accepted | Checked: `16` and `Dtype::I32` at `ir2ir_rewrites.rs:20-27,100` | B33 (new) |

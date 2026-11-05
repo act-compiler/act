@@ -7,7 +7,7 @@ The other gaps: 18 operation words plus `parameter` (`isel_ir2isa_rewrites_txt_g
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
 | B15 | Keep `docs/coverage.md` in sync by a test; document S1.3 cases | B14, L7, T | S | Q1 |
-| B16 | State in the backend | L1, O, B13 | L | Q2 |
+| B16 | Read-only state folded at compile time | L1, B13, B24 | M | Q2 |
 | B17 | Operations beyond the 18, `concatenate` of any arity | B6, B7, B31 | M | Q2 |
 | B18 | Element types `s2`, `s4`, `u2`, `u4`, `f8e4m3fn`, `f8e5m2` | B7, L17 | S | Q2 |
 | B19 | Several output regions | B2, B11 | L | Q2 |
@@ -15,8 +15,9 @@ The other gaps: 18 operation words plus `parameter` (`isel_ir2isa_rewrites_txt_g
 
 ## B15 Keep `docs/coverage.md` in sync by a test
 
-- What: a test that maps each rejected row to a spec that triggers it and each supported row to an example or a generated spec.
-- What: the doc states each S1.3 case the backend fixes: `bitcast_convert` byte order, initial value of `reduce_add`, size of `d0`, in-place storage.
+- What: a test that maps each rejected row to an ISA specification that triggers it and each supported row to an example or a generated one.
+- What: the doc states each S1.3 case the backend fixes: `bitcast_convert` byte order, initial value of `reduce_add`, size of `d0`, and what an in-place mark and each pair relation do to allocation (B30).
+- What: the doc lists each precondition the backend cannot see, such as state values and the size of `d0` (Q1.12).
 - Preserves: `docs/coverage.md` columns and status words.
 - Benefits: the coverage doc cannot go stale; S1.2 conformance is checkable.
 - Caveats: row wording must carry a stable key.
@@ -26,14 +27,16 @@ The other gaps: 18 operation words plus `parameter` (`isel_ir2isa_rewrites_txt_g
 
 ## B16 State in the backend
 
-- What: treat state as a compile-time configuration: a kernel compiles under one known state, state-only instructions are emitted where a selected instruction needs a state value, and `@s.` reads fold to integers.
+- What: a kernel compiles under one known state; read-only `@s.` in starts, sizes and constraints folds to an integer at compile time (Q4.7).
+- What: every other use of state stays a named rejection that names the state (B27).
+- Not in this plan: state updates and state-only instruction emission follow after v3, since an e-graph orders no effects (Q4.7).
 - Preserves: today's rejections of `@s.` until each use is supported.
-- Benefits: specs with modes (dataflow, layout) become usable.
-- Caveats: the language must fix when updates take effect (S5.4) and whether state is known at compile time; the oracle must agree.
-- Fail points: an emitted sequence whose state differs from what selection assumed; noticed only by oracle simulation, so add state kernels with T and O.
-- Order and dependencies: after L1 fixes S4.4 and S5.4 and O agrees on update timing; after B13.
-- Verification: new state examples simulate equal to their NumPy references; coverage rows flip to supported.
-- Breaking: no for existing specs.
+- Benefits: ISA specifications with modes (dataflow, layout) become usable for read-only state.
+- Caveats: the `@x.` writer path would compile `@s.n` as attribute `n` (D12), so each fold needs its own test.
+- Fail points: a fold under a state other than the kernel's; noticed only by oracle simulation, so add state kernels with T and O.
+- Order and dependencies: after B24, B13, and L1's ruling on state.
+- Verification: new state examples simulate equal to their NumPy references; the read-only coverage rows flip to supported.
+- Breaking: no for existing ISA specifications.
 
 ## B17 Operations beyond the 18
 
