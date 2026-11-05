@@ -2,6 +2,7 @@
 
 Every item a panel decision marked "owner", "confirm", or escalated, resolved by an owner decision (OD) or on the evidence.
 Items on overlap, in-place, and placement marks go to panel 9; items on the data-fault and accumulation-bound split go to the joint moderator of panels 1 and 5.
+The last three rows rule on disagreements the plans sweep found between panel 11, the language drafts, the oracle plan, and the glossary.
 Code paths are relative to /home/user.
 
 | Item (panel, question) | Resolution | Basis (owner decision or evidence) | Critical for owner? |
@@ -30,6 +31,10 @@ Code paths are relative to /home/user.
 | Q8.8: trial task and time limit | Each person installs, runs the tutorial, and changes one small ISA specification (the Q7.5 example, about 37 lines) within 4 hours. | One working half-day fits the Q7.5 example size; every blocker becomes an item. | No |
 | Q8.8: fallback | One outside person, or a non-author teammate with a recorded transcript, stated as the weaker form. | panel-8 round1-sonnet:135. | No |
 | Q8.9: capacity against "nothing is cut" | Dates move at the M1 rebaseline and scope does not; measure the assist factor in wave 1. | OD11 with the owner's standing direction in panel 8. | No |
+
+| Panel 11 keyword spellings `access`, `unit`, `dtype` against the glossary | `acc.buffer(name, access_dims, base_element_dims, element_type, meta=None)` and `ops.constant(value, element_type, shape)`; `access`, `unit`, and `dtype` are not keywords. | glossary/terms.md lists `dimensions` -> `access_dims`, `unit_dim` -> `base_element_dims`, and `var_type` -> `element_type` as v3 renames; "unit" and "dtype" are banned words; the converter then maps one name to one name; OD19. | No |
+| Language author's spellings: `acc.d0`, `ops.and_`, slice tuples, `ops.constant` signature | `acc.d0` stands as the accessor of the built-in hbm buffer; `ops.and_`, `ops.or_`, `ops.not_` stand for the three tensor operators that are Python keywords; `(high, low)` bit slices stand, inclusive and high first, and "slice" names a bit slice of the encoding block only; `ops.constant(value, element_type=s64, shape=[])` is the signature, with the positional order of the Q11.2 sketch. | `d0` is predeclared (OD19, glossary row hbm) and needs an accessor; `keyword.kwlist` holds `and`, `or`, and `not`, and the printed tensor operator stays `and`; panel-10/decision.md:53 orders slices high to low, and the glossary bans "slice" for a region; the signature follows the keyword ruling above and the `s64` default of OD38. | No |
+| Oracle reserved-name rejection against OD42 (the oracle adds no checks) | The rejection stays as an emission-time rejection and is not a check: the oracle registers no check function and runs no pass over the `Model` after `check`; a user name equal to a name the test oracle defines raises `ValueError` while the test oracle is emitted, before any file is written. | OD42 limits the checks that follow `check`; the reserved set comes from the emitted `api.py` text and the decorator (act-oracle/taidl_to/api_generator.py:61-86) and from the names the emitted code defines (act-oracle/taidl_to/generator.py:36-42), so no check on the `Model` can know it; OD40 has a generator reject what the architect can correct, and a rename corrects it. | No |
 
 ## Not resolved here
 
