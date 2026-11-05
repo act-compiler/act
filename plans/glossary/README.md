@@ -1,17 +1,10 @@
-# Reconciled glossary
+# Glossary
 
-The single glossary for the TAIDL spec and its four repos, with a ruling on every conflict between the two glossary drafts and the tracks' objections.
+The single glossary for the TAIDL language specification and its four repos.
 
-Owner decisions 19-21 override these files where they differ:
-
-- A data model has buffers (not "tensor buffers") and state (not "control registers" or "initial state"); the API adds them as buffers and state.
-- `hbm` stays `hbm` (not "global memory").
-- "Region" stays (not "data slice").
-- The `@s.` prefix stays.
-
-- [terms.md](terms.md): every canonical term with its definition, source, banned synonyms, and the v3 identifier renames.
-- [rulings.md](rulings.md): every conflict, its ruling, and the reason.
-- [words-to-avoid.md](words-to-avoid.md): each word to replace and its replacement.
+- [terms.md](terms.md): every canonical term with its definition, source, banned synonyms, and the v3 identifier renames; it covers the overlap relations, markers, implicit constraints, the attribute width and encoding layers (encoding block, encoded and derived attributes), generator metadata and its metadata entries, and the failure terms (rejection, fault, dropped candidate, invalid input kernel).
+- [words-to-avoid.md](words-to-avoid.md): the banned column of `terms.md`, one row per canonical term.
+- [rulings.md](rulings.md): the rulings in force that no term row carries, including the overlap, layer, and generator metadata rulings.
 
 ## Source tags
 
@@ -22,3 +15,5 @@ Owner decisions 19-21 override these files where they differ:
 | [SHLO] | StableHLO specification: https://openxla.org/stablehlo/spec |
 | [XLA] | XLA operation semantics: https://openxla.org/xla/operation_semantics |
 | [MLIR] | MLIR language reference and dialect docs: https://mlir.llvm.org/docs/ |
+
+A source cell may also cite an owner decision ("Decision 19") or a panel question ("Q7.8").
