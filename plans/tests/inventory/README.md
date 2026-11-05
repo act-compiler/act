@@ -16,8 +16,8 @@ Line numbers are from the trees as read on the planning day and move with other 
 
 ## Style key
 
-- `spec`: checks a rule the language spec will state; survives any implementation change.
-- `pr`: regression for one PR; a bespoke ISA description or kernel exercising one fix.
+- `spec`: checks a rule the language specification states; survives any implementation change.
+- `pr`: regression for one PR; a bespoke ISA specification or kernel exercising one fix.
 - `impl`: pins an implementation detail (internal table, log format, generated text, formatter layout).
 - `e2e`: generates, compiles, and simulates a real example.
 - `golden`: compares to a stored output file.

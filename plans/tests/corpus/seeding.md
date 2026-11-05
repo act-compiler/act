@@ -6,27 +6,40 @@ T8 turns the oracle's reference tests into the operations corpus with a stated r
 ## T7. Seed the corpus from existing front-end tests (S2 to S7)
 
 - What: turn each parametrized case of `taidl/tests/test_grammar.py` (:57-120 strictness, :146-186 root, :194 inputs, :352-360 literals, :405 shapes) and the rejection cases of `test_instruction.py` and `test_expressions.py` into corpus directories, then delete the originals that the corpus covers.
-- What: `act-backend/tests/test_refusals.py:208-358` and `act-oracle/tests/test_refusals.py:87-130` hold ISA descriptions that a generator rejects but the front end accepts; they enter the corpus as `accepted` cases with generator expectations in T12.
+- What: `act-backend/tests/test_refusals.py:208-358` and `act-oracle/tests/test_refusals.py:87-130` hold ISA specifications that a generator rejects but the front end accepts; they enter the corpus as `accepted` cases with generator expectations in T12.
 - What: `act-oracle/tests/test_kernel.py:1287-1728` (looped attributes, region shapes at the call) enters as S5.2 cases with kernels.
-- Benefits: the biggest existing body of language tests becomes spec-tagged and shared; the two generator rejection files shrink to expectation rows.
+- What: tests of removed constructs become `rejected` cases whose code names the replacement: the linalg words (`act-oracle/tests/test_linalg.py:1`); they are seeded after the v3 API is fixed.
+- What: the marker and overlap tests (`test_instruction.py:269-440`, `test_refusals.py:383-396`) seed the T30 matrix, since the markers stay as shorthand for constraints.
+- What: a parsed-value assertion such as `test_grammar.py:357` becomes a `parsed` table entry, so no fact is lost.
+- Benefits: the biggest existing body of language tests becomes tagged and shared; the two generator rejection files shrink to expectation rows.
 - Caveats: the grammar tests exercise the lexer directly (`IDLV2Lexer` at `test_grammar.py:9`); a case that needs a raw token stream carries `semantics.txt` and is run by the lexer path of T6.
-- Fail points: a case that passes for the wrong reason, as with the two assertion-free tests at `test_instruction.py:50` and :222; the runner asserts the verdict so a silent pass is impossible.
-- Order and dependencies: after T1, T5, T6; several PRs, one spec file of the outline per PR (grammar, declarations, instructions, expressions, semantics).
-- Verification: each PR deletes the parametrize block it replaced; S2 to S7 each have at least one accepted and one rejected case.
+- Fail points: a case that passes for the wrong reason, as with the two assertion-free tests at `test_instruction.py:50` and :222; the runner asserts the verdict, so a silent pass is impossible.
+- Order and dependencies: after T1, T5, T6; several PRs, one outline file per PR (grammar, declarations, instructions, expressions, semantics).
+- Verification: each PR deletes the parametrize block it replaced, and T28 finds no test id gone without a mapped successor; S2 to S7 each have at least one accepted and one rejected case.
 - Breaking: no.
-- Files: `taidl/tests/test_grammar.py`, rejection cases of `test_instruction.py` and `test_expressions.py`, spec texts of both `test_refusals.py`, `act-oracle/tests/test_kernel.py:1287-1728`; every case preserved as a corpus directory.
+- Files: `taidl/tests/test_grammar.py`, rejection cases of `test_instruction.py` and `test_expressions.py`, ISA specifications of both `test_refusals.py`, `act-oracle/tests/test_kernel.py:1287-1728`; every case preserved as a corpus directory.
 
 ## T8. Operations corpus with reference values (S8)
 
-- What: one case per operation word and element type the spec lists in S8.3, with a reference result computed by NumPy or by the closed form S8.4 gives, following `act-oracle/tests/test_elementwise.py:406` and `test_reduce.py:87-129`.
-- What: the tolerance per type moves from `act-oracle/tests/conftest.py:227` (`ULPS`) into the case file so the spec, not a conftest, states it.
+- What: one case per operation word and element type the language specification lists in S8.3, with an expected result stored in the case, following `act-oracle/tests/test_elementwise.py:406` and `test_reduce.py:87-129`.
+- What: v3 regenerates the stored values from NumPy (pinned version named in `case.toml`) or from the closed form S8.4 gives; no StableHLO interpreter is added.
+- What: the tolerance per case is `expect = "exact"` or `"almost"`; a float `dot` or `reduce` case states the S1.3.15 result-type bound from its term count and result type, other float cases state `ulps`.
+- What: the language specification owns the bound, `taidl.testing` implements it, and the conftest imports it.
+- What: NaN, signed-zero, and infinity comparison is stated once in `taidl.testing`; a case may set `nan = "any"`.
 - What: S8.5 (operations outside the language) gives `rejected` cases, one per word the grammar lexes and the language leaves out.
-- What: one `error` case per run-time violation the norm defines, seeded from `act-oracle/tests/test_kernel.py:590` (region outside its buffer), :712 and :749 (pieces outside HBM, overlapping), :1229 and :440 (zero divisor), and `act-backend/tests/test_refusals.py:351-358`; the oracle must raise the defined error and T13 checks the backend agrees.
-- What: S5.5 in-place cases where a kernel reads the marked input after the instruction and must see the output, since an in-place mark means the output reuses the input's storage; seeded from `act-backend/tests/test_extraction.py:441-563` and `test_constructs.py:448`.
-- Benefits: the oracle's reference tests become language tests any generator can run; the backend runs the same cases through T13.
-- Caveats: linalg words (`test_linalg.py:94-190`) have no closed form and keep a NumPy reference with a stated tolerance.
-- Fail points: a reference computed with the same library the oracle lowers to (JAX) proves nothing; the case file names the reference library and T8 requires it is not JAX.
-- Order and dependencies: after T5; needs L's S8.3 and S8.4 tables; lands in parallel with T7.
-- Verification: every row of S8.3 has a case; every case names a reference library and a tolerance.
+- What: one `fault` case per run-time fault the norm defines, as `program.toml` programs (T29), seeded from `act-oracle/tests/test_kernel.py:590` (region outside its buffer), :712 and :749 (pieces outside hbm, overlapping), :1229 and :440 (zero divisor), and `act-backend/tests/test_refusals.py:351-358`.
+- What: a fault case depends only on attributes, state, and region text, so no fault case reads tensor data.
+- What: a seed whose divisor is a computed expression stays a `fault` case (S1.3.2); a seed whose divisor is tensor data becomes a fixed-value case.
+- What: a fault case expects the oracle to raise the code with buffers and state unchanged, and a fixed-value case expects the stored result with no raise; the backend never faults, and T13 checks that simulating its assembly never does.
+- What: fixed-value cases for S1.3.12 and S1.3.17, each with a stored expected value and `reference` naming the XLA rule or NumPy:
+  - integer `x / 0` is -1 (signed) or all ones (unsigned), `min / -1` is `min`, and `x % 0` is `x`;
+  - float-to-integer `convert` truncates toward zero, saturates out of range, and maps NaN to 0;
+  - a divisor of 0 in a padded lane of a masked `divide` returns the fixed value and writes no fault.
+- What: the overlap cases are T30; seeds `act-backend/tests/test_extraction.py:441-563` and `test_constructs.py:448` enter there.
+- Benefits: the oracle's reference tests become language tests any generator can run; the backend runs the same kernels through T13.
+- Caveats: the removed words `cholesky` and `triangular_solve` (`test_linalg.py:94-190`) become `rejected` cases (T7); the words that stay keep a NumPy reference with a stated tolerance.
+- Fail points: a reference computed with the library the oracle lowers to (JAX) proves nothing; `case.toml` names the reference library and T8 requires it is not JAX.
+- Order and dependencies: after T5; needs L3 for the S8.3 and S8.4 tables; lands in parallel with T7; the S8 word and type cases land before T11.
+- Verification: every row of S8.3 has a case; every case names a reference and a tolerance.
 - Breaking: no.
-- Files: the six act-oracle reference files and `test_templates.py`; every case and tolerance preserved as corpus data, the files stay as runners.
+- Files: the six act-oracle reference files and `test_templates.py`; every case and tolerance preserved as corpus data, the files stay as runners; `act-oracle/tests/conftest.py:226-227` (`ULPS`) is replaced by the bound from `taidl.testing`.

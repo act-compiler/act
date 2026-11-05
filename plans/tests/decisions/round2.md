@@ -1,40 +1,42 @@
-# Debate round two
+# Decisions: selection tests, diagnostics, case format, kit, examples
 
-The five points round one left contested, argued once more and ruled.
-Each ruling names the item it changes and the evidence it rests on.
+Each decision names the item it changes and the evidence it rests on.
 
 ## Selection tests in `test_matching.py`
 
-- Pragmatist: these 34 tests found real selection bugs; a differential test needs a cargo build per case and both generators in one image, so it is slow and lives in a repo the backend team does not run on every PR.
-- Purist: the spec promises a result, not a selection; `test_matching.py:648-661` fails on a correct cheaper selection, which is a false alarm the suite trains people to ignore.
-- Ruling: split by what the assertion reads; a test whose fact is visible in the result (`:898`, `:1247`, `:1177-1189`) becomes a T13 case, a test whose fact is only visible in the search log (`:661`, `:709`) stays as an impl test with a header.
-- Ruling: T12 gets a fast tier so the backend repo still runs every corpus case through `spec_checks` on each PR without a build; the slow differential tier runs in act nightly and on release.
-- Binds: T12, T13, T18, T20.
+- Split by what the assertion reads.
+- A test whose fact is visible in the result (`:898`, `:1247`, `:1177-1189`) becomes a T13 case.
+- A test whose fact is only visible in the search log (`:661`, `:709`) stays as an impl test with a header.
+- A selection assertion such as `:648-661` fails on a correct cheaper selection, which the suite must not do.
+- T12 has a fast tier running every corpus case through `spec_checks` on each pull request without a build, and a slow tier per pull request (T27).
+- The differential tier runs in act nightly and on release.
+- Binds: T12, T13, T18, T20, T27.
 
-## Error messages carry clause ids
+## Diagnostics in cases
 
-- Pragmatist: matching prose regexes works today in both repos (`act-oracle/tests/test_refusals.py:62`, `act-backend/tests/test_refusals.py:156`); changing every message is a breaking change for anyone parsing errors.
-- Purist: a rewording fails many cases at once, and a user reading `[S9.4]` can open the spec; the owner allows one coordinated major release, so the cost is paid once.
-- Ruling: ids in the v3 release, as a suffix the runner matches on, with the prose still asserted in a handful of cases so the message stays readable; no shim for the old text.
-- Binds: T6, T12, T22 question 2; both items are marked breaking under that condition.
+- Cases match on `code` and `object`, never on message prose (Q3.9).
+- A rejected case also records `phase` and the clause id; a `run` fault matches on `code`, since a C or C++ oracle has no Python class (Q6.5).
+- The clause id sits on line 1 of a message until the owner decides otherwise (Q3.8).
+- A few text tests cover the message format; D owns them.
+- No shim for the old message text.
+- Binds: T5, T6, T12.
 
 ## Case format
 
-- Pragmatist: `Accelerator` scripts are the only entry point (`taidl/tests/test_instruction.py:10`) and need no new parser.
-- Purist: a text format would let L write cases in the spec itself and would make the corpus readable without Python.
-- Ruling: Python scripts now, with `semantics.txt` beside them for the text-level sections (S2, S3, S7, S8), so the lexer and parser cases are already text; a text format for a whole ISA description waits for L to define one, and the loader is the single place to extend.
-- Binds: T5.
+- Python scripts for the ISA specification, with `semantics.txt` for the text-level sections (S2, S3, S7, S8).
+- `program.toml` for instruction-level cases, executor-neutral so a non-Python oracle can run it (Q6.1).
+- A text format for a whole ISA specification waits for L; the loader is the single place to extend.
+- Binds: T5, T29.
 
 ## Where the shared kit lives
 
-- Pragmatist: act installs both generators (`act/tests/test_end_to_end.py:11`), so a kit that imports an oracle and a backend can only be tested there.
-- Purist: corpus loading and tolerance tables are language-level and belong to the taidl wheel, or each generator depends on act, which inverts the dependency graph.
-- Ruling: two small pieces; `taidl.testing` ships the corpus loader and per-element-type tolerance helpers with the language, `act/testkit/` holds the golden, oracle import, and reference helpers that need both generators.
-- Binds: T3, T16, T22 question 1 (the owner can still collapse the two).
+- `taidl.testing` ships the corpus loader and the tolerance implementation with the language.
+- `act/testkit/` holds the golden, oracle import, and reference helpers that need both generators (Q6.11).
+- Binds: T3, T16.
 
 ## Examples trees in generator repos
 
-- Pragmatist: a generator PR must build its own example; moving `examples/` away makes the generator repo depend on act for its smoke test.
-- Purist: three copies of `mini_trn` (`taidl/examples/`, `act-backend/examples/`, `act-oracle/examples/`) drift, and the goldens are already duplicated.
-- Ruling: the ISA description scripts live in taidl and are listed by T10; each generator keeps the kernels and one smoke test that generates the pinned description; data and goldens move to act with T14 and T15.
-- Binds: T10, T14, T15, T22 question 4.
+- The ISA specification scripts live in taidl and are listed by T10.
+- Each generator keeps the kernels and one smoke test that generates the pinned specification.
+- Data and goldens move to act with T14 and T15.
+- Binds: T10, T14, T15.

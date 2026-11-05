@@ -9,7 +9,7 @@ Each line cites the two or more places involved.
 - Operation-word lists are derived three times: `taidl/tests/test_grammar.py:279` (`WORDS`), `act-backend/tests/test_refusals.py:146` (`grammar_words`), `act-oracle/tests/conftest.py:75` (`LOWERED`).
 - Five helpers exist in both conftest files: `load_bf16_matrix` (backend :49, oracle :270), `import_oracle` (:162, :285), `load_golden` (:210, :336), `bf16` (:217, :344), `attention_reference` (:222, :349).
 - Sum-from-a-start semantics are tested in `act-backend/tests/test_reader.py:280`, `test_matching.py:1177-1189`, and `test_constructs.py:569-575`.
-- Formatter layout is tested by hand in `act-backend/tests/test_generators.py:175-393` and on every generated tree in `conftest.py:468-472`.
+- Formatter layout is tested by hand in `act-backend/tests/test_generators.py:175-393` and on every generated tree in `conftest.py:468-472`; rustfmt runs at generation.
 
 ## Hidden coupling in fixtures
 

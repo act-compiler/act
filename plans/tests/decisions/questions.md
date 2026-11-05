@@ -1,29 +1,26 @@
-# Open questions for the owner
+# Answers in force
 
-Each question has a number, the items it unblocks, and a suggested default.
-An unanswered question is planned at its default.
+## T22. Answers in force for the test-suite questions
 
-## T22. Open questions for the owner
+| question | answer | items |
+| --- | --- | --- |
+| Where does the shared test kit live | split: `taidl.testing` for the corpus loader and tolerances, `act/testkit/` for goldens and oracle import | T3 |
+| Do messages carry the clause id | yes, with the diagnostic `code`; cases match on `code` and `object`; the clause id sits on line 1 until the owner decides otherwise | T6, T12 |
+| Is `hypothesis` allowed | yes, when T9 lands | T9, T24 |
+| Is `mutmut` allowed | yes, when T25 lands | T25 |
+| Is a StableHLO interpreter added | no; expected values come from NumPy or closed forms | T8 |
+| Does each generator repo keep a `mini_trn` smoke test | yes, one per repo | T14 |
+| Which ISA specification joins the T10 list | one GPU tensor-core specification (the fixed Hopper sketch), written by A | T10 |
+| Is the GPU a CI target for goldens | no; GPU checks are manual and use the reference tolerance | T14, T15 |
+| When does the differential tier run | nightly and on release; the per-pull-request slow tier of T27 runs beside it | T13, T27 |
+| Backend search limit in tests | deterministic mode; the wall-clock bound stays the user default | T13, T27 |
+| Public pins | released versions only; no pre-release tag, no commit or branch pin | T16 |
 
-- 1. Where does the shared test kit (T3) live.
-  - Default: split, `taidl.testing` for the corpus loader and tolerances, `act/testkit/` for goldens and oracle import.
-- 2. Should error messages carry the S9 or coverage.md clause id so T6 and T12 match on the id, not on prose.
-  - Default: yes, as a suffix like `[S9.4]`, in the v3 release.
-- 3. Is `hypothesis` an acceptable test-only dependency for T9.
-  - Default: yes.
-- 4. Do the generator repos keep a `mini_trn` smoke test after T14, or rely on act alone.
-  - Default: keep one smoke test per repo.
-- 5. Which real ISA descriptions beyond `mini_trn` and `mini_trn_double` go on the T10 list in Q1.
-  - Default: one GPU tensor-core description (mma or wgmma with TMA loads) written by A, and no SIMT model.
-- 6. Is the GPU platform a CI target for goldens, or reference-tolerance only.
-  - Default: reference-tolerance only, as `act-oracle/tests/test_mini_trn.py:22` does today.
-- 7. Does the slow differential tier (T13) run nightly in act, or on every act PR.
-  - Default: nightly and on release.
-- What: the list above, answered in one sitting.
-- Benefits: unblocks T3, T6, T9, T12, T13, T14, T15.
-- Caveats: defaults are the lead's; the owner may hold a standing preference the inventory did not see.
-- Fail points: a question answered differently in two repos; the answer is recorded once in the act plan.
-- Order and dependencies: before step 3 of the migration.
-- Verification: every question has an answer or the word default beside it.
-- Breaking: question 2 only.
+- What: the table above, the single record of the answers.
+- Benefits: no test item waits on an owner question.
+- Caveats: the clause id placement on line 1 changes with the owner's later word on diagnostics.
+- Fail points: an answer applied differently in two repos; the answer is recorded here once.
+- Order and dependencies: none.
+- Verification: each answer names its items.
+- Breaking: no.
 - Files: none.

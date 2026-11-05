@@ -1,19 +1,17 @@
-# Debate round one
+# Decisions: location, existing tests, goldens, timing
 
-Each topic has the pragmatist position, the purist position, and the ruling with the item it binds.
-Topics marked contested went to round two.
-
-| topic | pragmatist | purist | ruling |
-| --- | --- | --- | --- |
-| corpus location | each generator keeps its own cases | one corpus in taidl, generators read it | purist (T19); the three copies of the word list show the cost of copies |
-| existing rejection tests | keep `test_refusals.py` files as they are | replace with expectation rows | purist for word and type loops, pragmatist for one-off rejections until a corpus case exists (T12) |
-| `test_matching.py` | keep; it caught real bugs | delete; selection is an implementation detail | contested; round two |
-| `test_extraction.py`, `test_allocator.py` | keep | delete as implementation | pragmatist (T20); they guard invariants no result check sees |
-| CLI and packaging tests | keep | out of scope | pragmatist; they are not spec tests and are not pretended to be |
-| layout tests in `test_generators.py` | keep | delete | purist (T4); the formatter check in `conftest.py:468-472` already covers them |
-| goldens | keep per repo | one in act | purist (T15); the record format is already the same code twice |
-| property-based tests | not now | from the start | pragmatist on timing (Q2, T9); the corpus first |
-| error messages carry clause ids | no, match prose | yes, match ids | contested; round two |
-| case format | Python `Accelerator` scripts | a text format the spec defines | contested; round two |
-| where the shared kit lives | act | taidl | contested; round two |
-| examples trees in generator repos | keep | move to taidl | contested; round two |
+| topic | decision | binds |
+| --- | --- | --- |
+| corpus location | one corpus in the taidl wheel, generators read it through the pin; a fifth repo is not needed until a second implementation outside the four repos exists | T19 |
+| existing rejection tests | word and type loops become expectation rows; one-off rejections stay until a corpus case exists | T12 |
+| `test_matching.py` | split by what the assertion reads (see round2.md) | T13, T18 |
+| `test_extraction.py`, `test_allocator.py` | stay as impl tests; they guard invariants no result check sees | T20 |
+| CLI and packaging tests | stay; they are not language tests and are not labelled as such | T20 |
+| layout tests in `test_generators.py` | deleted; rustfmt runs at generation and `conftest.py:468-472` checks every generated tree | T4 |
+| goldens | one in act, one record format, one tolerance beside the golden | T15 |
+| property-based tests | per pull request with a fixed seed, after the corpus | T9, T24 |
+| mutation pilot | once per release, never a pull request gate | T25 |
+| error messages | cases match on the diagnostic `code` and `object` (see round2.md) | T6, T12 |
+| case format | Python `Accelerator` scripts plus text files (see round2.md) | T5 |
+| shared kit | split between `taidl.testing` and `act/testkit/` | T3 |
+| examples trees in generator repos | scripts live in taidl; each generator keeps kernels and one smoke test | T10, T14 |
