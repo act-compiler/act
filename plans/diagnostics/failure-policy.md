@@ -13,8 +13,7 @@ This file maps each tool's allowed stops onto the classes of `scheme.md`; any ot
 | Generated oracle | Invalid assembly code or binary input | `K` (scope `O`) | The assembly line or word offset, and what the user corrects |
 | Generated oracle | A program that reaches a rule violation (S1.3) | `V` | The instruction, the iteration, the violated rule |
 | Generated backend | An invalid kernel, or a kernel outside the input specification | `K` (scope `B`) | The kernel line and the construct the user changes |
-| Generated backend | No candidate implements a valid kernel | `K` (scope `B`) | The drop reasons by code, and the instruction the ISA specification lacks |
-| Generated backend | A kernel needs an instruction excluded at generation | `K` (scope `B`) | The excluded instruction and its stored reason, before any search |
+| Generated backend | No candidate implements a valid kernel: no covering, or every candidate dropped | `K` (scope `B`) | The kernel, the lowest uncovered operation and the stop cause, or the drop reasons by code; as a hint outside the match key, each excluded instruction whose tensor operators include that operation |
 | Any tool | Files, flags, builds | `X` | The path or flag |
 
 - A generator or the oracle never stops on `I`: after the front end ships its checks, an `R` condition found late is a recorded finding of the tool (D5), not a user stop.
@@ -35,7 +34,7 @@ This file maps each tool's allowed stops onto the classes of `scheme.md`; any ot
 - The kernel is the StableHLO, XLA HLO, torch-mlir, or torch.fx input; an invalid one or one outside the input specification is class `K`, scope `B`.
 - A `K` message states the line (`kernel.hlo:12`), the construct, and what the user changes; it is never raised for a candidate failure.
 - `scheme.md` Input class also covers assembly code and binary input given to an oracle (scope `O`).
-- The causes keep apart: invalid kernel (`KB001` to `KB040`), no candidate (`KB041`), a needed instruction excluded at generation (`KB042`), invalid assembly or binary (`KO021` to `KO040`).
+- The causes keep apart: invalid kernel (`KB001` to `KB040`), no candidate (`KB041`, with the excluded-instruction hint), invalid assembly or binary (`KO021` to `KO040`).
 
 ## Layer codes
 

@@ -118,8 +118,7 @@ First codes from the current catalog.
 | --- | --- | --- |
 | KB001 to KB040 | Kernel text: header, line split, types, shapes, operands | the 24 kernel-reader rows of `catalog/act-backend.md` |
 | KO001 to KO020 | Kernel declaration and call arguments | `generic/decorator.py:71-185`, `generic/utils.py:278-281, :675-692` |
-| KB041 | A valid kernel no candidate implements; lists the drop reasons | `pipeline.rs:59-60` |
-| KB042 | A kernel needs an instruction the backend excluded at generation; names it and its stored reason | none today |
+| KB041 | A valid kernel no candidate implements; names the lowest uncovered operation and the stop cause, or lists the drop reasons, then lists excluded instructions as a hint | `pipeline.rs:59-60` |
 | KO021 to KO040 | Assembly code and binary input of an oracle, including a word matching no instruction | none today |
 | IB001 to IB099, IO001 to IO019, IF001 to IF019 | Internal rows | the 34 backend, 3 oracle internal rows |
 | XB001 to XB040, XO001 to XO009, XA001 to XA059 | Flags, files, builds, scripts | `pipeline.rs:295-427`, `generator.py:104-193`, `act/docker/*.sh` |
@@ -131,7 +130,7 @@ First codes from the current catalog.
 | RF052 | A type is `s<w>` for w in 1..64 or `u<w>` for w in 1..63; `u64` is rejected | S5.1 |
 | RF053 | A type key names a declared attribute | S5.1 |
 | RF054 | Every word bit is covered by exactly one slice or fixed bit | S5.1 |
-| RF055 | No word matches the fixed bits of two instructions | S5.1 |
+| RF055 | No two instructions have fixed bits that agree on every bit position both fix | S5.1 |
 | RF056 | An encoded attribute has a declared type whose width equals its slice total | S5.1 |
 | RF057 | A derived attribute has exactly one affine link to one encoded attribute; the message names the attribute and the defect | S5.1 |
 

@@ -9,5 +9,5 @@
 - Benefits: a kernel author sees one format for every failure of a run; the run-time norm is the same for every generator.
 - Caveats: breaking for kernels that ran with a 64-bit warning; migration note.
 - Fail points: iteration environments that grow long for nested loops; cap at the three innermost variables and say so.
-- Order and dependencies: D1, D14, L6, O6, O11.
+- Order and dependencies: D1, D14, L6, O6, and the unroll outcome, O20 or O11 (O11 lands only if O19 misses the Q5.1 bound).
 - Verification: `tests/test_kernel.py` and `tests/test_constraints.py` pass with code assertions; one test per `V` and `K` code.

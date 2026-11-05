@@ -59,14 +59,14 @@ The tables below are the current surface; U2 and U3 replace it with the `Model` 
 - A generator's own checks are plain functions run after `check`; there is no registry and no checker subclass.
 - A generator rejects a problem the architect can correct, and excludes an instruction its target cannot model, with a reason (code, section id, author line) that it prints and stores.
 - The oracle adds no check.
-- `CONTRACT_VERSION` names the member list; a removed member is deprecated for one minor release.
+- `CONTRACT_VERSION` is a string `major.minor` naming the member list; an added member bumps the minor, and a removed one is deprecated for one minor, then bumps the major.
 - The `Model` carries per-line result type and dims, folded sizes, the value-to-region map, and the call site of each node as typed fields; none exists before `check` has run.
 - Every node records the first frame outside `taidl` as its call site; a whole-instruction problem uses the first line of the instruction's function.
 - `fold` and `literal_fits` are listed contract functions; the shape-rule functions are not.
 - A serialized form is added at the second non-Python consumer.
 - `inplace` and `placed` carry the markers `set_inplace`, `set_apart`, and `set_no_partial_overlap`; `set_may_overlap` is added; each expands to the constraints it stands for (Q9.2).
 - Layer members: a declared type per attribute, the encoding block per instruction, and the derived-attribute links; each is absent when its layer is absent, and the oracle and backend read types as implicit constraints.
-- Generator metadata: a read-only namespace-keyed mapping on the accelerator, each buffer, and each instruction; a generator reads its own namespace and ignores the others.
+- Generator metadata: a namespace-keyed dict on the accelerator, each buffer, and each instruction, read as a fresh plain-data copy; a generator reads its own namespace and ignores the others.
 - The metadata check of a namespace belongs to its generator and runs after `check`; `check` lists the namespaces present and checks none.
 - The front end also records per input-output pair its relation and the tie; the backend reads that record.
 

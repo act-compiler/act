@@ -23,7 +23,9 @@ A rejection stops generation.
 A generator excludes an instruction its target cannot model, and rejects a problem the architect can correct (Q11.3).
 The oracle excludes nothing.
 
-Scope letters: `F` front end and the language, `B` act-backend, `O` act-oracle, `A` act umbrella.
+Scope letters: `F` front end and the language, `B` act-backend, `O` act-oracle, `A` act umbrella, `G` a generator outside act.
+An act-shipped generator registers one scope letter before release; a `G` code is keyed by the generator's namespace in its own `diagnostics.json`, and its tool prefix names it on line 1.
+An unknown key or a bad value in a generator's namespace is class `U`, the rejection outcome; a `CONTRACT_VERSION` outside a generator's window is class `X`, naming both versions.
 The letter `V` names the violated rule; the class is Fault.
 An `R` code has scope `F` only, so two generators reject the same description with the same code.
 A `V` code has scope `F` too (`VF001`): a fault is a language rule, every generator reuses the code, and the tool prefix names the raiser.
@@ -59,7 +61,7 @@ warning[UB001]: instruction 'sem': two output regions are unsupported by act-bac
 
 - Line 1: `<severity>[<code>]: <object>: <position>: <sentence> [S<id>[, S<id>]]`; severity is `error` or `warning`.
 - The position is the line and column inside a text, which only the 2.x string front end has; in v3 it is omitted and line 2 is the author's line.
-- The suffix is a TAIDL language specification section id (`S9.4` for a numbered S9 row); it ends line 1 so CI logs, `grep`, and the first line of `str(error)` carry it; omitted for `X` and `I`.
+- The suffix is a TAIDL language specification section id (for an S9 row, the id in the row's section column, since S9 rows carry no ids of their own); it ends line 1 so CI logs, `grep`, and the first line of `str(error)` carry it; omitted for `X` and `I`.
 - A generator's `coverage.md` id never appears in a message; `TaidlError.spec` carries the section id as a field.
 - Line 2: the ISA specification file and line of the call (`file:line (call)`); for a kernel, the kernel file and line; omitted for `X` and `I`.
 - An exclusion line has the same two lines at severity `warning`; its object is the instruction and its line 2 is the first line of the instruction's function.
@@ -135,6 +137,7 @@ Rust and C++ build a `Diagnostic { code, object, line, message }` and print it i
 ## Warnings
 
 - A warning is a diagnostic that lets generation or the run continue; v3 emits none for a spec condition (owner decision 16).
+- A front-end lint outside conformance, such as the S5.5 one, is a `taidl.TaidlWarning` at the author's line, emitted only when `check` finds no problem.
 - `warn_width` (`generic/utils.py:268-271`) becomes a `VF005` error.
 - A generator warns about its own limits (`W` is a severity, not a class): an exclusion is `warning[UB001]: ...`.
 - A warning of this kind is also stored in the generated tool, so it is not lost with the terminal.

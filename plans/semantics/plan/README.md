@@ -4,15 +4,15 @@ Sized for three to four engineers over two quarters; Q1 items run in parallel ac
 
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
-| F1 | Typing rules that U4 implements in the front end | L | M | Q1 |
-| F2 | Region aliasing rules and in-place mark meaning | L | M | Q1 |
-| F3 | Total integer arithmetic: overflow and zero divisors fault | L | S | Q1 |
-| F4 | State variable semantics across both generators | L, F3 | L | Q2 |
-| F5 | Numeric classes, bounds, reduction identities | L, U, F6 | M | Q2 |
-| F6 | Byte order, sub-byte packing, size of d0 | L | S | Q1 |
-| F7 | Conformance suite derived from the rules: cut, carried by T7, T8, T26, T29 | -- | -- | -- |
-| F8 | Front-end rejections the spec already implies | L | S | Q1 |
-| F9 | Executable reference interpreter of the exact classes: cut, carried by T8 | -- | -- | -- |
+| F1 | [Typing rules that U4 implements in the front end](F1.md) | L | M | Q1 |
+| F2 | [Region aliasing rules and in-place mark meaning](F2.md) | L | M | Q1 |
+| F3 | [Total integer arithmetic: overflow and zero divisors fault](F3.md) | L | S | Q1 |
+| F4 | [State variable semantics across both generators](F4.md) | L, F3 | L | Q2 |
+| F5 | [Numeric classes, bounds, reduction identities](F5.md) | L, U, F6 | M | Q2 |
+| F6 | [Byte order, sub-byte packing, size of d0](F6.md) | L | S | Q1 |
+| F7 | [Conformance suite derived from the rules: cut, carried by T7, T8, T26, T29](F7.md) | -- | -- | -- |
+| F8 | [Front-end rejections the spec already implies](F8.md) | L | S | Q1 |
+| F9 | [Executable reference interpreter of the exact classes: cut, carried by T8](F9.md) | -- | -- | -- |
 
 ## Owners
 
