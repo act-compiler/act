@@ -7,16 +7,16 @@ None is applied: the scope forbids code edits, so every row is a plan item (B27,
 | old | new | where | applied? |
 | --- | --- | --- | --- |
 | `honoured` | `is_supported_constraint` | `act_backend/spec_checks.py:331,355` | no |
+| data model (one declared memory) | buffer | `act_backend/spec_checks.py:297-305` messages, docstrings | no |
 | refuse, refusal, `start_refusal`, `division_refusal` | reject, rejection, `start_rejection`, `division_rejection` | `act_backend/spec_checks.py:1,243,258` and docstrings; `tests/test_refusals.py` | no |
 | address attribute | addressing attribute | `act_backend/spec_checks.py:204,278` | no |
-| machine state | state variable / state update | `act_backend/spec_checks.py:371,376` | no |
+| machine state | state / state update | `act_backend/spec_checks.py:371,376` | no |
 | `beyond_allocator` | `reads_address_or_state` | `act_backend/spec_checks.py:277` | no |
 | operand (for a region) | region | `act_backend/spec_checks.py:308-325` messages "its operand on" | no |
 | `TensorInfo` | `ClassData` | `generic/src/ir/egraph.rs:371`, all users | no |
 | `MetaData`, `MetaDataInfo` | `KernelRegions`, `KernelRegion` ? | `generic/src/ir/metadata.rs:7,18-19` | no |
 | `pii` undefined in code | keep `PiiNode`, `PiiGraph`; define pii once as partially instantiated instruction | `generic/src/ir/pii.rs:10,20`, extractors, `pipeline.rs` | no |
-| `hbm_offset`, HBM | `offchip_offset`, off-chip memory | `generic/src/ir/pii.rs:87`, `initializer/lib.rs:28` comment | no |
-| `Buffer` enum (a data model) | `DataModel` ? | `generic/src/ir/buffer.rs` | no |
+| `Buffer` enum | keep: it names a buffer (owner decision 19) | `generic/src/ir/buffer.rs` | no |
 | `DetectedConst` | `FoldedConstant` | `generic/src/ir/egraph.rs:398`, extractors | no |
 | `EggSymbolTable` | `ValueIds` | `generic/src/isel/initializer/lib.rs:23` | no |
 | `HLOExpr` | `KernelExpr` | `generic/src/isel/initializer/expression.rs` | no |

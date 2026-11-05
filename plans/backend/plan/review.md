@@ -2,7 +2,7 @@
 
 The backend works end to end and its rejections are careful; its weakness is the plumbing between stages, not the stages' ideas.
 Verdicts: keep (leave as is), reshape (same role, restructured), replace (role kept, code rewritten).
-Evidence is file:line read this session; nothing was run.
+Evidence is file:line from the code; nothing was run.
 
 ## What is good and should be kept
 
