@@ -22,7 +22,7 @@ Only the owner decisions are binding.
 | R12 | Contents of storage that no output region writes | Unchanged; every buffer starts zero-filled | One simple norm, no undefined read |
 | R13 | Multi-core and tile-array concurrency | Outside v3; a Q2 design study; implementation after v3 | Large, and v3 must ship in two quarters |
 | R14 | Typed state kinds for descriptors and async groups (P11) | In v3 | Hopper TMA and Trainium DMA descriptors both need it, and TMA is in scope |
-| R15 | Missing Ascend case study | Added at the start of C12 | Ten studies already cover the gap matrix |
+| R15 | Missing Ascend case study | Not made; C12 adds NVDLA only | Ten studies already cover the gap matrix |
 | R16 | Run the case-study sketches through the front end | Yes, as part of C11 | A sketch that does not parse is weak evidence |
 | R55 | Name of a defined run-time error | A "fault": it writes no region and no state, and the generator reports it with the clause id | One word for every case of owner decision 16 |
 | R56 | Integer arithmetic in expressions | Exact; a final value outside signed 64 bits is a fault | Simpler than checking every intermediate value |

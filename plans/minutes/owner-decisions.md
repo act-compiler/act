@@ -38,6 +38,8 @@ Decisions the owner made during the meeting; every plan and ruling follows them.
 | 44 | Torch backend | The plans include a portable PyTorch backend built on that infrastructure |
 | 45 | E-graph library | The backend later moves from egg through a Rust FFI to a lightweight C++ e-graph library built for tensor computations: union-find, fast e-matching, complex rewrites with little code, and native e-node metadata with preconditions over it, without proof machinery |
 | 46 | E-graph library source | The C++ e-graph library is built in-house, independent of egg and egglog, which were designed more for proof systems than for compiler optimization; it keeps only the machinery compiler rewriting needs |
+| 47 | 2.x patch releases | Non-breaking fixes developed before v3 ship publicly as 2.x patch releases with released pins, following the act 2.x structure; breaking changes wait for v3 |
 | 31 | Overlap and hazards | TAIDL assumes no hazard model such as read-before-write; the ISA author declares how an instruction behaves when its inputs and outputs overlap, and the language must not fail scenarios real architectures allow |
 | 32 | The user's file | "ISA specification" |
 | 33 | Releases | Public releases follow the act 2.x structure: each release pins released versions of its dependencies; no pre-release tags and no commit or branch pins in public; development happens in private repos |
+| 48 | Planning tooling | The plans are a one-time planning effort: no scripts or tooling files under `plans/` |
