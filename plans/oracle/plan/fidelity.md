@@ -5,7 +5,7 @@ This plan fixes the known deviations, makes state reads follow the spec, checks 
 
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
 | --- | --- | --- | --- | --- |
-| O8 | Round float literals once, from the exact decimal | L16, T | S | Q1 |
+| O8 | Round float literals once, from the exact value received | L16, T | S | Q1 |
 | O25 | Expressions read the pre-state; updates commit with the outputs | L5 | S | Q1 |
 | O10 | Overlap constraints and in-place marks: check the list before any load, value from the pre-state | L5, O25 | S | Q1 |
 | O11 | Fallback only if O19 fails: keep `while` with an equivalence test; reject wrapping starts | O19 | S | Q1 |
@@ -21,7 +21,7 @@ This plan fixes the known deviations, makes state reads follow the spec, checks 
 - What: `constant_value` reads a literal with `float(text)` (`oracle_visitor.py:383`) and `mlir_literal` emits `repr(float(value))` (`generic/utils.py:408-409`), so a narrow float rounds twice.
 - What: `1.00048828125000000001` at `f16` becomes the `f64` tie `1 + 2^-11`, then `1.0`; the nearest `f16` is `1.0009765625`.
 - What: an integer literal above `2^53` at a float type takes the same path (`utils.py:408`).
-- What: parse with `fractions.Fraction(text)`, round once to nearest even, and emit the bits in hex, as non-finite values are (`utils.py:411-420`) (Q5.5, Q1.10).
+- What: take the exact value received, `fractions.Fraction(value)` of a `float`, an `int`, or a `Fraction`, never through `float()`; round once to nearest even, and emit the bits in hex, as non-finite values are (`utils.py:411-420`) (Q5.5, Q1.10, Q13b.9).
 - What: the range check compares the exact value with the largest finite value plus half an ulp (`utils.py:400-406`); a literal that rounds to infinity is rejected.
 - What: the same path serves `epsilon` (`oracle_visitor.py:161-168`).
 - Fail points: `f8e4m3fn` has no infinity; reuse `float_largest` (`utils.py:383-390`).
@@ -119,5 +119,6 @@ This plan fixes the known deviations, makes state reads follow the spec, checks 
 - What: written rows: a positional constraint and an input-input constraint.
 - What: cross-check: each marker and its hand-written expansion give the same fault set over a swept attribute range.
 - What: an output-output overlap row for the implicit apart constraint.
+- What: region-bounds row (S1.3.3): an evaluated start below 0, a size below 1, and a start plus size past the access dimension each fault, while a negative attribute value with an in-bounds start passes.
 - Order and dependencies: after O10; T owns the harness.
 - Verification: every cell of the matrix has a test or is listed as a gap.

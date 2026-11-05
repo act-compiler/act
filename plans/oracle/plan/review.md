@@ -1,6 +1,6 @@
 # act-oracle review
 
-The oracle as it stands on branch `claude/clever-fermat-1442fd`.
+The oracle as it stands on its development branch.
 Most of it is sound: generation is atomic, every rejection names the instruction, and integer arithmetic is exact.
 The weak parts are duplicated language rules, a string-template layer, a hand-written formatter, and silent numeric deviations (D1, D11, D21, D24), and run-time violations it does not detect (D22, D23).
 

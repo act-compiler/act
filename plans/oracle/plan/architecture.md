@@ -80,6 +80,7 @@ The oracle stays on its Python and jax path; the later move to fsim-lib (owner d
 - What: one emitter writes MLIR generic form for every word; `sh_pretty`, `sh_cast`, `sh_transpose`, `sh_broadcast` and `sh_iota` restate one pattern (`generic/utils.py:477-571`); only `reduce`, `dot` and `constant` keep their own function.
 - What: O4's word table lands here as the lowering columns (op name, dialect, attribute mapper, reducer, the guards of O22); the language columns go to the front end with O7.
 - What: lowering stays StableHLO text; a `jax.lax` path is rejected (Q5.9).
+- What: this generic emitter is the one source of per-instruction StableHLO; O34 and the backend dialect (B50) both read it (Q12.4).
 - Benefits: removes the template layer and `PRETTY` and `op_to_template` (`oracle_visitor.py:100`, `oracle_visitor.py:208-221`); fixes D16 by deletion.
 - Caveats: a traceback must still name the instruction, so the per-instruction function stays.
 - Fail points: a row with the wrong dialect fails at MLIR parse naming no instruction; `tests/test_elementwise.py` and `tests/test_linalg.py` run every word.
@@ -114,8 +115,9 @@ The oracle stays on its Python and jax path; the later move to fsim-lib (owner d
 - Changes: a planning doc only; nothing in act-oracle changes.
 - What: owner decision 23 moves the oracle's execution to an all-C/C++ simulator through fsim-lib later; this item writes that migration plan.
 - What: start from the follow-up analysis in this track's `fsim/` folder: interface fit, what each O item carries over, the native path, and the fidelity risks per owner decision.
+- What: the plan is O34 to O36 (`fsim.md`), native-path steps 1 to 4 on U15's pin set; step 5 stays out under owner decision 28 (Q12.4).
 - What: name the gates a migration must pass: every golden and norm row of this plan holds on fsim, and each fsim pass keeps decisions 16, 17, 22 and 24.
 - Benefits: the next plan starts from measured fit, not a fresh survey.
-- Caveats: no current item waits on it, and it reorders nothing on the current path.
+- Caveats: only O34 waits on it, and it reorders nothing on the current path.
 - Order and dependencies: none; it runs after the current path's Q2 items and reads their results.
 - Verification: a migration plan with items, dependencies and a fail point per fidelity risk.

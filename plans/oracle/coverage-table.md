@@ -18,7 +18,7 @@ On valid input it runs correctly: a path that raises or computes a wrong result 
 
 | Feature | Spec section | Status | Notes |
 | --- | --- | --- | --- |
-| Accelerator and `base_dir` | S4.2 | supported | Written to `<base_dir>/targets/<name>/oracle`. |
+| Accelerator and `base_dir` | S4.2 | supported | Written to `<base_dir>/targets/<accelerator>/oracle`. |
 | Names of the accelerator, data models, instructions, attributes, state | S4.1 | partial | A name the oracle reserves is rejected with `NotImplementedError`; the list is in the oracle's `README.md`; the architect can rename it, so the error must be a `ValueError` naming the name (D30, O6). |
 | Buffers: access dimensions, base element shape, element type | S4.3 | supported | Every element type of S7.3. |
 | `hbm` data model `d0` | S4.3 | supported | A kernel's `hbm` argument gives its size in bytes. |

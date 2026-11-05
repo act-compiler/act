@@ -16,5 +16,6 @@ Each item states whether it breaks compatibility, for one coordinated major rele
 | [checks.md](checks.md) | Items O5, O6, O7, O24, O26, O31: dead code, error classes, the checked `Model` and no oracle check, call-time errors, unwritten reads, the failure policy. |
 | [layers.md](layers.md) | Items O32, O33: width layer checked as constraints; encoding layer, derived attributes and generator metadata ignored. |
 | [fidelity.md](fidelity.md) | Items O8, O25, O10, O11, O12, O13, O23, O30: literals, pre-state reads, overlap constraints and in-place marks, loop fallback, jax configuration, reference, fixed data values, overlap test matrix. |
+| [fsim.md](fsim.md) | Items O34, O35, O36: fsim-lib native-path steps 1 to 4, in roadmap waves 8 and 9. |
 | [coverage.md](coverage.md) | Items O14, O17: fold `docs/operations.md`, test the coverage table. |
 | [naming.md](naming.md) | Items O15, O16 and the naming table. |

@@ -12,7 +12,7 @@ This plan deletes dead code, fixes error classes, moves static rules to the fron
 | O6 | Spec errors raise `ValueError`; S8.3 table from the front end | L3 | S | Q1 |
 | O7 | Delete the oracle's static checks; read only the checked `Model`; copy the front end's shape module | U4, U10, O6 | M | Q2 |
 | O24 | Call-time errors: checked 64-bit values, constraint overflow, initial state | L5, L6, O20 | S | Q1 |
-| O26 | Unwritten on-chip reads raise at the call; zero fill becomes the declared-value fill | L5, O20 | M | Q2 |
+| O26 | Unwritten on-chip reads raise at the call; zero fill becomes the declared-value fill | L5, O20, L46 | M | Q2 |
 | O31 | Failure policy: errors only on invalid input, naming instruction and clause; audit every raise site | O6, O20 | M | Q1 |
 
 ## O5 Dead code
@@ -47,7 +47,8 @@ This plan deletes dead code, fixes error classes, moves static rules to the fron
 - Changes: `taidl_to/generic/shapes.py`, `taidl_to/semantic_generator.py`, `taidl_to/oracle_visitor.py`, `taidl_to/generator.py`; preserves each verdict and the call-time entry `disagreement`.
 - What: a consumer deletion under U4: U4 moves the rules into taidl; this item deletes the oracle's copies (Q3.1, Q8.4).
 - What: the region, type, compare-fit, literal-shape, and constant-range checks run in `check` at generation (Q5.8).
-- What: `generate_oracle` takes a `Model` or an `Accelerator`, calls `check` once for an `Accelerator`, and its body reads only the `Model` (U10, Q11.3).
+- What: `generate_oracle(source, /, base_dir=None, **options)` takes a `Model` or an `Accelerator`, calls `check` once for an `Accelerator`, and its body reads only the `Model` (U10, Q11.3).
+- What: it writes only under `<base_dir>/accelerators/<accelerator>/oracle/` (Q7.11) and returns the frozen report of U2 (S12.4).
 - What: the oracle adds no check after `check` and excludes no instruction; it lowers every tensor operator and runs the rest at the call.
 - What: the one generation-time rejection that stays is a name colliding with a name the generated `api.py` defines (O6); it is found while emitting, not by a check on the `Model`.
 - What: the copies deleted are `RULES` (`shapes.py:450`), `semantic_generator.py:41-56`, `oracle_visitor.py:276-289` and `oracle_visitor.py:373-389`.
@@ -85,9 +86,9 @@ This plan deletes dead code, fixes error classes, moves static rules to the fron
 - What: the zero-fill prologue (`templates.txt:469-470`, `sh_zeros`) fills only buffers with a declared initial value, with that value.
 - Benefits: an oracle pass no longer certifies a kernel that reads stale storage.
 - Caveats: a stale read of a buffer reused across kernels is not caught, since "written" means written during the kernel.
-- Caveats: the per-buffer initial value needs a language item that declares it (joint decision on unwritten reads); until it lands, every on-chip buffer takes the mask.
+- Caveats: the per-buffer initial value is declared by L46 (`initial_value` on `acc.buffer`); until it lands, every on-chip buffer takes the mask.
 - Fail points: example kernels that read before writing now fail; each needs a zeroing first instruction.
-- Order and dependencies: L5 states the rule; after O20, so every region is concrete.
+- Order and dependencies: L5 states the rule; after O20, so every region is concrete; the declared-value fill after L46.
 - Verification: a test reads one unwritten element and expects the error; the examples pass.
 
 ## O31 Failure policy
