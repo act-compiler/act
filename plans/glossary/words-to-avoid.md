@@ -1,7 +1,7 @@
 # Words to avoid
 
 Words to replace when they name a TAIDL concept in docs, error messages, or user-visible names.
-Each row copies the banned column of [terms.md](terms.md); a CI grep checks docs against it.
+Each row copies the banned column of `terms.md`; a CI grep checks docs against it.
 
 | Use | Instead of |
 | --- | --- |
@@ -43,7 +43,7 @@ Each row copies the banned column of [terms.md](terms.md); a CI grep checks docs
 | marker | overlap hint, alias constraint, flag, in-place mark, placement mark |
 | shorthand | user-productivity helper, convenience, sugar, syntactic sugar |
 | implicit constraint | automatic check, hidden guard |
-| instruction semantics (semantics) | body, computation, abstract computation, HLO |
+| instruction semantics (semantics) | computation, abstract computation, HLO, body (for the semantics alone) |
 | operation | line, statement, instruction (in an instruction semantics), node |
 | tensor operator | operation word, opcode, op, HLO op, primitive |
 | reference operator | reference operation, backing op, lowering |
@@ -76,13 +76,21 @@ Each row copies the banned column of [terms.md](terms.md); a CI grep checks docs
 | extraction / extractor | selection (for this step), picker |
 | sound / complete | correct, valid (for either) |
 | unsupported feature | limitation, gap, TODO |
-| coverage status | handled, works, missing, rejected (as a status) |
+| coverage status | handled, works, missing, unsupported (as a status) |
 | rejection (reject) | refuse, refuses, refused, refusal, deny, disallow, error out, fail (for a rejection) |
 | fault | undefined behavior, UB, implementation-defined, unspecified |
 | dropped candidate | failed candidate, skipped candidate, pruned candidate (for a failure), silent fallback |
 | invalid input kernel | bad kernel, broken kernel, unsupported kernel (for an invalid one), malformed tiled kernel |
 | conforming | compliant, compatible |
 | ACT ecosystem | toolchain, stack, suite |
+| authoring surface (surface) | DSL, meta-DSL, semantics text, string form (for v3), TAIDL syntax |
+| tracer | source parser, interpreter, compiler (for the tracer) |
+| call site | location, origin, trace line |
+| check function (check) | validate, validator, `Accelerator.validate()`, lint, pre-check |
+| checked model (model) | validated accelerator, typed model (after check), AST, tree, IR |
+| generator check | backend validation, checker subclass, check registry, plugin check |
+| excluded instruction (exclusion) | skipped instruction, ignored instruction, silently dropped instruction |
+| converter | migrator, `taidl migrate`, upgrade tool, compatibility shim |
 | uses | leverages |
 | the concrete claim | seamless support |
 | from an ISA specification alone | just (as in "just from TAIDL specifications") |

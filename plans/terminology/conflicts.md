@@ -1,7 +1,7 @@
 # Contested terms
 
 Each row names a concept where the sources disagree and the evidence on each side.
-The term in force is in [../glossary/terms.md](../glossary/terms.md), set by owner decisions 14, 19, 20, 21, and 32.
+The term in force is in `glossary/terms.md`, set by owner decisions 14, 19, 20, 21, and 32.
 
 | # | Concept | Evidence |
 | --- | --- | --- |

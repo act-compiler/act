@@ -1,7 +1,7 @@
 # act track findings
 
 All fixes are plan items; nothing in /home/user/act was edited (applied = no).
-A1..A26 refer to files under `plan/`.
+A1..A28 refer to files under `plan/`.
 
 ## Old | new | where | applied?
 
@@ -31,7 +31,7 @@ A1..A26 refer to files under `plan/`.
 | non-ASCII: curly quotes, box drawing, arrows, emoji | ASCII | tutorials/*/README.md:60-61, demos/*.md:8-29, setup.md (last line) | no (A11 archives them; A12 gates the new tutorial) |
 | copy.sh usage "{exercise1\|exercise2\|exercise3}" | every exercise copyable | tutorials/pldi26/copy.sh:8 | no (A13, new tutorial) |
 | docker image `v1.2` in pldi26 | image `v3.0` in the new tutorial | tutorials/pldi26/docker.sh:10-12, setup.md:38-39 | no (A24) |
-| paper title "ACT: Automatically Generating Compiler Backends..." | "Automatically Generating ML Compiler Backends..." as in the BibTeX | tutorials/pldi26/setup.md:157 vs README.md:153 | no (A14, new tutorial) |
+| paper title "ACT: Automatically Generating Compiler Backends..." | "Automatically Generating ML Compiler Backends..." as in the BibTeX | tutorials/pldi26/setup.md:157 vs README.md:153 | no (A24, new tutorial) |
 
 Non-ASCII scan (`git ls-files | xargs grep -lP '[^\x00-\x7F]'`, text files): README.md, act/, tests/, docker/ are clean; only tutorials/ contain non-ASCII.
 

@@ -1,7 +1,7 @@
 # Operation families
 
 The TAIDL column lists tensor operators from `taidl/docs/operations.md`.
-The last column gives the name the prose uses; the glossary term for the concept is "tensor operator" in [../glossary/terms.md](../glossary/terms.md).
+The last column gives the name the prose uses; the glossary term for the concept is "tensor operator" in `glossary/terms.md`.
 
 | Concept | TAIDL tensor operator(s) | MLIR | StableHLO / XLA | PyTorch Core ATen | Neuron NKI | Name in prose |
 | --- | --- | --- | --- | --- | --- | --- |

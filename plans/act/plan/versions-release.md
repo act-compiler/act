@@ -20,8 +20,9 @@ Development happens in private repos, where a pin may name a commit.
 | A15 | Close gaps in check_versions.py | none | S | Q1 |
 | A16 | Write the release order and a checklist | none | M | Q1 |
 | A17 | Check sibling pins and dependency floors against act | A15 | M | Q2 |
-| A18 | Add a scheduled compatibility build | A16 | M | Q2 |
-| A23 | Release ACT 3.0 | A15, A16, A17, A20, A26 | M | Q2 |
+| A18 | Add a scheduled compatibility build | A16 | M | after v3 |
+| A23 | Release ACT 3.0 | A15, A16, A17, A20, A26, A28 | M | Q2 |
+| A28 | Converter in the last 2.x release and act's own ISA specifications | A16 | M | Q1 |
 
 ## A15 Close gaps in check_versions.py
 
@@ -64,10 +65,23 @@ Development happens in private repos, where a pin may name a commit.
 - What: the act part of the v3 release train (U8), in the order of A16: the sibling releases taidl 3.0, taidl-to 3.0, and act-backend 2.0 exist as released tags first; then act changes in one commit group.
 - The group sets the three pins in pyproject.toml to `v3.0`, `v3.0`, and `v2.0`, and `version` to `3.0`.
 - It adds the README table row (ACT v3.0, TAIDL v3.0, TAIDL-TO v3.0, ACT-Backend v2.0, image `devanshdvj/act:v3.0`) and the one sentence "ACT v3.0 moves the ecosystem to ...", and removes the older sentences (A3).
-- It adds the migration note: every rename and removal of the v3 batch, generated from the rename table, plus the `targets/` to `accelerators/` move.
+- It adds the migration note: every rename and removal of the v3 batch, generated from the rename table, plus the `targets/` to `accelerators/` move, the removal of the string form, and the converter command of A28.
 - It pushes the image `v3.0` after the quickstart gate (A20) and the fresh-venv gate (A26) pass.
 - Benefits: act is the only repo that pins all three siblings, so the train cannot finish without this item.
 - Caveats: no pre-release tag and no commit or branch pin appears in public; the siblings' private development pins stay private.
 - Fail points: check_versions.py fails when the newest row, the pins, and the sentence disagree; notice in CI step "Check the pinned versions".
-- Order and dependencies: after A15, A16, A17, A20, and A26; U8 and the tutorial (A24) follow it.
+- Order and dependencies: after A15, A16, A17, A20, A26, and A28; U8 and the tutorial (A24) follow it.
 - Verification: `python tests/check_versions.py` passes in the v3 image; `pip install` of the tag works in a fresh venv.
+
+## A28 Converter in the last 2.x release and act's own ISA specifications
+
+- What: the converter of Q11.4 is a script on the taidl 2.x line, run under taidl 2.x; it reads loaded v2 `Instruction` objects and prints the authoring surface; it is not a `taidl` subcommand in v3.
+- What: the last 2.x release of taidl (the act 2.x structure of A16) carries the script and its README usage line; the v3 removed-names rejection of `add_semantics` names that release and the one command to run.
+- What: act runs the script over `tests/test_end_to_end.py` and the quickstart outline, commits the converted files, and gates each with the equivalence test of T37 (`Model` from the string form equals `Model` traced from the converted file, up to call sites).
+- What: a file the script cannot convert is rewritten by hand from the HLO-text printer's output; the migration note lists the construct and the hand route.
+- What: the released converter pins only released versions, as every public release does.
+- Benefits: an architect with a v2 ISA specification has one command and a proof of equality, and act's own files move without a hand rewrite.
+- Caveats: no outside owner of a v2 specification is known, so the script carries no support promise beyond the migration note; a release can wrap it later if one appears.
+- Fail points: a converted file that builds a different `Model`; the T37 test fails on that file.
+- Order and dependencies: after A16 (the release order); the script is the shared track's, the `Model` equality is T37, and A23 and A24 wait for it.
+- Verification: the converted `tests/test_end_to_end.py` passes in the v3 image; the migration note names the converter's release tag.

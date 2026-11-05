@@ -1,6 +1,6 @@
 # Objections to the glossary (act track)
 
-Each objection from the act repo's wording and the row of [../glossary/terms.md](../glossary/terms.md) that answers it.
+Each objection from the act repo's wording and the row of `glossary/terms.md` that answers it.
 
 | Objection | Where the act repo shows it | Answer |
 | --- | --- | --- |

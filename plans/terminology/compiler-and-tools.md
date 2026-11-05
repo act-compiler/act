@@ -1,6 +1,6 @@
 # Compiler backend, tools, and errors
 
-Evidence per concept; the glossary term is in [../glossary/terms.md](../glossary/terms.md).
+Evidence per concept; the glossary term is in `glossary/terms.md`.
 
 ## Tools and artifacts
 

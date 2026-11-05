@@ -1,6 +1,6 @@
 # Description, memory, and state
 
-Evidence per concept; the glossary term is in [../glossary/terms.md](../glossary/terms.md).
+Evidence per concept; the glossary term is in `glossary/terms.md`.
 
 | Concept | Owner papers | MLIR | StableHLO/XLA | PyTorch | Neuron NKI |
 | --- | --- | --- | --- | --- | --- |

@@ -2,9 +2,9 @@
 
 The single glossary for the TAIDL language specification and its four repos.
 
-- [terms.md](terms.md): every canonical term with its definition, source, banned synonyms, and the v3 identifier renames; it covers the overlap relations, markers, implicit constraints, the attribute width and encoding layers (encoding block, encoded and derived attributes), generator metadata and its metadata entries, and the failure terms (rejection, fault, dropped candidate, invalid input kernel).
+- [terms.md](terms.md): every canonical term with its definition, source, banned synonyms, and the v3 identifier renames; it covers the authoring surface, the check function, the checked model, generator checks, exclusions, and the converter; the overlap relations, markers, implicit constraints, the attribute width and encoding layers (encoding block, encoded and derived attributes), generator metadata and its metadata entries, and the failure terms (rejection, fault, dropped candidate, invalid input kernel).
 - [words-to-avoid.md](words-to-avoid.md): the banned column of `terms.md`, one row per canonical term.
-- [rulings.md](rulings.md): the rulings in force that no term row carries, including the overlap, layer, and generator metadata rulings.
+- [rulings.md](rulings.md): the rulings in force that no term row carries, including the overlap, layer, generator metadata, and authoring surface rulings.
 
 ## Source tags
 

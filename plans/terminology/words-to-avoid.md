@@ -1,6 +1,6 @@
 # Words still in use
 
-Where the repos still use a word that [../glossary/words-to-avoid.md](../glossary/words-to-avoid.md) bans.
+Where the repos still use a word that `glossary/words-to-avoid.md` bans.
 The replacement is the glossary row; this file holds locations only.
 
 | Word | Seen in |

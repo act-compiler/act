@@ -12,7 +12,7 @@ Item rows cite file:line from the tree as of this meeting.
 | A3 | Remove news, roadmap, and release-history lines from README | A23 | S | Q1 |
 | A4 | Rename vague identifiers and comments in tests/ | A1 | S | Q1 |
 | A5 | Fix act/ docstrings and the distribution name | A8 | S | Q1 |
-| A6 | Comment pass on docker/ scripts | none | S | Q2 |
+| A6 | Comment pass on docker/ scripts | none | S | after v3 |
 | A7 | ASCII and one-sentence-per-line gate for text files | A11 | S | Q1 |
 | A8 | One name per generator across the four repos | none | M | Q1 |
 | A25 | Write the quickstart | A1 | S | Q1 |
@@ -92,20 +92,23 @@ Item rows cite file:line from the tree as of this meeting.
 
 ## A25 Write the quickstart
 
-- What: the smallest complete accelerator (load, compute, store; about 37 lines) kept in a tested example file and shown in full in README.md, replacing the outline at README.md:36-45 (`# ... define ISA spec ...`); the README links the language specification and the coverage tables, and the tutorial link waits for A24.
+- What: the smallest complete accelerator (load, compute, store; about 40 lines) written in the authoring surface of decision 41, kept in a tested example file and shown in full in README.md, replacing the outline at README.md:36-45 (`# ... define ISA spec ...`); the README links the language specification and the coverage tables, and the tutorial link waits for A24.
 - Benefits: the first thing a reader copies runs and teaches the vocabulary (buffer, state, hbm, region).
+- What: the example imports `Accelerator`, `Comp`, `Addr`, `read`, `write`, and `ops` from `taidl`; each instruction is an `@acc.instruction` function whose regions are `buffer.region(starts, size=sizes)`; it ends with `taidl.check(acc)` and the two generator calls, the first line the architect runs being `check`.
+- What: the example holds no semantics text, no string, and no `/` or `if` on a symbolic value; its spelling is copied from the panel 11 decision (Q11.2) and updated when the language track fixes it.
 - Caveats: three instructions is the floor, because `d0` is `u8` and load and store each need a `bitcast_convert`; Docker is the supported full flow and comes first, with the `pip install` line pointing at act-backend/README.md for the backend toolchain.
 - Fail points: README and example drift; copy from the file A20 runs.
-- Order and dependencies: after A1; A20 runs it.
+- Order and dependencies: after A1; A20 runs it; the spelling waits for the surface items of the language track and the tracer of the shared track.
 - Verification: the example runs in the image (A20) and its text appears in README.md unchanged.
 
 ## A27 Document how to add a new generator
 
-- What: one act-level page, linked from README.md, that walks an author through adding a generator such as act-allo (decision 39): take the typed model after `Accelerator.validate()` (U2, U3, U10), expose `generate_<name>(accelerator, base_dir=None, **options)`, read only the generator's own metadata entry, and touch neither taidl nor another generator.
+- What: one act-level page, linked from README.md, that walks an author through adding a generator such as act-allo (decision 39): take the `Model` that `taidl.check(acc)` returns (U2, U3, U10), expose `generate_<name>(model_or_accelerator, base_dir=None, **options)` (an `Accelerator` is checked once at the entry), read only the `Model` and the generator's own `meta` entry, and touch neither taidl nor another generator.
 - What: the page lists the required parts: an expectations table with one row per corpus case (supported, or unsupported with a coded rejection) and generated coverage, the neutrality test that strips generator metadata and compares oracle and backend output, and the one-name rule of A8.
 - What: the page states the failure policy of decision 40: the generator rejects only problems the architect can correct, with a clear error, and a misspelled key in its own namespace names the node and key.
+- What: the page states the generator check of decision 42: it runs after `check`, rejects an architect-correctable fault, and excludes an instruction it cannot model with a printed reason (code, section id, author line) stored in its output; the oracle adds no check.
 - Benefits: a new generator needs no knowledge of the other repos, and the extension path is written once.
-- Caveats: the typed contract and `validate()` are shared-code items U2, U3, and U10; the page cites their final spellings and waits for them; the metadata spelling is panel 3's.
+- Caveats: the typed contract and `check` are shared-code items U2, U3, and U10; the page cites their final spellings and waits for them; the metadata spelling is panel 3's.
 - Fail points: the page drifts from the shared contract; copy its example from a tested template generator that A20-style CI runs.
 - Order and dependencies: after U2, U3, U10, A8, and A25; the glossary terms generator metadata and metadata entry fix the wording.
 - Verification: a reader builds a stub generator from the page alone, and its expectations table and neutrality test pass in CI.
