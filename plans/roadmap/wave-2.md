@@ -1,26 +1,26 @@
 # Wave 2
 
-Normative rules, the typed contract, the width layer, and the backend shape chain; 42 items, weight 83.
+Normative rules, the typed contract, the width layer, and the backend shape chain; 42 items, weight 78.
 Wave 2 ends at M1.
 
 | ID | Item | Depends on | Size | Note |
 | -- | ---- | ---------- | ---- | ---- |
-| L3 | Normative shape and element type rules per operation | L2 | L | Q8.4 step a |
 | L4 | Check generators against the stated reduce identities and `constant` fill | L2 | S | -- |
 | L15 | Rename confusing internal names | L25 | S | -- |
-| L16 | Range and type checks at the declaring call | L3 | S | -- |
+| L16 | `check` reports a range or type error at the declaring call's site | L3 | S | -- |
 | L17 | Element types `f4e2m1fn` and `f8e8m0fnu` | L2, L3 | S | -- |
 | L26 | Apply the glossary to the taidl docs and error messages | L25 | M | -- |
 | L31 | Float accuracy bounds for `dot`, `reduce_add`, `reduce_multiply` | L2 | S | -- |
 | L32 | Defined-behavior norms: pre-state issue, unwritten reads, numerics, fault guarantees | L1, L2 | M | -- |
+| L46 | Declared initial value per buffer: `initial_value` on `acc.buffer` | L16, L32 | S | O26 and B36 read it |
 | L34 | Rename "refus" to "reject" in messages, docstrings, READMEs, and identifiers | L30 | S | -- |
 | L27 | Apply the glossary to B, O, and A docs | L25 | M | later item; scheduled because B27 and O15 depend on it (Q8.1) |
 | B24 | Reject instructions with no semantics, exclude state-only ones (D4) | L5 | S | -- |
 | B27 | Glossary and owner vocabulary in messages, docs and Python names | L25, L27 | S | -- |
 | B28 | Rust and C++ identifier and log renames | B1 | S | -- |
-| B31 | Typed payloads in `TensorOp` | B1 | M | -- |
+| B31 | Typed payloads in `TensorOp` | B1, B3 | M | -- |
 | B2 | Typed candidate and kernel-fact handoff to the C++ allocator | B1, B25, B31 | M | -- |
-| B7 | Shape and element type inferred in `Analysis::make` | B31 | L | names its rule source; agreement test with the taidl module (Q8.2) |
+| B7 | Shape and element type inferred in `Analysis::make` | B3, B31 | L | names its rule source; agreement test with the taidl module (Q8.2); open at wave 2 end trips K27 |
 | B37 | One extraction module and no re-extraction after saturation | B1, B29 | S | -- |
 | B39 | Pair-relation record in the typed handoff | B2, L35 | S | -- |
 | O6 | Spec errors raise `ValueError`; S8.3 table from the front end | L3 | S | -- |

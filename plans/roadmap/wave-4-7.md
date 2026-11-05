@@ -4,7 +4,7 @@ Wave 4 ends at M3, wave 5 at M4, wave 6 at M5; wave 7 follows M5.
 
 ## Wave 4: generators read the checked model
 
-50 items, weight 130.
+49 items, weight 122.
 Backend checks reject or exclude, and the exclusion report lands before the failure policy (Q11.3).
 The converter lands last, after the tracer, and ships in the last taidl 2.x release (Q11.4 step 4).
 
@@ -23,9 +23,9 @@ The converter lands last, after the tracer, and ships in the last taidl 2.x rele
 | B33 | Target constants out of IR-to-IR rewrite 0 | B6 | S | -- |
 | B34 | Search budget measurement and candidate deduplication | B10, B29 | S | -- |
 | B35 | Overlapping IR-to-ISA rules: declaration-index tie-break, duplicate warning | B29, B6 | S | -- |
-| B36 | Drop a candidate that reads unwritten on-chip storage | B10 | S | -- |
+| B36 | Drop a candidate that reads unwritten on-chip storage | B10, L46 | S | -- |
 | B42 | Input validation and a documented input specification | B46, B5 | M | -- |
-| B43 | Input formats other than XLA HLO text: detection now, readers staged | B42 | L | -- |
+| B43 | Input formats other than XLA HLO text: detection, including portable artifacts; readers in B47 and B53 | B42 | S | -- |
 | O1 | Runtime code out of `API_FILE` into `runtime/`; split what remains of `utils.py` | O20 | M | -- |
 | O2 | One instruction record from the visitor, consumed by checks and emission | O1, O5 | M | -- |
 | O3 | Emitter calls in generic form instead of string templates; one word table | O2 | M | absorbs O4 (Q8.6) |
@@ -33,7 +33,7 @@ The converter lands last, after the tracer, and ships in the last taidl 2.x rele
 | O13 | Differential reference: NumPy over the instruction record, module-text goldens | O2 | M | -- |
 | O15 | Apply the naming table: identifiers, comments, docs | L25, L27, O1 | M | -- |
 | O24 | Call-time errors: checked 64-bit values, constraint overflow, initial state | L5, L6, O20 | S | -- |
-| O26 | Unwritten on-chip reads raise at the call; zero fill becomes the declared-value fill | L5, O20 | M | -- |
+| O26 | Unwritten on-chip reads raise at the call; zero fill becomes the declared-value fill | L46, L5, O20 | M | -- |
 | O32 | Width layer: the oracle checks attribute types as implicit range constraints | O10, O24 | S | -- |
 | O33 | Encoding layer, derived attributes, generator metadata: ignored; neutrality test; binary input later | O32 | S | -- |
 | P3 | Named typed rewrite rules with priorities | B6, B8 | M | -- |
@@ -57,20 +57,20 @@ The converter lands last, after the tracer, and ships in the last taidl 2.x rele
 | D18 | Exclusion report | B46, D1, D2, D6 | S | Q11.3 |
 | D16 | Failure policy (decision 40) | B2, D1, D18, D7, D8 | M | -- |
 | T32 | Width layer cases (range faults, `u64` rejection) | D16, L37, T29, T5, T6 | M | -- |
-| L44 | Converter script on the 2.x line and per-file `Model` equivalence | L42 | M | converter after the tracer (Q11.4 step 4) |
-| U13 | Converter and equivalence tests | U10, U12 | M | converter after the tracer (Q11.4 step 4) |
-| A28 | Converter in the last 2.x release and act's own ISA specifications | A16 | M | last taidl 2.x release, before the v3 train |
+| U13 | Converter and equivalence tests; absorbs L44 | U10, U12 | M | converter after the tracer (Q11.4 step 4) |
+| A28 | Converter in the last 2.x release and act's own ISA specifications | A16, U13 | M | last taidl 2.x release, before the v3 train; runs T37's per-file check |
 
 ## Wave 5: v3 released on released pins
 
 27 items, weight 74.
-The equivalence tests pass before the string surface is deleted, and the deletion lands before the encoding unit (Q11.4 steps 5 and 6).
-The encoding unit (L38, L39, B44, B45, T33, T34) lands whole before U8, and never ships in part (Q10.4).
+The equivalence tests pass before the string surface is deleted, and the deletion lands before the encoding unit merges (Q11.4 steps 5 and 6).
+The encoding unit (L38, L39, B44, B45, T33, T34), developed from wave 3 on the private heads, merges whole before U8 and never ships in part (Q10.4).
+The release gate A31 passes on the M4 evidence before U8 and A23.
 Release order: U8 releases taidl 3.0; taidl-to 3.0 and act-backend 2.0 pin it and release; A23 releases act 3.0 on those pins.
 
 | ID | Item | Depends on | Size | Note |
 | -- | ---- | ---------- | ---- | ---- |
-| T12 | Expectation runner: supported, or unsupported with the documented code | D6, T11, T6 | M | -- |
+| T12 | Expectation runner: the row's status, with the documented code | D6, T11, T6 | M | -- |
 | T13 | Differential tests oracle vs backend on the supported intersection | B29, T12, T29, T3, T8 | L | -- |
 | T4 | Delete tests that pin generated text or internal names | T11, T13, T14, T20 | S | -- |
 | T18 | Final deletion pass of PR-defense tests | T13, T14, T20, T4 | M | -- |
@@ -86,17 +86,17 @@ Release order: U8 releases taidl 3.0; taidl-to 3.0 and act-backend 2.0 pin it an
 | D11 | Generate S9 and the unsupported tables | B15, D3, D6, L7, L8, O14 | S | -- |
 | T38 | Surface, `check`, and exclusion cases | T12, T5, T6, U10, U3 | M | -- |
 | T37 | Converter equivalence tests per ISA specification file | T38, T6, U3 | M | equivalence before deletion (Q11.4 step 5) |
-| L45 | Remove the string surface, `taidl/antlr4/`, grammar tests, and the ANTLR dependency | L44 | S | deleted in v3 (Q11.4 step 6) |
-| U14 | Delete the string surface and the parser dependency | B13, O2, U10, U12, U13 | S | deleted in v3 (Q11.4 step 6) |
+| U14 | Delete the string surface and the parser dependency; absorbs L45 | B13, O2, T37, U10, U12, U13 | S | deleted in v3 (Q11.4 step 6) |
 | L38 | Encoding layer: one encoding block per instruction | L37 | M | encoding unit: lands whole before U8 (Q10.4) |
 | L39 | Derived-attribute rule and the encode-decode round trip | L38 | M | encoding unit: lands whole before U8 (Q10.4) |
 | B44 | Derived attributes solved in closed form in the allocator | B30, B38 | M | encoding unit: lands whole before U8 (Q10.4) |
 | B45 | Assembler and disassembler generated from the encoding layer, landing last as one unit | B44 | L | encoding unit: lands whole before U8 (Q10.4) |
 | T33 | Encoding layer cases and assembler round trip | L38, L39, T29, T32, T6 | L | encoding unit: lands whole before U8 (Q10.4) |
 | T34 | Derived attribute cases (closed-form links, rejected links) | T33 | M | encoding unit: lands whole before U8 (Q10.4) |
-| U8 | Coordinated v3 release train | U10, U12, U13, U14, U2, U3, U4, U5, U6, U7 | M | taidl 3.0 released first (owner 33) |
+| A31 | Release gate: the M4 evidence passes on the private heads | B44, B45, L38, L39, T12, T13, T33, T34, T36, T37, T38, U14 | S | gate before U8 and A23 |
+| U8 | Coordinated v3 release train | A16, A31, U10, U12, U13, U14, U2, U3, U4, U5, U6, U7 | M | taidl 3.0 released first (owner 33) |
 | T16 | CI wiring: corpus travels with the pinned taidl release | T12, T5 | S | pins the released taidl 3.0 |
-| A23 | Release ACT 3.0 | A15, A16, A17, A20, A26, A28 | M | act 3.0 released last, on released pins (owner 33) |
+| A23 | Release ACT 3.0 | A15, A16, A17, A20, A26, A28, A31, U8 | M | act 3.0 released last, on released pins (owner 33) |
 
 ## Wave 6: the tutorial on the release
 
@@ -112,7 +112,7 @@ Release order: U8 releases taidl 3.0; taidl-to 3.0 and act-backend 2.0 pin it an
 
 ## Wave 7: follow-ons after M5
 
-11 items, weight 31.
+10 items, weight 25.
 Each enters with its reason: other-core.md or other-supporting.md marks it later and no scheduled item depends on it (Q8.1).
 
 | ID | Item | Depends on | Size | Note |
@@ -123,7 +123,6 @@ Each enters with its reason: other-core.md or other-supporting.md marks it later
 | L19 | Strided regions, first in line after v3 | L5 | M | later |
 | L20 | `convolution` with window attributes: an idiom in L24 | L3 | M | later |
 | L21 | Rounding and saturation attributes on `convert`: an idiom in L24 | L3 | S | later |
-| L22 | Sub-computations for `reduce`, `scatter`, `sort`, `map` | L3 | L | later |
 | L23 | Indirect regions: starts read from a buffer, joined with the data-dependent addressing study | L5 | M | later |
 | L28 | Banned-synonym lint over the D10 word list | D10, L26 | S | later |
 | D13 | Machine-readable output and code explanations | D1, D7, D8 | S | later; lands after v3 |

@@ -9,7 +9,7 @@ Plan items scheduled for quarter 2 in the supporting tracks, by track.
 | C5 | Body operations: evidence that admits L20 | C12 | S | -- |
 | C7 | Numeric annotations: evidence for L21 | C10 | S | -- |
 | C8 | Data-dependent addressing: study that admits L23 | C11 | M | -- |
-| C12 | Re-run the case studies on v3, add NVDLA | C1, C10, C11, C8 | S | R15 |
+| C12 | Re-run the case studies on v3, add NVDLA | C1, C10, C11, C8, L17 | S | R15 |
 
 ## priorart
 
@@ -28,11 +28,11 @@ Plan items scheduled for quarter 2 in the supporting tracks, by track.
 | U4 | Shape and per-word element-type rules in the front end | L3, U3 | L | -- |
 | U6 | Integer folding in the front end | L14, L6, U2 | S | -- |
 | U7 | Conformance corpus with expected verdicts | L8, T5, T6, U3 | M | -- |
-| U8 | Coordinated v3 release train | U10, U12, U13, U14, U2, U3, U4, U5, U6, U7 | M | -- |
+| U8 | Coordinated v3 release train | A16, A31, U10, U12, U13, U14, U2, U3, U4, U5, U6, U7 | M | -- |
 | U11 | Adding a generator: template generator and expectations | L40, L41, T11, T12, U10, U2, U3 | M | -- |
-| U12 | Authoring surface by tracing | U3 | L | -- |
-| U13 | Converter and equivalence tests | U10, U12 | M | -- |
-| U14 | Delete the string surface and the parser dependency | B13, O2, U10, U12, U13 | S | -- |
+| U12 | Authoring surface by tracing; absorbs L42 | L43, U3 | L | -- |
+| U13 | Converter and equivalence tests; absorbs L44 | U10, U12 | M | -- |
+| U14 | Delete the string surface and the parser dependency; absorbs L45 | B13, O2, T37, U10, U12, U13 | S | -- |
 
 ## diagnostics
 

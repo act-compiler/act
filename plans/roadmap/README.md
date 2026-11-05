@@ -11,11 +11,12 @@ Sizes are unassisted estimates used to rank work; the plan assumes Claude-assist
 - [other-core.md](other-core.md): core-track items whose plans give no quarter
 - [other-supporting.md](other-supporting.md): supporting-track items whose plans give no quarter
 - [dependencies.md](dependencies.md): items moved to Q2 by a dependency, and dependencies on undefined IDs
-- [load.md](load.md): item counts and weights per track and quarter, and the longest dependency chain
-- [waves.md](waves.md): wave sizes and weights, wave 1 gates, release order, merged rows, and the wave check
+- [load.md](load.md): item counts and weights per track and quarter, and the longest dependency chain per milestone
+- [waves.md](waves.md): wave sizes and weights, wave 1 gates, release order, merged rows, quarter labels that differ from a wave, and the wave check
 - [wave-1.md](wave-1.md): wave 1 items
 - [wave-2.md](wave-2.md): wave 2 items, ending at M1
 - [wave-3.md](wave-3.md): wave 3 items, ending at M2
 - [wave-4-7.md](wave-4-7.md): wave 4 to 7 items, ending at M3, M4, M5, and the follow-ons
-- [milestones.md](milestones.md): milestones M1 to M5 and their checkable exit criteria
+- [wave-8-10.md](wave-8-10.md): wave 8 to 10 items of the long-term platform, ending at M6
+- [milestones.md](milestones.md): milestones M1 to M6 and their checkable exit criteria
 - [risks.md](risks.md): risk register with tripwires, endangered exit criteria, and responses

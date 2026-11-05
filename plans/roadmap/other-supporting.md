@@ -13,6 +13,7 @@ Plan items scheduled for later in the supporting tracks, by track.
 | ID | Item | Depends on | Size | Rulings |
 | -- | ---- | ---------- | ---- | ------- |
 | U9 | One copy of docker and CI scripts | U8 | S | -- |
+| U15 | Toolchain pin set: one released StableHLO, LLVM from its tag, MLIR and StableHLO static libraries in one build image, CI cache, prebuilt importer | U9 | M | -- |
 
 ## diagnostics
 

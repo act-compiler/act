@@ -14,10 +14,9 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | L6 | 64-bit integer arithmetic per operator with a fault | L1 | S | -- |
 | L7 | ACT-Backend unsupported-feature table against section ids | L1 | S | -- |
 | L10 | Reject `@a.` outside starts and constraints | L1 | S | -- |
-| L11 | Reject late buffers and partial instructions | L1 | S | -- |
-| L14 | Test the plain-zero divisor rule | L42 | S | -- |
+| L11 | `check` reports a late buffer, a late state variable, and a partial instruction at the declaring call's site | L1 | S | -- |
 | L15 | Rename confusing internal names | L25 | S | -- |
-| L16 | Range and type checks at the declaring call | L3 | S | -- |
+| L16 | `check` reports a range or type error at the declaring call's site | L3 | S | -- |
 | L17 | Element types `f4e2m1fn` and `f8e8m0fnu` | L2, L3 | S | -- |
 | L24 | Multi-core, async DMA, mask, stride, saturation, and `scaled_dot` idioms, documented without syntax | L1 | S | -- |
 | L25 | Reconcile the glossary with the terminology reference | L1 | S | -- |
@@ -32,8 +31,8 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | L36 | Expand each pair's relation with the size term and the exact-or-apart default | L1 | S | -- |
 | L37 | Width layer: a type per attribute, `s64` by default | L1, U2 | M | -- |
 | L40 | Generator metadata in the typed contract | U2, U3 | S | -- |
-| L42 | Python surface by tracing | L43 | L | -- |
 | L43 | Check function `taidl.check` returning a frozen `Model`, and generator checks | U2, U3 | M | -- |
+| L46 | Declared initial value per buffer: `initial_value` on `acc.buffer` | L16, L32 | S | -- |
 
 ## backend
 
@@ -43,10 +42,10 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | B2 | Typed candidate and kernel-fact handoff to the C++ allocator | B1, B25, B31 | M | -- |
 | B3 | End-to-end gate: goldens, chosen assembly, candidate logs, oracle run | B29 | M | -- |
 | B4 | Remove the C++ candidate parser | B2 | M | -- |
-| B6 | One rewrite value per rule, variables bound by name | B7, B9 | M | R18, R19 |
-| B7 | Shape and element type inferred in `Analysis::make` | B31 | L | R18 |
+| B6 | One rewrite value per rule, variables bound by name | B3, B7, B9 | M | R18, R19 |
+| B7 | Shape and element type inferred in `Analysis::make` | B3, B31 | L | R18 |
 | B8 | Name and test each IR-to-IR rewrite rule | B6 | S | -- |
-| B9 | Extraction without cloning or mutating the e-graph | B7 | S | R18 |
+| B9 | Extraction without cloning or mutating the e-graph | B3, B7 | S | R18 |
 | B13 | One selectable-instruction model built from the front end's `Model` | B1, U2 | M | -- |
 | B14 | Backend checks after `check`: reject or exclude, producing that model | B13, B21 | M | -- |
 | B15 | Keep `docs/coverage.md` in sync by a test; document S1.3 cases | B14, L7 | S | -- |
@@ -58,7 +57,7 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | B28 | Rust and C++ identifier and log renames | B1 | S | -- |
 | B29 | Deterministic search mode and `search` as a library function | -- | M | -- |
 | B30 | Pair relations in the allocator: tie equality and a narrowed touch exception | B2, B39 | M | -- |
-| B31 | Typed payloads in `TensorOp` | B1 | M | -- |
+| B31 | Typed payloads in `TensorOp` | B1, B3 | M | -- |
 | B35 | Overlapping IR-to-ISA rules: declaration-index tie-break, duplicate warning | B29, B6 | S | -- |
 | B37 | One extraction module and no re-extraction after saturation | B1, B29 | S | -- |
 | B38 | Allocator attribute domains follow the width layer (D15); default `s64` | -- | S | -- |
@@ -75,7 +74,7 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | O2 | One instruction record from the visitor, consumed by checks and emission | O1, O5 | M | R30 |
 | O5 | Delete the dead branch and the dead `sh_copy` check | -- | S | -- |
 | O6 | Spec errors raise `ValueError`; S8.3 table from the front end | L3 | S | R62 |
-| O8 | Round float literals once, from the exact decimal | L16 | S | -- |
+| O8 | Round float literals once, from the exact value received | L16 | S | -- |
 | O9 | `triangular_solve` at `f16`: measure, then widen only where needed | L3 | S | -- |
 | O10 | Overlap constraints and in-place marks: check the list before any load, value from the pre-state | L5, O25 | S | -- |
 | O11 | Fallback only if O19 fails: keep `while` with an equivalence test; reject wrapping starts | O19 | S | R28 |
@@ -109,7 +108,7 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | T8 | Operations corpus with reference values (S8) | L3, T5 | L | -- |
 | T10 | Real ISA specifications as the end-to-end list | T5 | S | -- |
 | T11 | Expectations table per generator, coverage.md generated from it | D1, T5 | M | -- |
-| T12 | Expectation runner: supported, or unsupported with the documented code | D6, T11, T6 | M | -- |
+| T12 | Expectation runner: the row's status, with the documented code | D6, T11, T6 | M | -- |
 | T14 | One shared end-to-end suite in act | B29, T10, T3 | M | -- |
 | T16 | CI wiring: corpus travels with the pinned taidl release | T12, T5 | S | -- |
 | T17 | Split `act-oracle/tests/test_kernel.py` by theme | T1 | M | -- |
@@ -143,4 +142,4 @@ Plan items scheduled for quarter 1 in the core tracks, by track.
 | A16 | Write the release order and a checklist | -- | M | -- |
 | A20 | Run the quickstart in the image | A25 | S | -- |
 | A25 | Write the quickstart | A1 | S | -- |
-| A28 | Converter in the last 2.x release and act's own ISA specifications | A16 | M | -- |
+| A32 | Repo topology, branching, private-to-public sync, private CI owner, and the 2.x maintenance policy | -- | S | -- |

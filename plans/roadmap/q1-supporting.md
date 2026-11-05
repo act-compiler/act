@@ -45,7 +45,7 @@ Plan items scheduled for quarter 1 in the supporting tracks, by track.
 | D2 | Call sites and exception classes in the front end | D1, U3 | M | -- |
 | D3 | Recode and reword the front-end messages | D1, D2, L26 | M | -- |
 | D6 | Unsupported-feature registries | B15, D1, L7, O14, O17 | M | -- |
-| D8 | Oracle run-time and call diagnostics | D1, D14, L6, O11, O6 | M | -- |
+| D8 | Oracle run-time and call diagnostics | D1, D14, L6, O20 or O11, O6 | M | -- |
 | D9 | Silent fallbacks become errors | B24, B26, D1, L5 | S | -- |
 | D10 | Registry coverage test and wording lint | D1, T5, T6 | M | -- |
 | D14 | Fault table and run-time norm | L5, L6 | S | -- |
