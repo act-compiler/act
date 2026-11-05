@@ -1,13 +1,15 @@
 # Operations
 
-This page is S8 of the spec; this opening part, up to the first heading, is S8.1, operation words and their reference operations.
+This page is S8 of the TAIDL language specification; this opening part, up to the first heading, is S8.1, tensor operators and their reference operators.
 
-- An operation word names an XLA-HLO operation, its words joined by underscores.
+- A tensor operator names an XLA-HLO operation, its words joined by underscores.
 - StableHLO has an operation of the same name unless the table below says otherwise.
 - `dot` and `broadcast` follow XLA-HLO's names; StableHLO calls them `dot_general` and `broadcast_in_dim`.
 - `reduce_<reducer>` is TAIDL's own: a `reduce` with its reducer fixed.
+- An ISA specification calls each word as `ops.<word>` (S7.5); a word that is a Python keyword takes a trailing underscore: `ops.and_`, `ops.or_`, `ops.not_`.
+- `parameter` has no `ops` function: `read` gives an input value (S7.2).
 
-| family                   | operation words                                                                                                                                                                       | IR operations                                                                                       |
+| family                   | tensor operators                                                                                                                                                                       | IR operations                                                                                       |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | inputs and constants     | `parameter`, `constant`, `iota`                                                                                                                                                       | same names; `parameter` is XLA-HLO's alone                                                          |
 | elementwise arithmetic   | `abs`, `negate`, `sign`, `add`, `subtract`, `multiply`, `mulhi`, `divide`, `remainder`, `maximum`, `minimum`, `power`, `sqrt`, `rsqrt`, `cbrt`                                        | same names; `mulhi` is XLA-HLO's alone                                                              |
@@ -25,11 +27,11 @@ This page is S8 of the spec; this opening part, up to the first heading, is S8.1
 This section is S8.2, operands and operation attributes per operation.
 
 
-- Each operation word takes the operands and operation attributes its row below gives.
-- A row gives the operand count, or the one operand of `parameter` and `constant` (S7.5).
-- A row gives each operation attribute's name, its form, and whether a line must give it.
-- The forms: an integer is a literal of either sign or a backtick expression; a list is a brace list, possibly empty; a number is any number literal.
-- A row holds what XLA-HLO's text parser checks without shapes.
+- Each tensor operator takes the operands and operation attributes its row below gives.
+- A row gives the operand count, or the one value of `parameter` and `constant` (S7.5).
+- A row gives each operation attribute's name, its form, and whether a call must give it, as a keyword argument (S7.5).
+- The forms: an integer is a plain `int` or an integer expression; a list is a Python list, possibly empty; a number is any plain number; a word is a `str`.
+- A row holds what XLA-HLO's text parser checks without shapes; `check` holds the shape rules (S8.4).
 - Where XLA-HLO's text leaves a rule open, StableHLO's rule applies: `dot` takes 2 operands, and `pad` takes three attributes.
 - TAIDL's own rule: `dot` requires both contracting lists, either of which may be empty; a batch list it leaves out is empty.
 - An operation attribute in no row is rejected, such as `result_accuracy`, `operand_precision`, or `indices_are_sorted`.
@@ -114,7 +116,7 @@ This section is S8.2, operands and operation attributes per operation.
 
 ## S8.3 Element types per operation
 
-- Each operation word accepts the element types of its row below, checked at its first operand, or at its result when it has no operand.
+- Each tensor operator accepts the element types of its row below, checked at its first operand, or at its result when it has no operand.
 - `select` is checked at its second operand, since its first is `pred`; `clamp` at its second, the operand it bounds.
 - `compare` and `is_finite` are checked at their operands, though the result is `pred`.
 - `dot` accepts them at both operands and at its result.
@@ -122,7 +124,7 @@ This section is S8.2, operands and operation attributes per operation.
 - The start indices of `dynamic_slice`, `dynamic_update_slice`, and `gather` are integers.
 - An element type outside a word's row is an error in the ISA specification; a generator rejects it until the front end checks it (shared plan item U4).
 
-| element types              | operation words                                                                                                                                                                                                                                                                                                                                                     |
+| element types              | tensor operators                                                                                                                                                                                                                                                                                                                                                     |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | every type                 | `parameter`, `constant`, `add`, `multiply`, `maximum`, `minimum`, `compare`, `select`, `clamp`, `convert`, `bitcast_convert`, `reshape`, `transpose`, `broadcast`, `concatenate`, `pad`, `reverse`, `slice`, `dynamic_slice`, `dynamic_update_slice`, `gather`, `copy`, `dot`, `reduce_add`, `reduce_multiply`, `reduce_max`, `reduce_min`                          |
 | floats and integers        | `iota`, `negate`, `subtract`, `divide`, `remainder`, `power`                                                                                                                                                                                                                                                                                                        |

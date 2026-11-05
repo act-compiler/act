@@ -6,7 +6,7 @@ A panel decision such as Q1.5 or Q9.2 is cited where it settles a row.
 | Finding | Disposition | Reason | Changed |
 | --- | --- | --- | --- |
 | V1 buffers and regions keep | accepted | Used by every instruction | none |
-| V2 `d0` special case merge | accepted | `accelerator.py:31` then `instruction.py:123` special-cases it | S4.3; L30, F20 |
+| V2 `d0` special case merge | accepted | `accelerator.py:31` then `instruction.py:123` special-cases it | S4.3; L30, LB20 |
 | V3 two attribute lists keep | accepted | B's allocator needs address-free sizes | none |
 | V4 state keep, do not extend | accepted | No extension planned in this track | none |
 | V5 constraints keep | accepted | Every fault case can be one | none |
@@ -15,7 +15,7 @@ A panel decision such as Q1.5 or Q9.2 is cited where it settles a row.
 | V8 cut placement marks | rejected | Owner decision 30 keeps them as shorthand; each expands to its relation's constraint (Q9.2) | D10, D33 |
 | V9 semantics block keep | accepted | Checked both ways | none |
 | V10 `ROOT` defer | accepted | Kept; no run-time effect stated | S7.1 |
-| V11 cut presumed reshape | rejected | Both generators already check its element count (`spec_checks.py:586-610`, `utils.py:733-746`), so the stated rule is implementable; a cut breaks users with no count of its uses | S7.2 |
+| V11 cut presumed reshape | accepted | Q2.9 cuts it; the language plan applies the cut | S7.2 |
 | V12 keep 75 plain words | accepted | One row each in `OPERATIONS` | none |
 | V13 cut three rare words | accepted | Q2.8 removes them | L33, D33 |
 | V14 `reduce_<reducer>` keep | accepted | Keeps bodies out of the grammar | none |

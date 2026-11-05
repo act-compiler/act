@@ -1,7 +1,7 @@
 # Plan: front-end fixes
 
 These items bring the `taidl` front end (`taidl/taidl/*.py`) in line with the spec, and rename the confusing internals.
-Each comes from reading the code against the spec and fixes rows F1 to F29.
+Each comes from reading the code against the spec and fixes rows LB1 to LB29.
 Most turn an undetected error into a rejection listed in S9.
 Every rejection carries a code and its section id; the front-end alias `Fault` is renamed `Rejection` (Q3.10).
 Sizes assume the shared 3-4 engineers; every item marked breaking ships together in the TAIDL v3 release with a migration note.
@@ -11,11 +11,11 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 | L10 | Reject `@a.` outside starts and constraints | L1 | S | Q1 |
 | L11 | Reject late buffers and partial instructions | L1 | S | Q1 |
 | L12 | Shape and element type checker: merged into U4 | U4 | - | - |
-| L13 | Align integer literal lexing between the two grammars | L1 | S | Q1 |
-| L14 | Test the exact-token zero divisor rule | L1 | S | Q1 |
+| L13 | Integer literal lexing: no target after L45 | L45 | - | - |
+| L14 | Test the plain-zero divisor rule | L42 | S | Q1 |
 | L15 | Rename confusing internal names | L25 | S | Q1 |
 | L16 | Range and type checks at the declaring call | L3 | S | Q1 |
-| L30 | v3 rename table: public API, token, grammar rule, and `d0` as a one-dimension buffer | L1 | M | Q1 |
+| L30 | v3 rename table: public API and `d0` as a one-dimension buffer | L1 | M | Q1 |
 | L34 | Rename "refus" to "reject" in messages, docstrings, READMEs, and identifiers | L30 | S | Q1 |
 | L35 | Add `set_may_overlap` and the pair-relation record | L36 | S | Q1 |
 | L36 | Expand each pair's relation with the size term and the exact-or-apart default | L1 | S | Q1 |
@@ -23,11 +23,11 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 ## L10 Reject `@a.` outside starts and constraints
 
 - What: `parse_text` (`instruction.py`) checks a reference's kind against its place: `@a.` only in a start or a constraint.
-- Changes: `Instruction.parse_text` in `taidl/instruction.py` gains a place check; the declared-name check is kept.
-- Breaking: yes, ISA descriptions accepted today are rejected.
+- Changes: `check` (L43) checks each reference's kind against its place in the `Model`; the declared-name check is kept.
+- Breaking: yes, ISA specifications accepted today are rejected.
 - Benefits: B can rely on sizes being address-free.
 - Scope: the check is by reference kind (`@a.` or `@c.`), never by attribute name or value; a negative attribute value is legal (owner decision 34).
-- Caveats: may reject an ISA description that works today in O.
+- Caveats: may reject an ISA specification that works today in O.
 - Fail points: an example breaks; notice by `test_examples.py`.
 - Order and dependencies: after L1.
 - Verification: new tests per place; the S9 row leaves the "not yet checked" table.
@@ -39,7 +39,7 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - Breaking: yes.
 - Benefits: matches S4.5 and S5.2; the data model list is no longer shared with later declarations (`accelerator.py:47-58`, `instruction.py:81`).
 - Caveats: a state-only instruction has neither, and stays legal.
-- Fail points: a user ISA description interleaves declarations; notice by its error message.
+- Fail points: a user ISA specification interleaves declarations; notice by its error message.
 - Order and dependencies: after L1.
 - Verification: tests like the existing state-order test.
 
@@ -49,32 +49,25 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 
 ## L13 Align integer literal lexing
 
-- What: semantics `INT` allows `007`, expression `INT` rejects it; one rule for both.
-- Changes: `INT` in `IDLV2.g4`; every other rule is kept.
-- Breaking: yes, `007` handling changes, and `parameter(01)` (F9) is rejected.
-- Benefits: one rule for integers in both grammars.
-- Caveats: a grammar change needs regeneration with ANTLR 4.9.2.
-- Fail points: generated files out of date; notice by L8.
-- Order and dependencies: after L1; batch with other grammar edits.
-- Verification: grammar tests for `007` in both places.
+- No target: both grammars leave with L45, and plain integers in the Python surface follow S6.2.
 
-## L14 Test the exact-token zero divisor rule
+## L14 Test the plain-zero divisor rule
 
-- What: S6.2 rejects only the token `0` as a right operand; `(0)` and `-0` fault at issue, so `instruction.py:414` stays as it is.
+- What: S6.2 raises at the author's line on a `//` or `%` whose divisor is the plain integer 0; a symbolic divisor that evaluates to 0 faults at issue.
 - Changes: tests only.
 - Breaking: no.
 - Benefits: the S9 row holds as written with no code change.
 - Caveats: none.
 - Fail points: none beyond the test.
 - Order and dependencies: after L1.
-- Verification: tests that `x / 0` is rejected and `x / (0)` is accepted.
+- Verification: tests that `x // 0` raises and `x // y` with `y` evaluating to 0 faults in O.
 
 ## L15 Rename confusing internal names
 
 - What: rename `Instruction.parameters`, `comp_attr`, and `var_type` (Q2.12); delete `num_dim_str`, and move `array_dim_str` into the oracle.
 - Changes: `taidl/instruction.py` and `taidl/data_model.py`; the new names follow owner decisions 19 and 20 and enter L30's rename table.
 - Breaking: yes, B and O read `parameters`.
-- Benefits: `parameters` no longer collides with the `parameter` operation word; U2 documents the contract once under the renamed members.
+- Benefits: `parameters` no longer collides with the `parameter` tensor operator; U2 documents the contract once under the renamed members.
 - Caveats: none beyond the table.
 - Fail points: a generator breaks on the rename; notice by B and O test suites.
 - Order and dependencies: Q1, after L25 and before U2 (Q3.3); B and O update together.
@@ -94,19 +87,18 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 ## L30 v3 rename table
 
 - What: one grep-generated per-repo table of old name, new name, and consumer files (Q7.10), citing symbols, not line numbers.
-  - `add_data_model` to `add_buffer(name, access_dims, base_element_dims, element_type)`, `add_initial_state` to `add_state(name, value)`, `DataModel` to `Buffer`.
-  - `dimensions` to `access_dims`, `unit_dim` to `base_element_dims`, `var_type` to `element_type`.
-  - `computation_attr` to `computational_attrs`, `addressing_attr` to `addressing_attrs`.
-  - Token `OPERATION` to `OPERATOR`, grammar rule `instruction` to `operation`.
+  - `add_data_model` to `acc.buffer(name, access_dims, base_element_dims, element_type)`, `add_initial_state` to `acc.state(name, value)`, `DataModel` to `Buffer`.
+  - `add_instruction` and its attribute lists to `@acc.instruction` with `Comp` and `Addr` parameters (S5.1).
+  - `set_inputs`, `set_outputs`, `add_semantics`, and the marks to `read`, `write`, `ops`, and `write` markers (S5.2, S5.5, L45).
   - `targets/<Name>/` to `accelerators/<name>/` (Q7.11).
 - Also: `d0` is declared with one access dimension, so the special case in `instruction.py` goes (Q2.9).
-- Kept: `update`, `update_asts`, `update_text`, `Region`, `@s.`, and the marks (owner decision 30).
-- Changes: `taidl/accelerator.py`, `instruction.py`, `IDLV2.g4`, `IDLV2Expr.g4`, the regenerated parsers, and the call sites of `.instruction()`.
+- Kept: `update`, `Region`, and the markers as `write` keywords (owner decision 30).
+- Changes: `taidl/accelerator.py`, `instruction.py`, and the call sites of `.instruction()`.
 - Breaking: yes, every ISA specification changes its declaring calls.
 - Benefits: the API speaks the owner's vocabulary; regions of `d0` follow the general rule.
-- Caveats: no working alias and no converter; each removed name leaves a stub that only raises a coded rejection naming the replacement and the section id (Q7.12, L33).
+- Caveats: no working alias; the L44 converter moves the corpus; each removed name leaves a stub that only raises a coded rejection naming the replacement and the section id (Q7.12, L33).
 - Fail points: a tutorial still uses an old name; notice by the CI grep that every old name returns nothing after v3.
-- Order and dependencies: after L1; batch the grammar change with L17 and L13; B and O update together; the table feeds L33, L34, and the migration note.
+- Order and dependencies: after L1; lands with L42; B and O update together; the table feeds L33, L34, L44, and the migration note.
 - Verification: the CI grep of old names is empty in all four repos.
 
 ## L34 Rename "refus" to "reject"
@@ -118,7 +110,7 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - Caveats: coverage status says "unsupported".
 - Fail points: a missed spelling; notice by the banned-column CI grep.
 - Order and dependencies: after L30; its own v3 item.
-- Verification: a grep of "refus" in the four repos is empty outside test fixture names awaiting panel 6.
+- Verification: a grep of "refus" in the four repos is empty outside test fixture names.
 
 ## L35 Add `set_may_overlap` and the pair-relation record
 
@@ -134,7 +126,7 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 ## L36 Expand each pair's relation with the size term and the default
 
 - What: each same-buffer input-output pair expands to exactly one relation's constraint, from its mark or the exact-or-apart default (S5.5, Q9.2).
-- Changes: `taidl/instruction.py`: `set_inplace` appends `same(In k, Out)`; `keep_off` compares sizes as well as starts, so `same` holds only on equal starts and equal sizes (F29); unmarked pairs get the default expansion.
+- Changes: `taidl/instruction.py`: `set_inplace` appends `same(In k, Out)`; `keep_off` compares sizes as well as starts, so `same` holds only on equal starts and equal sizes (LB29); unmarked pairs get the default expansion.
 - Changes: reject `set_apart` on identical text, unequal size text on a tie, and identical input and output text without `set_inplace`; a lint warns on an unmarked non-elementwise pair.
 - Breaking: yes, an unmarked partial overlap, or equal starts with unequal sizes, now faults.
 - Benefits: one constraint list for O and B; a forgotten `set_apart` faults loudly instead of giving a corrupt kernel the oracle passes.

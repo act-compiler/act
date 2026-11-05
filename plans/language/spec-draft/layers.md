@@ -1,8 +1,8 @@
 # Optional layers
 
-This page is S11 of the spec: the width layer, the encoding layer, and the derived-attribute rule.
+This page is S11 of the TAIDL language specification: the width layer, the encoding layer, and the derived-attribute rule.
 Each layer is optional and adds to the one below it; an ISA specification without them means exactly what S4 to S8 say.
-The surface spelling of each declaration below follows the typed contract (U2); its meaning is fixed here.
+Each declaration below is shown in the Python surface of S2; the `Model` carries it as typed nodes (S4.6).
 
 ## S11.1 Layers and the default
 
@@ -15,11 +15,11 @@ The surface spelling of each declaration below follows the typed contract (U2); 
 - An attribute with no declared type has type `s64`.
 - An ISA specification with no encoding block has no derived attribute and no binary form.
 - A layer changes what every conforming generator must do; generator metadata (S12) never does.
-- A generator that does not read a layer still honors its constraints, since each type expands to constraints (S11.2).
+- A generator that does not read a layer still applies its constraints, since each type expands to constraints (S11.2).
 
 ## S11.2 The width layer
 
-- An instruction declares types as a name-keyed mapping beside its attribute lists, such as `{'addr': 'u16', 'off': 's8'}`.
+- An attribute declares its type in its annotation, such as `addr: Addr[u16]` or `off: Comp[s8]`, with type objects of `taidl.types`.
 - A type is `s<w>` for w in 1 to 64, the range -2^(w-1) to 2^(w-1) - 1.
 - A type is `u<w>` for w in 1 to 63, the range 0 to 2^w - 1.
 - `u64` is rejected, since every value lies in signed 64 bits.
@@ -31,15 +31,23 @@ The surface spelling of each declaration below follows the typed contract (U2); 
 
 ## S11.3 The encoding layer
 
-- An instruction may carry one encoding block; it is pure bit placement, read by an assembler and disassembler generator.
+- An instruction may carry one encoding block, declared beside it; it is pure bit placement, read by an assembler and disassembler generator.
+
+```python
+acc.encode(gemm_acc, word=32, fixed=[((31, 24), 0x12)],
+           fields={'a1': [(23, 16)], 'a2': [(15, 8)], 'out': [(7, 0)]})
+```
+
+- `acc.encode(instr, word, fixed, fields)` takes the instruction function, the word width, the fixed bits, and the fields.
+- The block never edits the instruction; a field key names a parameter of `instr`, and an unknown key is rejected.
 - The block gives the word width in bits, fixed and explicit; encodings are fixed length and one word.
-- The block gives the fixed bits: the opcode and every reserved bit with its value.
-- The block gives, per encoded attribute, an ordered list of slices `[high:low]`, high to low, whose concatenation is the field.
+- The block gives the fixed bits, as `((high, low), value)` pairs: the opcode and every reserved bit with its value.
+- The block gives, per encoded attribute, an ordered list of slices `(high, low)`, high to low, whose concatenation is the field.
 - A field holds its attribute value as is: no scale, offset, or implied bit; a signed type packs as two's complement.
 - A scale, an offset, or an implied low bit is a derived attribute with a link (S11.4).
 - The oracle and the compiler backend never read the block; they read the types and constraints it implies.
 
-Checks at generation time, each rejected with an error naming the instruction and the bit or attribute:
+Checks, each rejected with an error naming the instruction and the bit or attribute; `check` runs the first and the third, and the generator that reads the blocks the second:
 
 - Every bit of the word is covered by exactly one slice or one fixed bit.
 - No word matches the fixed bits of two instructions.
@@ -48,8 +56,8 @@ Checks at generation time, each rejected with an error naming the instruction an
 ## S11.4 The derived-attribute rule
 
 - The slice list of the block names the encoded attributes; every other attribute of that instruction is derived.
-- A derived attribute D has exactly one link: a written constraint `E == k*D + c` or `D == k*E + c`.
-- In a link, E is one encoded attribute, k and c are integer literals, and k is nonzero.
+- A derived attribute D has exactly one link: a written constraint `require(E == k*D + c)` or `require(D == k*E + c)`.
+- In a link, E is one encoded attribute, k and c are plain integers, and k is nonzero.
 - A derived attribute may be negative and may carry its own type.
 - Rejected, with an error naming the derived attribute:
   - a derived attribute with no link;

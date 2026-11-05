@@ -1,15 +1,15 @@
 # Overhaul: target structure and steps
 
-The target keeps every existing piece and reshapes four of them; nothing is replaced from scratch.
+The target keeps the front end's checks and tables, replaces the string surface and its grammars with the Python surface, and adds the check function.
 Steps run in order; each names the plan items it carries.
 
 ## Per piece
 
 | piece | action | target | preserved |
 | --- | --- | --- | --- |
-| `IDLV2.g4` | keep, small edits in v3 | one `INT` rule | every token and parser rule's language |
-| `IDLV2Expr.g4` | keep | one `INT` rule | everything else |
-| `IDLV2*.py` | regenerate only | from the edited grammars | generation script `generate.sh` |
+| `IDLV2.g4`, `IDLV2Expr.g4`, `IDLV2*.py` | remove in v3 (L45) | none; the tracer records the surface (L42) | the language they accept, through the L44 converter |
+| tracer | new (L42) | `@acc.instruction`, `read`, `write`, `require`, `update`, `ops` | |
+| `taidl.check` and `Model` | new (L43) | one `Rejection` or a frozen `Model` | every S9 rule |
 | `taidl/operations.py` | keep, extend | adds per-word shape and type rules beside `OPERATIONS` | the table and its checks |
 | `taidl/instruction.py` | reshape | place check for references; pair relations, `set_may_overlap`, and the `same` size term (L35, L36); shape checking in the shape module of U4 | every public method and its checks |
 | `taidl/accelerator.py` | keep | `add_buffer` and `add_state` per owner decision 19; order and range checks; `d0` with one access dimension | the rest of the API |
@@ -20,7 +20,7 @@ Steps run in order; each names the plan items it carries.
 | `docs/expressions.md` | reshaped | S6 | all facts |
 | `docs/semantics.md` | reshape | S7, one sentence per line | all facts |
 | `docs/operations.md` | reshape, split | S8 split into words, per-word table, types, meaning, outside | all tables |
-| `docs/overview.md`, `grammar.md`, `object_model.md`, `execution.md`, `conformance.md`, `glossary.md` | new | S1, S2 and S3, S4.6, S5.6, S9, S10 | |
+| `docs/overview.md`, `grammar.md` (the surface), `object_model.md`, `execution.md`, `conformance.md`, `glossary.md` | new | S1, S2 and S3, S4.6, S5.6, S9, S10 | |
 | `README.md` | keep | docs list updated | all else |
 
 ## Steps
@@ -28,8 +28,10 @@ Steps run in order; each names the plan items it carries.
 1. Land the reshaped and new docs with section ids (L1, L29).
 2. Pin the reference version and write the per-word rules (L2, L3).
 3. Make the fault rows and stated results hold in B and O (L4, L5, L6).
-4. Add the front-end checks that need no grammar change (L10, L11, L14, L16).
-5. Batch grammar, API, and rename changes into v3 (L13, L15, L30) with B and O.
+4. Add the front-end checks (L10, L11, L16).
+5. Build `check` and the `Model` from the string front end, and port every generator to it (L43).
 6. Add the shape checks (U4, which absorbs L12) on the L3 rules.
-7. Settle the float accuracy norm after the panel (L31).
-8. Add extensions in rank order (L17, then L23).
+7. Trace the Python surface into the same `Model`, with the API renames (L42, L14, L15, L30).
+8. Convert the corpus and test `Model` equivalence per file (L44); then remove the string surface and ANTLR (L45).
+9. Settle the float accuracy norm (L31).
+10. Add extensions in rank order (L17, then L23).

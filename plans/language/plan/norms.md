@@ -34,7 +34,7 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - Changes: `taidl/operations.py`, `instruction.py`, and the removed-names table that raises one coded `RF` rejection naming the construct, its replacement, and the section id (Q3.12).
 - Breaking: yes, one release with a migration note.
 - Benefits: the `BOOL`, `TRANSPOSES`, and `NUMBER` attribute forms go with the words; one spelling per construct.
-- Caveats: the marks stay (owner decision 30) and are not in the table; the table is seeded once the v3 API is fixed; no converter.
+- Caveats: the marks stay (owner decision 30) and are not in the table; the table is seeded once the v3 API is fixed and holds the string-surface calls of L45, which name the L44 converter.
 - Fail points: a removed construct raises a bare `AttributeError`; notice by a test per table row.
 - Order and dependencies: after L1; L30's renames feed the same table.
 - Verification: each table row has a test asserting `code` and `object`.

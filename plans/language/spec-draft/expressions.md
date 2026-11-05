@@ -1,39 +1,37 @@
 # Expressions
 
-This page is S6 of the spec.
-An expression is integer arithmetic over integers and references, such as `` `@c.n * 128` ``.
+This page is S6 of the TAIDL language specification.
+An expression is integer arithmetic over plain integers and symbolic references, such as `n * 128`, which the tracer records as a tree.
 
 ## S6.1 References and where each may appear
 
-An expression stands in four places: a start or a size of a region, a backtick expression in a semantics, a constraint, and a state update.
-A semantics refers to attributes and state only inside backticks.
+An expression stands in six places: a start or a size of a region, a shape dimension, an operation attribute value or `constant` value in a semantics, a constraint, and a state update.
 
 | reference | written | refers to | may appear in |
 | --- | --- | --- | --- |
-| computational attribute | `@c.<name>` | an entry of `computational_attrs` | every place |
-| addressing attribute | `@a.<name>` | an entry of `addressing_attrs` | a start and a constraint |
-| state variable | `@s.<name>` | a state variable of `add_state` | every place |
+| computational attribute | a parameter annotated `Comp` | that attribute's value at issue | every place |
+| addressing attribute | a parameter annotated `Addr` | that attribute's value at issue | a start and a constraint |
+| state variable | the object `acc.state` returned | its value before the issue | every place |
 
-- A reference names an attribute of its own instruction or a declared state variable; any other name is rejected.
-- An addressing attribute in any other place is rejected with `SyntaxError` (S9).
-- The target of a state update is a state variable.
+- An addressing attribute in any other place is rejected by `check` (S9).
+- The target of `update` is a state variable.
+- Two recorded expressions are equal when their trees are structurally equal; S5.5 compares expressions this way.
 
 ## S6.2 Integer arithmetic
 
-- An integer literal is decimal and unsigned; it is `0` or has no leading zero.
-- An integer literal is at most 2^63 - 1, so the least signed 64-bit value is written `-9223372036854775807 - 1`.
-- The operators are `+`, `-`, `*`, `/`, `%`, unary `-`, and parentheses, with precedence as the expression grammar gives (S3).
-- Every operator of an expression yields a signed 64-bit integer, or the issue faults (S1.3.1).
-- Operators group by the grammar's left-associative tree, and the check walks that tree as written.
-- `/` is floor division: `floor(a / b)`, so `15 / 2` is 7 and `-7 / 2` is -4.
-- `%` is the remainder with the sign of the divisor, so `a == (a / b) * b + a % b`.
-- A `/` or `%` whose right operand is exactly the token `0` is rejected; `(0)`, `-0`, and a computed 0 are faults (S1.3.2).
-- A start, size, shape dimension, operation attribute value, comparison operand, or state update with an operator whose value lies outside signed 64 bits is a fault (S1.3.1).
-- There is no `//`, `**`, `not`, function such as `min`, or conditional value, and an update has no `+=`.
+- A plain `int` in an expression lies in signed 64 bits, or `check` rejects it.
+- The operators are `+`, `-`, `*`, `//`, `%`, unary `-`, and parentheses, with Python's precedence and left grouping.
+- Python folds operators between plain integers before the tracer sees them; only operators with a symbolic operand are recorded.
+- Every recorded operator yields a signed 64-bit integer, or the issue faults (S1.3.1).
+- `//` is floor division: `floor(a / b)`, so `15 // 2` is 7 and `-7 // 2` is -4, as in Python.
+- `%` is the remainder with the sign of the divisor, so `a == (a // b) * b + a % b`, as in Python.
+- A `//` or `%` whose divisor is the plain integer 0 raises at the author's line; a symbolic divisor that evaluates to 0 is a fault (S1.3.2).
+- There is no `/`, `**`, `not`, `min`, `max`, or conditional value; S3.2 lists the errors each raises.
 
 ## S6.3 Conditions
 
-- A condition is one or more comparisons joined by `and` and `or`, with parentheses, as the expression grammar gives.
-- A comparison is two expressions joined by one of `==`, `!=`, `<`, `<=`, `>`, `>=`.
+- A comparison is two expressions joined by one of `==`, `!=`, `<`, `<=`, `>`, `>=`; it is a condition.
+- `any_of(c1, c2, ...)` holds when one of its conditions holds; `all_of(c1, c2, ...)` when all hold; each takes one or more conditions or nested `any_of` and `all_of`.
+- `require(c1, c2, ...)` is `all_of` at the top level.
 - Every comparison of a condition is evaluated, left to right, with no short circuit; a fault in any of them is a fault of the issue.
-- An example: `@a.x + @c.n <= @a.y or @a.y + 64 <= @a.x`.
+- An example: `require(any_of(x + n <= y, y + 64 <= x))`.

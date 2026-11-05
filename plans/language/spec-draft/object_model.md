@@ -1,27 +1,23 @@
 # Object model
 
-This page is S4.6 of the spec: the Python names a generator reads from an accepted accelerator that the language fixes.
-Every other attribute, with its type, is documented in the `taidl` README, not here.
-The typed contract model, its `CONTRACT_VERSION`, and the derived facts `validate()` attaches are shared plan items U2 and U3.
+This page is S4.6 of the TAIDL language specification: what a generator reads from an accepted ISA specification.
+The typed contract, its node classes, its members, and `CONTRACT_VERSION` are shared plan item U2; the `taidl` README documents each member with its type.
 
-## S4.6 Fixed names
+## S4.6 The `Model`
 
-| attribute | type | holds |
-| --- | --- | --- |
-| `constraint_asts` | `list` of trees | the tree of every constraint, including those a mark expands to |
-| `update_asts` | `list` of trees | the tree of every state update, in order |
-| `instr_input_asts` | `list` | each input region as `[name, start trees, size trees]`; an `int` is parsed from its `str` |
-| `instr_output_asts` | `list` | each output region in the same form |
-| `instr_expression_asts` | `dict` | each `EXPRESSION` token node of the semantics tree, by identity, to its tree |
+- `taidl.check(acc)` returns a `Model`, and only `check` constructs one (S9).
+- A `Model` is frozen: no member of it or of its nodes can be set after `check` returns.
+- It holds one typed node per buffer, state variable, and instruction, and per region, constraint, state update, and value of each instruction.
+- An instruction node lists its attributes in parameter order, each with its kind and type, and its regions in `read` and `write` order.
+- Its constraints include those every source of S5.3 expands to, each tagged with its source.
+- Each same-buffer input-output pair carries its relation and, for `inplace`, the tie (S5.5); a backend reads that record.
+- Each value node carries its tensor operator, operands, operation attributes, and its inferred element type and shape.
+- Generator metadata sits on the accelerator, buffer, and instruction nodes, by namespace (S12).
+- Every node records its call site: the file and line of the first frame outside `taidl`; a whole-instruction node records the function's first line.
+- A generator reads only the `Model`, never the `Accelerator` or a trace record.
 
-- Plan item L29 tests that each name exists on an accepted accelerator with the stated type.
-- The relation of each same-buffer input-output pair and the in-place tie are recorded for the backend (S5.5); plan item L35 fixes their names.
+## Printing
 
-## Trees
-
-- The front end parses each text when the call that takes it runs, and keeps its tree beside the text.
-- A tree is the ANTLR context of the entry rule's first child: `expression` for a start, a size, or a backtick expression; `condition` for a constraint; `update` for a state update.
-- ANTLR trees are reachable but unstable: their shape may change in any release.
-- Backtick expressions cover shape dimensions, `constant` operands, and operation attribute values; each is looked up by its token node.
-- An operation attribute's name is read by its text, never by its token type, since it may lex as `OPERATOR` (S3.1 rule `name`).
-- `parameter(k)` reads k from its operand's text; a `constant` literal is its operand's text.
+- The `Model` prints each instruction as XLA-HLO text, with its attributes, regions, constraints, and state updates.
+- The printed text answers "what did the front end understand" and is a log format; no front end reads it back.
+- Two `Model` objects compare equal when every node matches, ignoring call sites.

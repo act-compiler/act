@@ -1,7 +1,7 @@
 # Plan: language extensions for accelerator coverage
 
 These items extend TAIDL so it can describe the main accelerator families from industry and academia.
-Each names the motivating designs, the smallest generic construct, and its cost; none changes the grammar this quarter without its own review.
+Each names the motivating designs, the smallest generic construct, and its cost; none changes the Python surface this quarter without its own review.
 Sizes assume the shared 3-4 engineers; every item marked breaking ships together in the TAIDL v3 release with a migration note.
 
 | ID | Item | Depends on | Size (S/M/L) | Quarter (Q1/Q2) |
@@ -25,12 +25,12 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 ## L17 Element types `f4e2m1fn` and `f8e8m0fnu`
 
 - What: add `f4e2m1fn` and `f8e8m0fnu` (Q2.4); no `tf32` storage type; `scaled_dot` stays an idiom in L24 (convert, broadcast the scale, multiply, `dot`), exact for power-of-two scales.
-- Changes: `TYPE` in `IDLV2.g4`, `TYPES` in `taidl/data_model.py`; existing types kept; the parser regeneration also carries L30's grammar renames.
+- Changes: `taidl.types` and `TYPES` in `taidl/data_model.py`; existing types kept.
 - Breaking: no, additive.
 - Benefits: covers the MX formats of the two public sites, NVIDIA Blackwell and NeuronCore-v4 (Trainium3).
 - Caveats: JAX support for each type varies; O may list some as unsupported (L7).
 - Fail points: XLA type spellings change; notice by L2's pinned version.
-- Order and dependencies: after L2, L3; grammar `TYPE`, `data_model.TYPES`, B and O type tables.
+- Order and dependencies: after L2, L3; `taidl.types`, `data_model.TYPES`, B and O type tables.
 - Verification: a block-scaled matmul written with the L24 idiom runs in O.
 
 ## L18 Write masks on output regions

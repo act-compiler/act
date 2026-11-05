@@ -13,8 +13,8 @@ Binding inputs are the owner decisions, the panel decisions, and findings accept
 | --- | --- | --- | --- |
 | ambiguity | 55 | 3 | 0 |
 | implementer | 30 | 7 | 1 |
-| minimalist | 41 | 9 | 6 |
-| total | 126 | 19 | 7 |
+| minimalist | 42 | 9 | 5 |
+| total | 127 | 19 | 6 |
 
 ## Settled by the panels
 

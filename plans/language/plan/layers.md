@@ -14,19 +14,19 @@ Sizes assume the shared 3-4 engineers; every item is additive, so an ISA specifi
 
 ## L37 Width layer
 
-- What: an optional name-keyed type mapping per instruction, `s<w>` or `u<w>`, expanding to two range constraints each (S11.2, Q10.1).
+- What: an optional type per attribute, `Comp[t]` or `Addr[t]` with `t` from `u1` to `u63` and `s1` to `s64`, expanding to two range constraints each (S11.2, Q10.1).
 - Changes: `taidl/instruction.py` takes the mapping and generalizes `INT64` (instruction.py:400) to the declared range; S1.3.10 names the type.
 - Changes: the oracle faults where `warn_width` (act-oracle utils.py:268-275) only warns; B's allocator domain becomes the declared range, replacing `MAKE_INT_VAR(0, INT64_MAX)`.
 - Breaking: no for an ISA specification without types; yes for B's lower bound 0, which decision 34 already overrules.
 - Benefits: a field range has one spelling and one fault path shared by front end, oracle, and backend.
-- Caveats: the surface spelling follows U2; `u64` is rejected.
+- Caveats: the type objects ship with L42; `u64` is rejected.
 - Fail points: a domain the solver cannot hold; notice by a loud generation error, never a silent clamp.
 - Order and dependencies: after L1 and U2; first of the layer items.
 - Verification: T rows: a `u4` value of 16 faults in O; B never emits it; a key naming no attribute is rejected.
 
 ## L38 Encoding layer
 
-- What: an optional encoding block per instruction: word width, fixed bits, and ordered slices per encoded attribute (S11.3, Q10.2).
+- What: an optional `acc.encode(instr, word, fixed, fields)` block beside each instruction: word width, fixed bits, and ordered slices per encoded attribute (S11.3, Q10.2).
 - Changes: `taidl` stores and checks the block (coverage, width per encoded attribute); a new assembler and disassembler generator reads it from the typed model and checks fixed-bit disjointness.
 - Breaking: no, additive.
 - Benefits: a binary form and its decoder come from the ISA specification, with no side file.
@@ -49,7 +49,7 @@ Sizes assume the shared 3-4 engineers; every item is additive, so an ISA specifi
 ## L40 Generator metadata in the typed contract
 
 - What: a namespace-keyed plain-data mapping on the accelerator, each buffer, and each instruction, published on each typed node (S12, Q10.5).
-- Changes: `Accelerator`, `add_buffer`, and `add_instruction` take the mapping; U2's typed nodes carry it under `CONTRACT_VERSION`; U3's `validate()` lists the namespaces present as a note.
+- Changes: `Accelerator`, `acc.buffer`, and `@acc.instruction` take it as `meta=`; U2's typed nodes carry it under `CONTRACT_VERSION`; `check` (L43) lists the namespaces present as a note.
 - Changes: the front end rejects only a non-identifier namespace or non-plain data, naming node and namespace; it has no registry of generators.
 - Breaking: no, additive.
 - Benefits: per-node data for one generator, such as an Allo partition hint, without a side file or a keyword that restates names.
@@ -62,7 +62,7 @@ Sizes assume the shared 3-4 engineers; every item is additive, so an ISA specifi
 
 - What: a documented extension path, in `taidl/docs/`, for a new generator such as act-allo (S12.4, decision 39).
 - Steps the guide covers:
-  - read the typed model after `validate()`;
+  - read the `Model` that `check` returns, and run its own checks as plain functions after it;
   - expose `generate_<name>(accelerator, base_dir=None, **options)`;
   - own one metadata namespace, reject unknown keys in it, and report the namespaces read;
   - ship the expectations table with generated coverage (T11) and join the T12 runner;

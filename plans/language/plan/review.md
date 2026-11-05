@@ -23,20 +23,20 @@ Most weaknesses are unstated meaning, not wrong design.
 
 | component | weakness |
 | --- | --- |
-| Meaning of operations | Not checked by the front end and not tied to a pinned reference version (F1, F3, F4) |
-| Regions | Bounds, zero sizes, overlap, and byte order were unstated (F5, F6) |
-| Reference places | The `@a.` place rule is stated but not checked (F2) |
+| Meaning of operations | Not checked by the front end and not tied to a pinned reference version (LB1, LB3, LB4) |
+| Regions | Bounds, zero sizes, overlap, and byte order were unstated (LB5, LB6) |
+| Reference places | The `@a.` place rule is stated but not checked (LB2) |
 | Old docs style | Long multi-clause sentences; no section ids; facts spread across pages |
-| Internal names | `parameters`, `comp_attr`, `var_type`, grammar rule `instruction` clash with the terms (F14 to F17) |
+| Internal names | `parameters`, `comp_attr`, `var_type`, grammar rule `instruction` clash with the terms (LB14 to LB17) |
 | `DataModel` | Carries two generator-only strings, `array_dim_str` and `num_dim_str` |
-| `d0` | A special case in the region rule (F20) |
+| `d0` | A special case in the region rule (LB20) |
 
 ## Verdict per component
 
 | component | verdict | reason |
 | --- | --- | --- |
-| `IDLV2.g4` | keep | Sound; small fixes F8, F13, F16 in v3 |
-| `IDLV2Expr.g4` | keep | Sound; F8 only |
+| `IDLV2.g4` | remove in v3 | The Python surface replaces the string form (L42, L45) |
+| `IDLV2Expr.g4` | remove in v3 | Integer expressions are traced Python operators (L42, L45) |
 | `taidl/operations.py` | keep, extend | The table becomes the source of L3 shape rules |
 | `taidl/instruction.py` | reshape | Add the place check (L10) and split shape checking into the shared shape module (U4) |
 | `taidl/accelerator.py` | keep | Add the order and range checks (L11, L16) |
