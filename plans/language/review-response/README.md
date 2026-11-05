@@ -1,7 +1,7 @@
 # Review response
 
 The language track's answer to the three spec reviews, one row per finding, split by review.
-Binding inputs are the owner decisions and findings accepted on evidence; a change that rests only on a tech-lead ruling is marked "pending panel" with the ruling ID.
+Binding inputs are the owner decisions, the panel decisions, and findings accepted on evidence.
 
 - [ambiguity.md](ambiguity.md): the ambiguity review, 58 findings
 - [implementer.md](implementer.md): the implementer review, 38 questions
@@ -9,23 +9,23 @@ Binding inputs are the owner decisions and findings accepted on evidence; a chan
 
 ## Counts
 
-| review | accepted | partly | rejected | pending panel |
-| --- | --- | --- | --- | --- |
-| ambiguity | 53 | 3 | 0 | 2 |
-| implementer | 28 | 7 | 1 | 2 |
-| minimalist | 38 | 9 | 3 | 6 |
-| total | 119 | 19 | 4 | 10 |
+| review | accepted | partly | rejected |
+| --- | --- | --- | --- |
+| ambiguity | 55 | 3 | 0 |
+| implementer | 30 | 7 | 1 |
+| minimalist | 41 | 9 | 6 |
+| total | 126 | 19 | 7 |
 
-## Rulings the draft waits on
+## Settled by the panels
 
-| ruling | what waits | where |
+| topic | decision | where |
 | --- | --- | --- |
-| R2 | identifier renames beyond owner decision 19 | L15, D13, D21 |
-| R5 | deriving the in-place mark from region text | D33 |
-| R7 | constraints reading the post-update state | D30 |
-| R8 | float accumulation and transcendental accuracy | S1.3.15, L31, D32 |
-| R58 | removing `set_apart` and `set_no_partial_overlap` | D10, D33 |
-| R59 | the two-case-study rule for extensions | extensions plan |
-| R60 | removing `cholesky`, `triangular_solve`, `batch_norm_inference` | D33 |
-| R61 | cutting the reserved-names table | D17 |
-| R62 | merging L3, L12, O6, O7 | L3, L12, D26 |
+| identifier renames | Q2.12, Q7.10 | L15, L30, D13, D21 |
+| which state expressions read | Q1.1: the pre-state | S5.4, S5.6, D30 |
+| float accumulation | Q1.5: two Higham bounds | S1.3.15, L31, D32 |
+| extension admission | Q2.3 | extensions plan |
+| three rare words | Q2.8: removed | L33, D33 |
+| reserved-names table | Q2.10: one pointer sentence | S4.1, D17 |
+| shape rules owner | Q3.1: shared item U4 | L3, L12, D26 |
+| marks | owner decision 30: kept as shorthand; Q9.2: expansions, new `set_may_overlap` | S5.5, L35, L36, D10, D33 |
+| overlap between input and output regions | Q9.1, Q9.3: four relations, exact-or-apart default, one fault, pre-issue state | S1.3.6, S5.2, S5.5, S5.6, D18, D29 |

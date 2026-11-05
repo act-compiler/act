@@ -27,7 +27,7 @@ Each section lives in the `taidl/docs/` page named beside it.
 | S5.2 | Regions: inputs and outputs | `instructions.md` |
 | S5.3 | Constraints | `instructions.md` |
 | S5.4 | State updates | `instructions.md` |
-| S5.5 | In-place and placement marks | `instructions.md` |
+| S5.5 | Overlap between inputs and outputs | `instructions.md` |
 | S5.6 | Programs and issues | `execution.md` |
 | S6 | Expressions | `expressions.md` |
 | S6.1 | References `@a.`, `@c.`, `@s.` and where each may appear | `expressions.md` |
@@ -47,3 +47,13 @@ Each section lives in the `taidl/docs/` page named beside it.
 | S8.5 | Operations outside the language | `operation_meaning.md` |
 | S9 | What a conforming front end rejects | `conformance.md` |
 | S10 | Glossary | `glossary.md` |
+| S11 | Optional layers | `layers.md` |
+| S11.1 | Layers and the default | `layers.md` |
+| S11.2 | The width layer | `layers.md` |
+| S11.3 | The encoding layer | `layers.md` |
+| S11.4 | The derived-attribute rule | `layers.md` |
+| S12 | Generator metadata | `generator_metadata.md` |
+| S12.1 | Metadata entries | `generator_metadata.md` |
+| S12.2 | What the front end does | `generator_metadata.md` |
+| S12.3 | What a generator does | `generator_metadata.md` |
+| S12.4 | Adding a generator | `generator_metadata.md` |

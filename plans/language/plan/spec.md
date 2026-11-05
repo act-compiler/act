@@ -9,15 +9,15 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 | --- | --- | --- | --- | --- |
 | L1 | Ship the spec skeleton and section ids | none | S | Q1 |
 | L2 | Pin the reference operation version | L1 | S | Q1 |
-| L3 | Normative shape and element type rules per operation | L2, O6, O7 | L | Q1 |
+| L3 | Normative shape and element type rules per operation | L2 | L | Q1 |
 | L4 | Check generators against the stated reduce identities and `constant` fill | L2 | S | Q1 |
-| L5 | Make the region and in-place fault rows hold | L1 | S | Q1 |
-| L6 | Exact integer arithmetic with a 64-bit fault | L1 | S | Q1 |
+| L5 | Make the region, in-place, and overlap fault rows hold | L1, L36 | S | Q1 |
+| L6 | 64-bit integer arithmetic per operator with a fault | L1 | S | Q1 |
 | L7 | ACT-Backend unsupported-feature table against section ids | L1 | S | Q1 |
 | L8 | Spec consistency checks in CI | L1 | S | Q2 |
 | L9 | Worked examples per section | L3 | M | after v3 |
-| L29 | Object model contract test | L1 | S | Q1 |
-| L31 | Float accuracy norm for `dot`, `reduce_*`, and transcendental words | L2 | S | Q1 |
+| L29 | Object model contract test for the five fixed names | L1 | S | Q1 |
+| L31 | Float accuracy bounds for `dot`, `reduce_add`, `reduce_multiply` | L2 | S | Q1 |
 
 ## L1 Ship the spec skeleton and section ids
 
@@ -46,12 +46,11 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - What: one rule per operation word: operand ranks, result shape, element type rule, axis ranges, operand order.
 - Changes: `docs/operations.md` S8.2 and `OPERATIONS` in `taidl/operations.py` gain shape and type rules; existing columns kept.
 - Breaking: no.
-- Benefits: a simulator can be written from the spec alone; the L12 checker gets a source.
-- Caveats: 78 words (`IDLV2.g4:45-74`); restate only what TAIDL's line form changes, cite the reference for the rest.
-- Fail points: the rules disagree with O's `shapes.py`; notice by a T test that runs every word through O's shape checker.
-- Order and dependencies: after L2; feeds L12 and L9.
-- Merge of L3, L12, O6, and O7 into one item that moves O's `shapes.py` into `taidl`: pending panel (R62).
-- Verification: every word in `IDLV2.g4` `OPERATION` has a rule; a T test diffs the word lists.
+- Benefits: a simulator can be written from the spec alone; the shared shape module of U4 gets a source.
+- Caveats: 75 words after L33 removes three; restate only what TAIDL's line form changes, cite the reference for the rest.
+- Fail points: the rules disagree with the shape module; notice by a T test that runs every word through it.
+- Order and dependencies: after L2 only; L3 is the spec text, and U4 owns the shape and per-word type code, which absorbs L12, O6, and O7.
+- Verification: every word of the `OPERATOR` token has a rule; a T test diffs the word lists.
 
 ## L4 Check generators against the stated reduce identities and `constant` fill
 
@@ -64,21 +63,23 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 - Order and dependencies: after L2.
 - Verification: T differential test of each reducer on each type passes.
 
-## L5 Make the region and in-place fault rows hold
+## L5 Make the region, in-place, and overlap fault rows hold
 
-- What: S1.3.3, S1.3.4, and S1.3.6 hold in every executor, and `set_inplace` rejects a mismatched buffer or sizes.
-- Changes: `Instruction.set_inplace` in `taidl/instruction.py` gains the buffer and size check; O gains the output-overlap and in-place start checks.
-- Breaking: yes, an out-of-bounds region or overlapping outputs now fault.
-- Benefits: generators agree on what a run with bad attribute values does; B's allocator can rely on in-place storage reuse.
-- Caveats: O already rejects an out-of-bounds region at the call, so most work is the two new checks.
-- Fail points: a generator silently wraps addresses; notice by a T test with an out-of-bounds region.
-- Order and dependencies: after L1.
-- Verification: a T test per fault row expects the fault and its row id.
+- What: S1.3.3, S1.3.4, and S1.3.6 hold in every executor as the one constraint fault of S1.3.5, checked before any load (Q9.3, Q9.4).
+- Changes: O gains the output-overlap check, the `set_inplace` equality, the default exact-or-apart constraint, and the size term, all from the front end's one list; O evaluates the semantics on the pre-issue state for every relation.
+- Changes: `set_inplace` rejects a pair in different buffers (owner 24) or with unequal size text.
+- Changes: B honors every constraint, reads each pair's relation and tie, and applies the relation in its touch exception (Q9.4).
+- Breaking: yes, an out-of-bounds region, overlapping outputs, or a partial overlap of an unmarked same-buffer pair now fault.
+- Benefits: generators agree on what a run with bad attribute values does.
+- Caveats: O already rejects an out-of-bounds region at the call; the marks stay as shorthand (owner 30); if exact-or-apart overloads the solver, B may allocate default pairs apart, recorded as a backend limit.
+- Fail points: a generator silently wraps addresses, or B lets a dying input share storage at a forbidden offset; notice by T tests with an out-of-bounds region and per-relation allocation rows.
+- Order and dependencies: after L1 and L36.
+- Verification: a T test per fault row expects the fault and its row id; the corpus runs the five declarations by three placements (apart, exact, partial), plus the rejection, F5, OD34, input-input, cross-check, and backend rows of Q9.4.
 
-## L6 Exact integer arithmetic with a 64-bit fault
+## L6 64-bit integer arithmetic per operator with a fault
 
-- What: S6.2 states exact arithmetic, floor `/`, divisor-signed `%`, and a fault for a final value outside signed 64 bits.
-- Changes: O raises instead of warning; B maps floor division and the fault explicitly.
+- What: S6.2 states that every operator yields a signed 64-bit integer or the issue faults (Q1.2), with floor `/`, divisor-signed `%`, and left-associative grouping.
+- Changes: O checks each operator of the tree as written, never its canonical sum of products, and raises instead of warning; B maps floor division and keeps its per-operator checked arithmetic.
 - Breaking: yes for any generator that truncates or wraps today.
 - Benefits: B's Rust and O's Python agree on negative operands and on overflow.
 - Caveats: Rust `/` truncates; B must map explicitly.
@@ -121,22 +122,22 @@ Sizes assume the shared 3-4 engineers; every item marked breaking ships together
 
 ## L29 Object model contract test
 
-- What: a test that every attribute S4.6 names exists on an accepted accelerator with the stated type.
-- Changes: `tests/` gains one test; the front end is unchanged.
+- What: a test that the five names S4.6 fixes (`constraint_asts`, `update_asts`, `instr_input_asts`, `instr_output_asts`, `instr_expression_asts`) exist on an accepted accelerator with the stated type (Q2.11).
+- Changes: `tests/` gains one test; the other attributes move to the `taidl` README; the typed contract model is U2.
 - Breaking: no.
 - Benefits: generators read a documented contract; a rename breaks the test, not a generator.
-- Caveats: renames beyond owner decision 19 wait for the panel.
-- Fail points: an attribute added without a row; notice by review of S4.6.
+- Caveats: ANTLR trees stay reachable and unstable (Q3.4).
+- Fail points: a fixed name renamed without the page; notice by the test.
 - Order and dependencies: after L1; L15 and L30 update it.
 - Verification: the test fails on a deliberate attribute rename.
 
-## L31 Float accuracy norm
+## L31 Float accuracy bounds
 
-- What: replace S1.3.15 with a defined norm for float `dot` and `reduce_*` accumulation and transcendental accuracy.
-- Changes: `docs/operation_meaning.md` S8.4 and the S1.3 row.
+- What: S1.3.15 and S8.4 state two Higham bounds with u of the result type plus an overflow clause, for `dot`, `reduce_add`, and `reduce_multiply` only (Q1.5); `reduce_max` and `reduce_min` stay exact.
+- Changes: `docs/operation_meaning.md` S8.4 and the S1.3 row; T gains a bound test per word and type.
 - Breaking: no for O; B computes no values.
-- Benefits: closes the last open run-time row under owner decision 16.
-- Caveats: the norm is pending panel (R8); a fixed summation order would bind XLA-backed oracles to one schedule.
-- Fail points: O's per-word test bounds exceed the stated tolerance; notice by the T differential test.
-- Order and dependencies: after L2 and the panel.
-- Verification: S1.3 has no open row.
+- Benefits: closes the last open run-time row under owner decision 16; any order and any accumulation at least as wide as the result type conforms.
+- Caveats: for `n*u >= 1` the bound constrains nothing, and the ISA author writes a wider result type.
+- Fail points: O's results exceed the bound; notice by the T test.
+- Order and dependencies: after L2.
+- Verification: S1.3 has no open row; the T bound test passes on both platforms.

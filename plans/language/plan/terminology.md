@@ -10,11 +10,13 @@ Sizes assume two engineers; every item marked breaking ships together in the TAI
 | L25 | Reconcile the glossary with the terminology reference | L1 | S | Q1 |
 | L26 | Apply the glossary to the taidl docs and error messages | L25 | M | Q1 |
 | L27 | Apply the glossary to B, O, and A docs | L25 | M | owned by B, O, A |
-| L28 | Banned-synonym lint | L26 | S | after v3 |
+| L28 | Banned-synonym lint over the D10 word list | L26, D10 | S | after v3 |
 
-- Owner decisions 19-21 fix buffer, state, `hbm`, region, and `@s.`; they override the reconciled glossary where it differs.
+- `plans/glossary/terms.md` is the only glossary (Q7.2); S10 follows its rows, and words-to-avoid is generated from its banned column.
+- Owner decisions 19-21 and 32 fix buffer, state, `hbm`, region, `@s.`, "ISA specification", and "TAIDL language specification".
+- Panel 7 fixes "state variable" for the singular, "hbm" for `d0`, "fault" and "reject", and the prose "test oracle generator" and "compiler backend generator".
 - L27 is listed for its dependency only; the B, O, and A tracks plan and size it.
-- L28 waits until the banned lists settle, since an allow list per file would grow with every exception.
+- D10 owns the banned-word list file; L28 consumes it after v3 (Q3.3).
 
 ## L25 Reconcile the glossary with the terminology reference
 
@@ -22,7 +24,7 @@ Sizes assume two engineers; every item marked breaking ships together in the TAI
 - Changes: `docs/glossary.md`; terms that agree are kept.
 - Breaking: no.
 - Benefits: terms match what the community already reads.
-- Caveats: API names such as `computation_attr` fix some terms until the renames pending panel (R2) are settled.
+- Caveats: API names follow the L30 rename table; overridden rows cite owner decision 19, 20, or 21 in the source column.
 - Fail points: two terms for one concept survive; notice by L28.
 - Order and dependencies: first; disagreements are recorded as D entries.
 - Verification: every concept in the reference has one glossary row or a recorded disagreement.
@@ -51,8 +53,9 @@ Sizes assume two engineers; every item marked breaking ships together in the TAI
 
 ## L28 Banned-synonym lint
 
-- What: a script that greps docs for each banned synonym in the glossary table.
+- What: a CI grep of docs for each word in the banned column, read from D10's word list file.
 - Changes: `tests/` gains a lint; no doc changes.
+- Banned additions: "undefined behavior", "UB", "implementation-defined", "global memory", "off-chip memory", "DRAM", "main memory", and "HBM" for `d0`.
 - Breaking: no.
 - Benefits: terminology cannot drift back.
 - Caveats: some banned words are fine in code or in other senses; needs an allow list per file.

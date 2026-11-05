@@ -11,9 +11,9 @@ Steps run in order; each names the plan items it carries.
 | `IDLV2Expr.g4` | keep | one `INT` rule | everything else |
 | `IDLV2*.py` | regenerate only | from the edited grammars | generation script `generate.sh` |
 | `taidl/operations.py` | keep, extend | adds per-word shape and type rules beside `OPERATIONS` | the table and its checks |
-| `taidl/instruction.py` | reshape | place check for references; in-place buffer and size check; shape checking in a new `shapes.py` | every public method and its checks |
+| `taidl/instruction.py` | reshape | place check for references; pair relations, `set_may_overlap`, and the `same` size term (L35, L36); shape checking in the shape module of U4 | every public method and its checks |
 | `taidl/accelerator.py` | keep | `add_buffer` and `add_state` per owner decision 19; order and range checks; `d0` with one access dimension | the rest of the API |
-| `taidl/data_model.py` | keep | `num_dim_str` removed; other renames pending panel (R2) | `TYPES`, `State`, the constructor's arguments |
+| `taidl/data_model.py` | keep | `num_dim_str` removed; other renames in the L30 table | `TYPES`, `State`, the constructor's arguments |
 | `taidl/names.py` | keep | | all |
 | `docs/declarations.md` | reshaped | S4.1 to S4.5 | all facts |
 | `docs/instructions.md` | reshaped | S5.1 to S5.5 | all facts |
@@ -30,6 +30,6 @@ Steps run in order; each names the plan items it carries.
 3. Make the fault rows and stated results hold in B and O (L4, L5, L6).
 4. Add the front-end checks that need no grammar change (L10, L11, L14, L16).
 5. Batch grammar, API, and rename changes into v3 (L13, L15, L30) with B and O.
-6. Add the shape checker (L12) on the L3 rules.
+6. Add the shape checks (U4, which absorbs L12) on the L3 rules.
 7. Settle the float accuracy norm after the panel (L31).
 8. Add extensions in rank order (L17, then L23).

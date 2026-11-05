@@ -45,8 +45,8 @@ ENTRY {
 - That check runs once both the semantics and the regions are given, in either order.
 - A region value has its buffer's element type and the region shape (S5.2); for `d0` that is `u8[<size>]`.
 - S5.6 gives the index map between a region value and its buffer.
-- A line may give a region value another shape with the same element count; the value is then read or written in row-major order, as `reshape` does: a presumed reshape.
-- A region value line with another element count or element type than its region's is an error: rejected when the shapes are literal, a fault when they depend on a backtick value (S1.3.8).
+- A region value line has its region's shape and element type; another shape needs an explicit `reshape` line.
+- A region value line with another shape or element type than its region's is an error: rejected when the shapes are literal, a fault when they depend on a backtick value (S1.3.8).
 
 ## S7.3 Element types
 
@@ -73,7 +73,7 @@ A type is one of `pred`, `s2`, `s4`, `s8`, `s16`, `s32`, `s64`, `u2`, `u4`, `u8`
 - `constant` takes one literal instead: a number, `true`, `false`, or an expression in backticks.
 - At an integer type the literal is an integer literal or a backtick expression whose value lies in the type's range.
 - At `pred` it is `true`, `false`, `0`, or `1`.
-- At a float type it is any number literal or a backtick expression, rounded once to nearest, ties to even.
+- At a float type it is any number literal or a backtick expression; a literal is its exact decimal value rounded once to nearest, ties to even, and an underflow rounds normally.
 - A finite value that rounds past the type's largest finite value, or `inf` at a type with no infinity, is rejected for a literal and a fault for a backtick expression (S1.3.9).
 - `nan` is the type's canonical quiet NaN; `-nan` is it with the sign bit set.
 - An operation attribute is `name=value`, named as XLA-HLO text names it.

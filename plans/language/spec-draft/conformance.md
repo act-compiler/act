@@ -1,9 +1,16 @@
 # Conformance
 
-This page is S9 of the spec: every ISA description a conforming front end rejects.
+This page is S9 of the spec: every ISA specification a conforming front end rejects.
 Each row names the call that rejects it and the error it raises.
 An error names the instruction and, for a text, its place, line, and column, both counted from 1.
-A conforming front end rejects exactly the ISA descriptions this page lists, and no other.
+A conforming front end rejects exactly the ISA specifications this page lists, and no other.
+
+## Failure policy
+
+- Nothing is rejected without a genuine cause: every row is a problem the architect can correct in the ISA specification.
+- Each error names the clause it breaks by section id, and the instruction, buffer, attribute, or namespace at fault.
+- A case the front end cannot decide from the text is not rejected; it is checked at issue as a fault (S1.3).
+- A generator rejects only an unsupported feature (S1.2) or an invalid entry in its own metadata namespace (S12.3), with the same kind of error.
 
 ## Declarations
 
@@ -26,11 +33,13 @@ A conforming front end rejects exactly the ISA descriptions this page lists, and
 | A region of a buffer never declared | `set_inputs`, `set_outputs` | `ValueError` |
 | Starts or sizes whose count is not the buffer's count of access dimensions | `set_inputs`, `set_outputs` | `ValueError` |
 | A start or size that is neither an `int` nor a `str`, or an `int` outside signed 64 bits | `set_inputs`, `set_outputs` | `SyntaxError` |
-| A flag list whose length is not the count of input regions, or a flag that is not a `bool` | `set_inplace`, `set_apart`, `set_no_partial_overlap` | `ValueError` |
-| More than one in-place flag, or an in-place input whose buffer or sizes differ from output region 0's | `set_inplace` | `ValueError` |
-| An input marked both in place and by a placement mark | `set_inplace`, `set_apart`, `set_no_partial_overlap` | `ValueError` |
-| A placement mark on an instruction without exactly one output region | `set_apart`, `set_no_partial_overlap` | `ValueError` |
-| A placement mark on an input in another buffer than the output | `set_apart`, `set_no_partial_overlap` | `ValueError` |
+| A flag list whose length is not the count of input regions, or a flag that is not a `bool` | every mark | `ValueError` |
+| More than one in-place flag, or an in-place input whose buffer or size text differs from output region 0's | `set_inplace` | `ValueError` |
+| An input carrying more than one mark | every mark | `ValueError` |
+| A mark on an instruction without exactly one output region | every mark | `ValueError` |
+| A placement mark on an input in another buffer than the output | `set_apart`, `set_no_partial_overlap`, `set_may_overlap` | `ValueError` |
+| `set_apart` on an input whose start and size texts all match the output's | `set_apart` | `ValueError` |
+| An input whose start and size texts all match the output's, in its buffer, without `set_inplace` | the instruction's declaration | `ValueError` |
 | `set_apart` on an input whose starts are all spelled as the output's | `set_apart` | `ValueError` |
 
 ## Texts
@@ -61,6 +70,25 @@ All rows raise `SyntaxError` from `add_semantics`, and the last two rows also fr
 | A `constant` literal the line's element type cannot hold (S7.5) |
 | An input or output region without its value, or an `%In<k>` or `%Out<k>` without its region, including `%In01` |
 | An instruction with regions but no semantics, or with semantics but no regions |
+| A region value line whose shape differs from its region's, with no explicit `reshape` line |
+| A float literal that rounds to an infinity, or to NaN at `f8e4m3fn` |
+
+## Removed constructs
+
+- A construct removed in v3 raises one coded rejection that names the construct, its replacement, and the section id.
+- One removed-names table drives that rejection: the operation words `cholesky`, `triangular_solve`, and `batch_norm_inference`, and each renamed public name of the v3 rename table.
+- The marks `set_inplace`, `set_apart`, and `set_no_partial_overlap` are not removed; `set_may_overlap` is added (S5.5).
+
+## Layers and generator metadata
+
+| rejected | call | error |
+| --- | --- | --- |
+| A type key naming no attribute of the instruction, or a type outside `s1` to `s64` and `u1` to `u63` | `add_instruction` | `ValueError` |
+| An encoding block whose bits are not each covered exactly once by a slice or a fixed bit | the encoding declaration | `ValueError` |
+| An encoded attribute with no declared type, or whose type width differs from its slice total | the encoding declaration | `ValueError` |
+| Two instructions whose fixed bits one word can match | the generator that reads the blocks | `ValueError` |
+| A derived attribute with no link, two links, a link not of the form of S11.4, or a link naming a derived attribute or two encoded ones | the encoding declaration | `ValueError` |
+| A namespace that is not an identifier, or a metadata entry that is not plain data | any call that takes metadata | `ValueError` |
 
 ## Rows the reference front end does not yet check
 
@@ -74,6 +102,9 @@ Each row below is part of S9; the plan item that makes the front end check it is
 | A `constant` literal the element type cannot hold | L16 |
 | A literal shape dimension of 0 | L16 |
 | A non-`str` list entry, or a flag that is not a `bool` | L16 |
-| An in-place input whose buffer or sizes differ from the output's | L5 |
+| An in-place input whose buffer or size text differs from the output's | L5 |
+| `set_apart` on identical text, or identical input and output text without `set_inplace` | L36 |
+| A removed construct, by the removed-names table | L33 |
 | An instruction with regions but no semantics, or the reverse | L11 |
-| Shapes and element types against S7.2 and S8 | L12 |
+| Shapes and element types against S7.2 and S8 | U4 |
+| Every row of Layers and generator metadata | L37, L38, L39, L40 |

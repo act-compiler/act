@@ -1,7 +1,7 @@
 # Response to the implementer review
 
 Rows answer `reviews/spec/implementer.md` questions Q1-Q38 in order.
-"Pending panel" names the tech-lead ruling the change waits on.
+A panel decision such as Q1.5 or Q9.2 is cited where it settles a row.
 
 | Finding | Disposition | Reason | Changed |
 | --- | --- | --- | --- |
@@ -33,7 +33,7 @@ Rows answer `reviews/spec/implementer.md` questions Q1-Q38 in order.
 | Q26 reference revision | partly | Pinned to the oracle's jax, as ambiguity T10 | S8.4; L2 |
 | Q27 StableHLO vs XLA-HLO edge cases | accepted | XLA CPU values are what O computes today | S8.4 |
 | Q28 `compare` default | accepted | `oracle_visitor.py:114-118` | S8.4 |
-| Q29 `dot` and bf16 accumulation | pending panel (R8) | Needs an agreed tolerance norm | S1.3.15; L31 |
+| Q29 `dot` and bf16 accumulation | accepted | Two Higham bounds with u of the result type (Q1.5) | S1.3.15; L31 |
 | Q30 reduce initial values | accepted | `utils.py:439-452` | S8.4 |
 | Q31 `constant` fit | accepted | As ambiguity T1 | S7.5 |
 | Q32 operand order | accepted | The reference operation fixes it | S8.4 |
@@ -42,4 +42,4 @@ Rows answer `reviews/spec/implementer.md` questions Q1-Q38 in order.
 | Q35 one exception type for unsupported features | rejected | Generators are separate programs; S1.2 fixes the message content (feature and section id), and a Python class name binds no Rust output | none |
 | Q36 example per S5 feature | partly | Valid; `tests/test_examples.py` runs two examples, so new examples ride on the examples item | L9 |
 | Q37 `copy` is identity | accepted | Reference operation | S8.4 |
-| Q38 float tolerance | pending panel (R8) | Same norm as Q29 | L31 |
+| Q38 float tolerance | accepted | Same norm as Q29 | L31 |

@@ -38,7 +38,7 @@ Most weaknesses are unstated meaning, not wrong design.
 | `IDLV2.g4` | keep | Sound; small fixes F8, F13, F16 in v3 |
 | `IDLV2Expr.g4` | keep | Sound; F8 only |
 | `taidl/operations.py` | keep, extend | The table becomes the source of L3 shape rules |
-| `taidl/instruction.py` | reshape | Add the place check (L10) and split shape checking into its own module (L12) |
+| `taidl/instruction.py` | reshape | Add the place check (L10) and split shape checking into the shared shape module (U4) |
 | `taidl/accelerator.py` | keep | Add the order and range checks (L11, L16) |
 | `taidl/data_model.py` | reshape | Rename fields; move generator strings out (L15) |
 | `taidl/names.py` | keep | |

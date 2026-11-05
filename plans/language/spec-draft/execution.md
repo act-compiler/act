@@ -1,6 +1,6 @@
 # Execution model
 
-This page is S5.6 of the spec: what a program of instructions is, and how one issue runs.
+This page is S5.6 of the TAIDL language specification: what a program of instructions is, and how one issue runs.
 A test oracle or a simulator runs programs; a compiler backend emits programs that never fault.
 
 ## S5.6 Programs and issues
@@ -8,30 +8,40 @@ A test oracle or a simulator runs programs; a compiler backend emits programs th
 ### Program
 
 - A program is a sequence of issues run in order on one accelerator.
+- Program order is the only order: TAIDL has no concurrency, and a constraint used as a wait faults when false (S1.3.5).
 - An issue names one instruction and gives a value to each of its attributes, by name, in any order.
 - An attribute value is an integer; one outside signed 64 bits is a fault (S1.3.10).
 - A program is run with `hbm` contents: a sequence of bytes that `d0` holds before the first issue.
 
 ### Storage before the first issue
 
-- Every element of every buffer but `d0` is 0.
-- `d0` holds the `hbm` contents; its size is their byte count.
-- Every state variable holds its initial value (S4.4).
+- `d0` holds the caller's `hbm` contents in full; its size is their byte count.
+- No element of another buffer holds a value yet: a read of an element that no earlier issue of the program wrote is a fault (S1.3.11).
+- "Written" means written by an issue of this program, so a stale value left in a reused buffer by an earlier program is not detected.
+- Every state variable holds its value from `add_state` (S4.4).
 - An element no output region writes keeps its value from one issue to the next.
 
 ### One issue
 
-1. Evaluate the constraints given to `add_instruction` against the state before the issue.
-2. Run the state updates in order on a copy of the state (S5.4).
-3. Evaluate starts, sizes, shape dimensions, backtick operands, operation attribute values, and placement-mark constraints against the updated copy.
-4. Check every fault case of S1.3 that applies; if one fails, the issue is a fault and steps 5 and 6 do not run.
-5. Read every input region, then compute every line of the semantics in file order.
-6. Write every output region from its `%Out<k>` value, then replace the state with the updated copy.
+Every expression of an issue reads the state before the issue; its updates and its outputs take effect together at its end.
 
+1. Evaluate the constraints, starts, sizes, shape dimensions, backtick operands, operation attribute values, and state update expressions against the state before the issue.
+2. Check every fault case of S1.3 that applies; if one fails, the issue is a fault and steps 3 and 4 do not run.
+3. Read every input region, then compute every line of the semantics in file order.
+4. Write every output region from its `%Out<k>` value, and assign every state update at once (S5.4).
+
+- When an input and an output region overlap as their declared relation permits (S5.5), the outputs are the semantics on the state before the issue; no read and write order is assumed.
 - Every line of a semantics runs; there is no lazy or dead line.
 - `ROOT` has no run-time effect; outputs come from the `%Out<k>` values.
 - Every comparison of a condition is evaluated, left to right; a fault in any of them is a fault of the issue.
-- A fault writes no region and no state; the program stops at it, and the generator reports the instruction and the S1.3 row id.
+- A fault depends only on attributes, state, and region text; every tensor value gives a fixed result (S1.3.12).
+
+### Faults
+
+- A fault writes no region and no state.
+- The program stops at the first fault, and every earlier issue has committed.
+- The generator reports the lowest faulting issue index, the instruction, and a section id of a clause that applies.
+- A compiler backend is a producer: it never emits an issue that faults, and lists in its coverage table each precondition it cannot see, such as state before the kernel or the size of `d0`.
 
 ### Region values
 

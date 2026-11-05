@@ -36,7 +36,28 @@ This page is S8.4 and S8.5 of the spec.
 - `INT_MIN / -1` is `INT_MIN`, and `INT_MIN % -1` is 0.
 - A shift by the width or more gives 0, or the sign fill for `shift_right_arithmetic`.
 - A negative integer exponent of `power` gives 0, except for bases 1 and -1.
-- A float-to-integer `convert` truncates toward 0, saturates out of range, and maps NaN to 0.
+- An index inside a semantics, as in `dynamic_slice` or `gather`, clamps as StableHLO states.
+- Tensor values never fault; the oracle lowers each fixed value above explicitly.
+
+### `convert` out of range
+
+| conversion class | result |
+| --- | --- |
+| float to float, int to float | round to nearest even; overflow gives a signed infinity, or NaN where the type has none (`f8e4m3fn`) |
+| float to int | truncate toward 0, saturate out of range, NaN gives 0 |
+| int to int | wrap |
+| any type to `pred` | nonzero, NaN included, is `true` |
+
+- A saturating ISA writes `clamp` before `convert`.
+
+### Float rounding, NaN, and signed zero
+
+- Every float operation rounds once to its result type, to nearest even.
+- Denormals are kept; a unit that flushes them writes the flush as a `select` against the smallest normal.
+- Any NaN equals any NaN; sign and payload are outside the meaning.
+- `bitcast_convert` of a NaN from a float source gives the positive canonical quiet NaN bits of that type.
+- `maximum` and `minimum` follow IEEE 754-2019: NaN propagates, and -0 is less than +0.
+- Infinity, zero, and NaN results of every approximate word match the IEEE function exactly.
 
 ### Byte layout in `d0`
 
@@ -47,7 +68,14 @@ This page is S8.4 and S8.5 of the spec.
 
 ### Float accuracy
 
-- The accumulation type and order of a float `dot` or `reduce_*`, and the accuracy of transcendental words, are open (S1.3.15), pending the tech-lead panel.
+- The order and width of a float accumulation are free; the result r meets a bound against the exact value (S1.3.15).
+- For `dot` and `reduce_add`: `|r - exact| <= gamma_n * sum|terms| + u * |exact|`.
+- For `reduce_multiply`: `|r - exact| <= gamma_n * |exact|`.
+- `gamma_n = n*u / (1 - n*u)`, where u is the unit roundoff of the result type and n the term count: K for `dot`, the product of the reduced sizes for a reduce.
+- When `sum|terms|` exceeds the largest finite value of the type, the result may also be an infinity or a NaN.
+- For `n*u >= 1` the bound constrains nothing; an ISA author who needs one writes a wider result type.
+- `reduce_max` and `reduce_min` are exact.
+- A size-1 or empty reduction gives the element combined with the identity.
 
 ## S8.5 Operations outside the language
 

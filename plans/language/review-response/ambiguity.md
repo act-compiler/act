@@ -1,15 +1,15 @@
 # Response to the ambiguity review
 
 Rows answer `reviews/spec/ambiguity.md` in its order: N0 is the proposed norm, T1-T36 the findings table, G1-G4 the grammar bullets, M1-M11 the missing S1.3 entries, and S1-S6 the missing S9 entries.
-"Pending panel" names the tech-lead ruling the change waits on.
+A panel decision such as Q1.5 or Q9.2 is cited where it settles a row.
 
 | Finding | Disposition | Reason | Changed |
 | --- | --- | --- | --- |
 | N0 one norm for decision 16 | accepted | Owner decision 16 requires one defined norm; the fault wording gives one | S1.3, S5.6, S10 `fault` |
 | T1 S7.5 `constant` literal fit | accepted | B and O disagree today (`spec_checks.py:94-107`, `utils.py:398-426`); front end skips operands (`instruction.py:424`) | S7.5, S1.3.9, S9; L16 |
 | T2 S6.2 overflow rules contradict | accepted | Two rules in one section; O computes exactly (`utils.py:268-271`) | S6.2, S1.3.1; L6, D7 |
-| T3 S5.3 constraint vs start state | accepted | Placement constraints compare starts (`instruction.py:216-218`) that read post-update state; the all-after variant is pending panel (R7) | S5.3, S5.6; D30 |
-| T4 S8.4 float accumulation order | pending panel (R8) | A fixed order binds XLA-backed oracles to one schedule; the tolerance alternative needs agreed values | S1.3.15, S8.4; L31, D32 |
+| T3 S5.3 constraint vs start state | accepted | Every expression of an issue reads the pre-state (Q1.1) | S5.3, S5.4, S5.6; D30 |
+| T4 S8.4 float accumulation order | accepted | Order is free; two Higham bounds hold for any order (Q1.5) | S1.3.15, S8.4; L31, D32 |
 | T5 S8.4 reduce initial value | accepted | Matches O's `reduce_init` (`utils.py:439-452`); owner decision 16 | S8.4; L4, D12 |
 | T6 storage before first write | accepted | No line of spec or code states it; owner decision 16 | S5.6; D31 |
 | T7 S5.5 in-place aliasing | accepted | Owner decision 17; front end checks only the flag count (`instruction.py:163-172`) | S5.5, S1.3.6, S9; L5, F21, D29 |
@@ -28,7 +28,7 @@ Rows answer `reviews/spec/ambiguity.md` in its order: N0 is the proposed norm, T
 | T20 initial value past 64 bits | accepted | Statically checkable; only the type is checked (`accelerator.py:69`) | S4.4, S9; L16 |
 | T21 S6.3 short circuit | accepted | A fault in an unevaluated arm must not depend on the generator | S6.3, S5.6 |
 | T22 `compare` default `type` | accepted | O uses the StableHLO default by element type (`oracle_visitor.py:114-118`) | S8.4 |
-| T23 `dot` mixed types | partly | One operand type is stated; how the result type accumulates is part of T4, pending panel (R8) | S8.4; L31 |
+| T23 `dot` mixed types | partly | One operand type is stated; u of the result type sets the accumulation bound (Q1.5) | S8.4; L31 |
 | T24 S8.3 checked operand | accepted | `select` and `clamp` first operands are `pred` and the bound | S8.3 |
 | T25 `INT` base | accepted | A C reader with base 0 reads `010` as 8 | S2.1, S6.2 |
 | T26 `-inf`, `-nan`, NaN pattern | accepted | `NUMBER` takes the sign (`IDLV2.g4:91`) | S2.1, S7.5 |
@@ -52,7 +52,7 @@ Rows answer `reviews/spec/ambiguity.md` in its order: N0 is the proposed norm, T
 | M4 `constant` literal range | accepted | As T1 | S7.5 |
 | M5 negative start, `d0` past end | accepted | As T9 | S5.2 |
 | M6 contents before first write | accepted | As T6 | S5.6 |
-| M7 float summation order | pending panel (R8) | As T4 | S1.3.15; L31 |
+| M7 float summation order | accepted | As T4 | S1.3.15; L31 |
 | M8 integer edge cases | accepted | As T11 | S8.4 |
 | M9 `inf` at `f8e4m3fn`, NaN pattern | accepted | O rejects the first (`utils.py:411`) | S7.3, S7.5 |
 | M10 `and` and `or` evaluation | accepted | As T21 | S6.3 |

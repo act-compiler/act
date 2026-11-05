@@ -17,7 +17,7 @@ This page states what the rules do not show at a glance: token precedence, entry
 | --- | --- | --- |
 | `ENTRY`, `ROOT` | the words themselves | keywords |
 | `TYPE` | one of the 19 element type words of S7.3 | |
-| `OPERATION` | one of the operation words of S8.1 | |
+| `OPERATOR` | one of the operation words of S8.1 | |
 | symbols | `= ( ) { } [ ] : ; ,` | |
 | `INT` | `[0-9]+` | decimal; leading zeros do not change its value |
 | `NUMBER` | `-?` then digits with optional `.digits` and exponent, or `-?` then `inf` or `nan` | a bare unsigned integer is `INT`, not `NUMBER` |
@@ -51,8 +51,8 @@ This page states what the rules do not show at a glance: token precedence, entry
 ### S3.1 Semantics grammar
 
 - The entry rule of `IDLV2.g4` is `module`.
-- The rule `instruction` is one line of a semantics (S7.1), not an instruction of S5.
-- The rule `name` accepts `IDENTIFIER` or `OPERATION`, so an attribute name such as `slice` is read by its text.
+- The rule `operation` is one line of a semantics (S7.1).
+- The rule `name` accepts `IDENTIFIER` or `OPERATOR`, so an attribute name such as `slice` is read by its text.
 
 ### S3.2 Expression grammar
 
